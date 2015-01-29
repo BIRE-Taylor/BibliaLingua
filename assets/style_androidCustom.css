@@ -1,0 +1,298 @@
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Custom Text Selection Color */
+/* - - - - - - - - - - - - - - - - - - - */
+::selection {
+	background-color: rgba(91, 195, 235, 0.5);
+}
+
+body{
+	line-height:1.33em;
+}
+
+/* disable link touch styling */
+ * {-webkit-tap-highlight-color: rgba(0, 0, 0, 0);}
+ * {-webkit-focus-ring-color: rgba(0, 0, 0, 0);}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* For showing relationships to items in RCA pane */
+/* - - - - - - - - - - - - - - - - - - - */
+div.temp_highlight {
+	background-color: rgba(0, 114, 190, 0.2);
+	-webkit-box-shadow: 0 0 1em rgba(0, 114, 190, 0.2);
+	border-radius: 0.15em;
+	margin-top: -0.1em;
+	padding-top: 0.1em;
+	margin-left: -0.3em;
+    padding-left: 0.3em;
+    margin-right: -0.3em;
+    padding-right: 0.3em;
+    z-index: -1;
+}
+body[scheme = 'night'] div.temp_highlight {
+	background-color: rgba(0, 114, 190, 0.4);
+	-webkit-box-shadow: 0 0 1em rgba(0, 114, 190, 0.4);
+}
+
+div.ribbon {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 40px;
+	height: 40px;
+    -user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+}
+@media screen and (min-width:600px){
+    div.ribbon {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 80px;
+        height: 80px;
+    }
+}
+
+div.ribbonDisplay {
+	position: absolute;
+    width: 0;
+    border-style: solid;
+    border-color: #c7c7c7;
+    border-bottom-color: transparent;
+    height: 6px;
+    top: 8px;
+    left: 7px;
+    border-width: 5px;
+    border-bottom-width: 4px;
+    -webkit-transition: border-color 1s ease;
+    -moz-transition: border-color 1s ease;
+    transition: border-color 1s ease;
+}
+@media screen and (min-width:600px) {
+    div.ribbonDisplay {
+        position: absolute;
+        height: 12px;
+        top: 8px;
+        left: 14px;
+        border-width: 10px;
+        border-bottom-width: 8px;
+    }
+}
+body[scheme = 'sepia'] div.ribbonDisplay {
+    border-color: #b8aa93;
+    border-bottom-color: transparent;
+}
+body[scheme = 'night'] div.ribbonDisplay {
+    border-color: #424242;
+    border-bottom-color: transparent;
+}
+
+div.ribbonDisplayRed {
+    border-color: #ff0000;
+    border-bottom-color: transparent;
+}
+body[scheme = 'sepia'] div.ribbonDisplayRed {
+    border-color: #ff0000;
+    border-bottom-color: transparent;
+}
+body[scheme = 'night'] div.ribbonDisplayRed {
+    border-color: #ff0000;
+    border-bottom-color: transparent;
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Annotation Markers (right margin) */
+/* - - - - - - - - - - - - - - - - - - - */
+div.hiddenElement {
+    display: none;
+}
+
+div.sticky {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 40px;
+	height: 40px;
+    -webkit-transition: -webkit-transform 350ms ease-in-out;
+}
+@media screen and (min-width:600px){
+    div.sticky {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 80px;
+        height: 80px;
+    }
+}
+
+div.stickyDisambiguate { }
+
+div.stickyDisambiguateDisplay {
+	z-index: 15;
+	-webkit-transform: scale(2);
+}
+@media screen and (min-width:600px){
+    div.stickyDisambiguateDisplay {
+        z-index: 15;
+        -webkit-transform: scale(1.5);
+    }
+}
+
+div.stickyRotate1 {
+	z-index: 12;
+	-webkit-transform: translate(0px, 0px);
+}
+
+div.stickyDisplay {
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.3);
+    border-radius: 0px;
+	position: relative;
+	top: 12px;
+	left: 23px;
+	width: 12px;
+	height: 12px;
+	-webkit-box-shadow: none;
+    background-image: none;
+    -webkit-user-select: none;
+}
+@media screen and (min-width:600px){
+    div.stickyDisplay {
+        top: 24px;
+        left: 46px;
+        width: 24px;
+        height: 24px;
+        border-radius: 3px;
+    }
+}
+body[scheme = 'night'] div.stickyDisplay {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+div.stickyNote {
+    background-image:url('file:///android_asset/annotation_note.png');
+    background-size: 12px 12px;
+    background-repeat:no-repeat;
+}
+@media screen and (min-width:600px){
+    div.stickyNote {
+        background-size: 24px 24px;
+    }
+}
+body[scheme = 'night'] div.stickyNote {
+    background-image:url('file:///android_asset/annotation_note_night.png');
+}
+
+div.stickySelected { }
+
+div.stickySelectedDisplay {
+	-webkit-box-shadow: 0 0 10px rgb(51, 181, 229);
+}
+@media screen and (min-width:600px){
+    div.stickySelectedDisplay {
+    	-webkit-box-shadow: 0 0 20px rgb(51, 181, 229);
+    }
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Highlight Elements */
+/* - - - - - - - - - - - - - - - - - - - */
+
+.grayHighlight {
+    margin-left: -0.15em;
+    margin-right: -0.15em;
+    padding-right: 0.15em;
+    padding-left: 0.15em;
+    border-radius: 0.1em;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+body[scheme = 'night'] .grayHighlight {
+	background-color: rgba(255, 255, 255, 0.3);
+}
+
+.bookmarkHighlight {
+    margin-left: -0.15em;
+    margin-right: -0.15em;
+    padding-right: 0.15em;
+    padding-left: 0.15em;
+    border-radius: 0.1em;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+body[scheme = 'night'] .bookmarkHighlight {
+	background-color: rgba(255, 255, 255, 0.3);
+}
+
+.ttsHighlight {
+    margin-left: -0.15em;
+    margin-right: -0.15em;
+    padding-right: 0.15em;
+    padding-left: 0.15em;
+    border-radius: 0.1em;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+body[scheme = 'night'] .ttsHighlight {
+	background-color: rgba(255, 255, 255, 0.3);
+}
+
+.highlight-box {
+    margin-top: -0.2em;
+    margin-left: -0.2em;
+    padding-top: 0.3em;
+    padding-right: 0.2em;
+    padding-left: 0.2em;
+    border-radius: 0.1em;
+    -webkit-box-shadow: 0 0 5px #cccccc;
+}
+
+.highlight {
+    background-color: #FFFFD9;
+}
+body[scheme = 'night'] .highlight {
+    background-color: #404023;
+}
+
+.hl-box {
+    -webkit-user-select: none;
+    margin-left: -0.15em;
+    padding-left: 0.15em;
+    margin-right: -0.15em;
+    padding-right: 0.15em;
+    border-radius: 0.2em;
+    z-index: -15;
+}
+
+.hl-shadow {
+	-webkit-box-shadow: 0 0 5px #cccccc;
+}
+
+/* highlight 0: white (almost) */
+.hl-clear {
+    background-color: transparent;
+}
+
+.hlextra-clear {
+    background-color: transparent;
+}
+
+/* highlight underline: red underline */
+.hl-red-underline {
+    background-color: transparent;
+	border-radius: 0px;
+    border-bottom-width: 0.15em;
+    border-bottom-style: solid;
+    /*border-bottom-color: rgba(255, 0, 0, 0.8);*/
+}
+
+/* highlight underline: red underline */
+.hlextra-red-underline {
+    background-color: transparent;
+	padding: 0px;
+	margin: 0px;
+	margin-top: -0.1em;
+}

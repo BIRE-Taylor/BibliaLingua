@@ -1,0 +1,881 @@
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Base Style */
+/* - - - - - - - - - - - - - - - - - - - */
+body {
+    margin: 0;
+    padding: 72px 22px;
+    color: #101010;
+	text-align: left;
+    font-family: serif;
+}
+
+.video_thumb {
+    position: relative;
+    width: 320px;
+    max-width: 100%;
+    min-height: 200px;
+}
+
+.video_thumb img {
+    width: 320px;
+    max-width: 100%;
+    min-height: 200px;
+}
+
+.video_thumb .play_circle {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border: 3px solid #dedede;
+    bottom: 17px;
+    right: 10px;
+    border-radius: 30px;
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+}
+
+.video_thumb .play_circle .play_triangle {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 20px solid #dedede;
+    top: 13px;
+    left: 18px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Custom Text Selection Color */
+/* - - - - - - - - - - - - - - - - - - - */
+::selection {
+	background-color: rgba(91, 195, 235, 0.5);
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Links */
+/* - - - - - - - - - - - - - - - - - - - */
+a, a:visited {
+    text-decoration: none;
+    color: #5577bb; /*#44538c;*/
+}
+
+/* disable link touch styling */
+ * {-webkit-tap-highlight-color: rgba(0, 0, 0, 0);}
+ * {-webkit-focus-ring-color: rgba(0, 0, 0, 0);}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* For showing relationships to items in RCA pane */
+/* - - - - - - - - - - - - - - - - - - - */
+.temp_highlight {
+	background-color: rgba(51, 181, 229, 0.3);
+	-webkit-box-shadow: 0 0 1em rgba(51, 181, 229, 0.3);
+	border-radius: 0.15em;
+	margin-top: -0.1em;
+	padding-top: 0.1em;
+	margin-left: -0.3em;
+    padding-left: 0.3em;
+    margin-right: -0.3em;
+    padding-right: 0.3em;
+    z-index: -1;
+}
+
+sup {
+    vertical-align: super;
+    font-size: .8em;
+    /*color: #4453ac;*/
+    line-height: 0;
+    margin-bottom: 0.45em;
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Annotation Markers (right margin) */
+/* - - - - - - - - - - - - - - - - - - - */
+.hiddenElement {
+    display: none;
+}
+
+.sticky {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 40px;
+	height: 40px;
+    -webkit-transition: -webkit-transform 350ms ease-in-out;
+    -user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+}
+
+.stickyDisambiguate { }
+
+.stickyDisambiguateDisplay {
+	z-index: 15;
+	-webkit-transform: scale(2);
+}
+
+.stickyRotate1 {
+	z-index: 12;
+	-webkit-transform: translate(0px, 0px);
+}
+
+.stickyRotate2 {
+	z-index: 11;
+	-webkit-transform: translate(-2px, -2px);
+	/*-webkit-transform: rotate(-7deg);*/
+}
+
+.stickyRotate3 {
+	z-index: 10;
+	-webkit-transform: translate(-4px, -4px);
+	/*-webkit-transform: rotate(-14deg);*/
+}
+
+.stickyDisplay {
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.3);
+    border-radius: 0px;
+	position: relative;
+	top: 9px;
+	left: 23px;
+	width: 12px;
+	height: 12px;
+	-webkit-box-shadow: none;
+    background-image: none;
+    -webkit-user-select: none;
+}
+
+.stickyNote {
+    background-image:url('file:///android_asset/annotation_note.png');
+    background-size: 12px 12px;
+    background-repeat:no-repeat;
+}
+
+.stickySelected { }
+
+.stickySelectedDisplay {
+	-webkit-box-shadow: 0 0 10px rgb(51, 181, 229);
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Page Break Marker */
+/* - - - - - - - - - - - - - - - - - - - */
+
+.pageBreakBubble {
+	position: absolute;
+	z-index: -1;
+	color: #808080;
+	right: 1.2em;
+	font-size: 18px;
+	font-weight: bold;
+	padding-left: .25em;
+	padding-right: .2em;
+    display: block;
+    background-color: rgba(0, 0, 0, 0.05);
+	-webkit-transform: rotate(90deg);
+	-webkit-transform-origin: 100% 100%;
+	-webkit-user-select: none;
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Highlight Elements */
+/* - - - - - - - - - - - - - - - - - - - */
+
+.grayHighlight {
+    margin-left: -0.15em;
+    margin-right: -0.15em;
+    padding-right: 0.15em;
+    padding-left: 0.15em;
+    border-radius: 0.1em;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.highlight-box {
+    margin-top: -0.2em;
+    margin-left: -0.2em;
+    padding-top: 0.3em;
+    padding-right: 0.2em;
+    padding-left: 0.2em;
+    border-radius: 0.1em;
+    -webkit-box-shadow: 0 0 5px #ccc;
+}
+
+.highlight {
+    background-color: #FFFFD9;
+    /* background-color: rgba(1, 1, 0.25, 0.5); */
+}
+
+.hl-box {
+    -webkit-user-select: none;
+    margin-left: -0.3em;
+    padding-left: 0.3em;
+    margin-right: -0.3em;
+    padding-right: 0.3em;
+    z-index: -15;
+}
+
+.hl-mask0 {
+    -webkit-mask-box-image: url('file:///android_asset/highlight_mask0.png') 0 24 0 24 stretch stretch;
+}
+
+.hl-mask1 {
+    -webkit-mask-box-image: url('file:///android_asset/highlight_mask1.png') 0 24 0 24 stretch stretch;
+}
+
+.hl-mask2 {
+    -webkit-mask-box-image: url('file:///android_asset/highlight_mask2.png') 0 24 0 24 stretch stretch;
+}
+
+.hl-mask3 {
+    -webkit-mask-box-image: url('file:///android_asset/highlight_mask3.png') 0 24 0 24 stretch stretch;
+}
+
+.hl-shadow {
+	-webkit-box-shadow: 0 0 5px #ccc;
+}
+
+/* highlight 0: white (almost) */
+.hl-clear {
+    background-color: transparent;
+}
+
+.hlextra-clear {
+    background-color: transparent;
+}
+
+/* highlight underline: red underline */
+.hl-red-underline {
+    background-color: transparent;
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Title and Header elements */
+/* - - - - - - - - - - - - - - - - - - - */
+/* title */
+div.title {
+    font-size: 2em;
+    margin-bottom: .4em;
+    line-height: 1em;
+}
+
+div.bodyBlock div.title, div.resources div.title, div.callout div.title, div.sectionTitle + div.title {
+    font-size: 1.6em;
+}
+
+div.sectionTitle {
+	font-size: 1.2em;
+}
+
+div.titleNumber {
+	font-size: 1.2em;
+}
+
+div.notes {
+	display: none;
+}
+
+div.resources, div.callout, div.quote, div[class*='img-'], table.definition {
+	background-color: rgba(0, 0, 0, 0.05);
+	padding-top: 1em;
+	padding-left: 1em;
+	padding-right: 1em;
+	padding-bottom: .5em;
+    margin-bottom: 2em;
+}
+
+div.subtitle {
+    font-size: 1.6em;
+    margin-bottom: .4em;
+    line-height: 1em;
+}
+
+/* studySummary */
+div.studySummary, div.studyIntro, div.colLight, div.epigraph {
+    font-style: italic;
+    display: block;
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* More Title Styles */
+/* - - - - - - - - - - - - - - - - - - - */
+
+h1 {
+	font-weight:normal;
+	font-size:2em;
+	line-height:1.15em;
+	text-indent:0em;
+	border-top-style:solid;
+	border-top-color:gray;
+	border-top-width:1px;
+	padding-bottom:1em;
+	padding-right:1em;
+	padding-top:.25em;
+}
+
+h2, div.bodyBlock h1, div.resources h1, div.callout h1 {
+	font-weight:bold;
+	font-size:1.15em;
+	line-height:1.15em;
+	border-bottom-style:solid;
+	border-bottom-color:gray;
+	border-bottom-width:1px;
+	padding-bottom:.10em;
+	padding-right:2em;
+	padding-top:.38em;
+	margin-bottom:.62em;
+}
+h3 {
+	font-weight:bold;
+	font-size:1em;
+	line-height:1.15em;
+	padding-right:2em;
+	padding-bottom:.62em;
+	padding-top:.23em;
+}
+h2 + div.topic > h3 {
+	padding-top:0em;
+}
+h4 {
+	font-weight:bold;
+	font-style:italic;
+	font-size:1em;
+	line-height:1.15em;
+	padding-right:2em;
+	padding-bottom:.5em;
+}
+h5 {
+	font-weight:bold;
+	font-style:italic;
+	font-size:1em;
+	line-height:1.15em;
+	padding-right:2em;
+	padding-bottom:.5em;
+}
+div.bodyBlock > div.topic > div.topic > div.subtitle {
+	font-style:italic;
+	padding-bottom:.75em;
+}
+div.bodyBlock > div.topic > div.subtitle {
+	font-weight:bold;
+	font-style:italic;
+	font-size:1.15em;
+	line-height:1.15em;
+	padding-right:2em;
+	padding-bottom:.75em;
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Verse Elements */
+/* - - - - - - - - - - - - - - - - - - - */
+/* verse */
+div.bodyBlock {
+    padding-left: 0;
+    padding-top: 0.2em;
+    padding-right: 0;
+    padding-bottom: 0.2em;
+    line-height: 1.4em;       /* Enforce uniform line height, don't let superscripts mess it up. */
+    height:auto;
+    display:block;
+ 
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Other Spans */
+/* - - - - - - - - - - - - - - - - - - - */
+
+span.small {
+    font-variant: small-caps;
+}
+
+.deitySmallCaps, .smallCaps {
+    font-variant: small-caps;
+}
+
+.deityAllCaps, .allCaps, .closing {
+    text-transform: uppercase;
+}
+
+.padWord {
+    display: none;
+}
+
+small {
+    font-size: .8em;
+}
+
+div.kicker, div.seriesTitle {
+	font-style: italic;
+	padding-top: .5em;
+	padding-bottom: .5em;
+	margin-bottom: 2em;
+	border-top-style: solid;
+	border-top-color: gray;
+	border-top-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: gray;
+	border-bottom-width: 1px;
+}
+
+div.authorName, div.byline {
+	margin-top: 2em;
+    text-transform: uppercase;
+}
+
+div.byline > div:nth-child(2) {
+	margin-top: -.5em;
+    text-transform: none;
+    font-style: italic;
+}
+
+div.bio, div.citationInfo {
+	font-style: italic;
+}
+
+div.poetry {
+	padding-bottom:.5em;
+}
+
+div.stanza {
+	padding-left:1.25em;
+	padding-bottom:.5em;
+}
+
+div.line {
+    line-height: 1.2em;
+	padding-bottom:0em;
+    margin-bottom: .25em;
+}
+
+div.poetry > div.title {
+	font-weight:bold;
+	padding-left:1.75em;
+	padding-bottom:.5em;
+}
+
+/* dominant size */
+.dom {
+    display: block;
+    padding: .25em;
+    font-size: 1.8em;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* dominant within subtitle */
+.std {
+    display: block;
+    padding: .25em;
+    font-size: 1.5em;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* subdominant (TODO: still used?) */
+.sd {
+    display: block;
+    padding: .25em;
+    font-size: 1.5em;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* subordinate size */
+.so {
+
+    font-size: 1.2em;
+}
+
+/* allCaps */
+.ac {
+    text-transform: uppercase;
+}
+
+/* smallCaps */
+span.sc {
+}
+
+/* lowercase section of smallCaps */
+span.sk {
+    text-transform: uppercase;
+    font-size: .8em;
+}
+
+/* hardReturn */
+.hr {
+    margin: .4em;
+    margin-right: 0;
+}
+
+p {
+    margin: .4em;
+    margin-right: 0;
+    
+}
+
+p.pc {
+    text-align: center;
+    margin: 1em;
+}
+
+/* paragraph in title section */
+p.pt { }
+
+/* paragraph in pronounciation guide */
+div.dd p.pt {
+    display: inline;
+}
+
+.dl {
+    display: block;
+    margin: 10px;
+}
+
+.di {
+    display: block;
+}
+
+.dt {
+    display: inline;
+    margin-right: 1em;
+}
+
+.dd {
+    display: inline;
+}
+
+/* publisherInfo */
+div.para {
+    margin-top: 1em;
+    text-align: center;  
+    display: block;
+    height: auto;
+}
+
+li div.para, div.credit div.para {
+    text-align: left;	
+}
+
+/* copyrightInfo */
+div.ci {
+    margin-top: 3em;
+    margin-bottom: 1em;
+    font-size: .8em;
+    text-align: center;
+}
+
+/* Spacing between paragraphs - applied to all div tags */
+div {
+    margin-bottom: 0.7em;
+    -webkit-hyphens: auto;
+}
+
+/* topic */
+div.tp {
+    margin-top: 1em;
+}
+
+/* centered */
+.c {
+    text-align: center;
+}
+
+.ft {
+    text-align: center;
+    text-transform: uppercase;
+    margin: .4em;
+    margin-right: 0;
+}
+
+/* wideEllipse */
+.w {
+    text-align: center;
+    padding-top: .4em;
+    padding-bottom: .4em;
+}
+
+/* signature */
+div.sig {
+    padding-left: 50%;
+    text-indent: -2em;
+}
+
+/* special case for signatures in official declarations */
+div.bo div.sig {
+    padding-left: 0;
+    text-indent: 0;
+    margin-left: .4em;
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Lists */
+/* - - - - - - - - - - - - - - - - - - - */
+/* numeric list */
+ol, ul {
+    padding-left: 2.25em;
+}
+
+/* numeric list item */
+ol li {
+    margin: 0;
+    padding: 0;
+}
+
+/* remove left margin & padding for numbered list items */
+ol li p {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* let the default list-style-type apply and hide any <span> */
+ul li span.label {
+    display: none;
+}
+
+/* display the correct list-style-type for numbers */
+ol.number {
+    list-style-type: decimal;
+}
+
+/* display the correct list-style-type for alphLowCase */
+ol.alphaLowCase {
+    list-style-type: lower-alpha;
+}
+
+/* hide the span that contains duplicate label */
+ol.number li span.label, ol.alphaLowCase li span.label {
+    display: none;
+}
+
+/* don't let the <p> tag wrap to the next line in the <li> */
+ul li p:first-child, ol li p:first-child  {
+    display: inline;
+}
+
+/* office */
+div.of {
+    margin: .4em;
+    margin-right: 0;
+}
+
+/* date */
+div.dt {
+}
+
+/* addressee */
+div.ad {
+}
+
+/* render excerpts in OD-1 in smaller font */
+#excerpts { }
+
+/* closing */
+div.cl {
+    margin: .4em;
+    margin-right: 0;
+}
+
+/* salutation */
+div.sal {
+    margin: .4em;
+    margin-right: 0;
+}
+
+/* listItem in the Facsimiles */
+div.li {
+    margin: .4em;
+    margin-right: 0;
+}
+
+/* closingBlock */
+div.cb {
+    margin-bottom: 1em;
+}
+
+/*
+ * Study helps
+ */
+/* list item */
+div.tp li {
+    margin: .4em;
+    list-style-type: none;
+}
+
+/* post-book content */
+div.bc {
+    font-size: smaller;
+    margin: .4em;
+}
+
+/* question and answer pattern (D&C 77) */
+div.answer {
+    margin-top: .2em;
+}
+
+div.answer:before {
+    content: "\000a0\000a0\000a0";
+}
+
+table {
+    border: 1px solid gray;
+    empty-cells:show;
+    max-width:50%;
+    border-spacing: 0px;
+}
+
+tr, td {
+    border: 1px solid gray;
+    max-width:50%;
+    padding: 0.3em;
+    border-spacing: 0px;
+    vertical-align: top;
+}
+	
+td div.para {
+	text-align: left;
+}
+
+table.definition {
+    width: 100%;
+	table-layout:auto;
+	border-spacing:0;
+	border-color:transparent;
+}
+
+table.definition tr, td {
+    width: 50%;
+    padding: 0.3em;
+	border-color:transparent;
+}
+
+table.definition div.definition {
+    margin: 0;
+}
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Japanese Ruby Styling */
+/* - - - - - - - - - - - - - - - - - - - */
+
+/* Ruby text*/
+ruby {
+    display:inline-table;
+    text-align:center;
+    border-collapse:collapse;
+    /* border collapse mechanism will be used to adjust vertical alignment */
+    vertical-align:middle;
+    /* if ruby text contains text only and there are two ruby annotations
+    (one placed above the base and one below) then vertical centering roughly aligns baseline of
+    base with baseline of parent */
+    border-bottom:solid 0.75em transparent;
+    /* o.75em is height of ruby text (0.5000d7 1.2em = 0.6em)
+    plus space between baseline and text-bottom (about 0.15em)
+    this extra border is counter-weight used to restore vertical centering broken
+    by presence of ruby text (in case if there is only one ruby annotation,
+    if there are two annotations then counter-weight is no longer
+    necessary and can be annihilated using border collapse mechanism) */
+}
+
+ruby > rt, rtc
+{
+    display:table-header-group;
+}
+/* used to move first ruby container above the base */
+
+ruby > rb, rbc, ruby > rt + rt, rtc + rtc
+{
+    display:table-row;
+}
+/* base and second ruby are formatted as table-rows */
+
+ruby > rt + rt, rtc + rtc
+{
+    border-bottom:hidden;
+}
+/* if there are two annotations then extra border is no longer necessary
+and can be annihilated using border collapse mechanism */
+
+rb, rbc, rt, rtc
+{
+    white-space:nowrap;
+}
+/* prohibits line breaks inside ruby text */
+
+rtc > rt, rbc > rb
+{
+    display:table-cell;
+}
+/* used to distribute annotations in table like manner */
+
+rtc > rt[rbspan]
+{
+    column-span:attr(rbspan);
+}
+
+/* ruby text may span several cells */
+ruby > rt, rtc
+{
+    font-size:0.5em;
+    line-height:1.2em;
+}
+/* font-size of ruby text is reduced */
+
+rp
+{
+    display:none;
+}
+/* fallback markup is no longer necessary */
+
+/*** Youth Curriculum styling ***/
+
+.yc-stitched:after {
+    bottom: -2px;
+}
+.yc-stitched:before, .yc-stitched:after {
+    border-top: 1px dashed #FFFFFF;
+    content: "";
+    height: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+}
+.yc-stitched:before, .yc-stitched:after {
+    border-top: 1px dashed #FFFFFF;
+    content: "";
+    height: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+}
+.yc-stitched:before {
+    top: 0;
+}
+.outline-list .yc-stitched {
+    margin: 5px 0px;
+}
+.outline-list li {
+    font-size: 20px;
+    line-height: 26px;
+    margin: 0px 0px 5px 0px;
+}
+.outline-list li {
+    font: 18px/24px Georgia,serif;
+    margin: 0px 0px 15px 0px;
+}
+.yc-stitched {
+    border-bottom: 1px dashed #8A8A8A;
+    border-top: 1px dashed #8A8A8A;
+    padding: 0px 0px 5px 0px;
+    position: relative;
+}
+.yc-stitched h3 {
+    padding: 0px;
+    background-image: none;
+}

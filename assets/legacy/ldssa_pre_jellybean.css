@@ -1,0 +1,9 @@
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Annotation Markers (right margin) */
+/* - - - - - - - - - - - - - - - - - - - */
+.sticky {
+	-webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+}

@@ -1,0 +1,27 @@
+
+
+.hl-box {
+    -webkit-user-select: none;
+    margin-left: -0.15em;
+    padding-left: 0.15em;
+    margin-right: -0.15em;
+    padding-right: 0.15em;
+    border-radius: 0.2em;
+    z-index: -15;
+}
+
+.hl-mask0 {
+    -webkit-mask-box-image: none;
+}
+
+.hl-mask1 {
+    -webkit-mask-box-image: none;
+}
+
+.hl-mask2 {
+    -webkit-mask-box-image: none;
+}
+
+.hl-mask3 {
+    -webkit-mask-box-image: none;
+}

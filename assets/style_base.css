@@ -1,0 +1,292 @@
+/* Base Styles */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* 2013-05-30 */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/*CSS Reset
+ based on http://meyerweb.com/eric/tools/css/reset/*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video{
+	margin:0;
+	padding:0;
+	border:0;
+	font-size:100%;
+	font:inherit;
+	vertical-align:baseline;
+}
+body{
+	line-height:1em;
+}
+ol,
+ul{
+	list-style:none;
+}
+blockquote,
+q{
+	quotes:none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after{
+	content:'';
+	content:none;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Common Display Structures */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+dl,
+dd,
+dt,
+blockquote,
+ul,
+ol{
+	display:block;
+}
+/* JH NOTE: For now we are turning off br's, but later we may selectively turn some on if line breaks are needed. */
+br{
+	display:none;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Common Color Styles */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+body{
+	color:#33322e;
+	border-color:#33322e;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Common Table Styles  */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+table{
+	display:table;
+	table-layout:auto;
+	border-spacing:0;
+	border-color:transparent;
+	border-collapse:collapse;
+}
+tbody{
+	display:table-row-group;
+}
+tr{
+	display:table-row;
+}
+td,
+th{
+	display:table-cell;
+}
+.empty{
+	display:none;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Common Links Styles  */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+a,
+[ref]{
+	text-decoration:none;
+	color:#3366CC;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Common Span Styles */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+.emphasis{
+	font-family:"Palatino-Italic";
+}
+.strong{
+	font-family:"Palatino-Bold";
+}
+.strong > .emphasis{
+	font-family:"Palatino-BoldItalic";
+}
+small{
+	font-size:.8em;
+}
+.noteMarker,
+sup{
+	font-size:.75em;
+	vertical-align:super;
+	line-height:0em;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Common List Styles */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+.number,
+.alpha,
+.alphaLowCase,
+.bullet,
+.noMarker{
+	padding-left:1.5em;
+}
+li{
+	display:list-item;
+}
+/* SW NOTE: Currently I am controling some spacing for sub lists but becasue there is no div tag like list I can't do something recursive. Need to look at it harder, but placing the style below in for now, until then. */
+li > .figure > .alphaLowCase{
+	padding-top:.0;
+	padding-bottom:.0;
+}
+.number{
+	list-style:decimal outside none;
+	/*list-style-type:decimal;*/
+}
+.alpha,
+.alphaLowCase{
+	/*list-style-type:lower-alpha;*/
+	list-style:lower-alpha outside none;
+}
+.bullet,
+.bullet-list{
+	list-style:disc outside none;
+	/*	list-style-type:disc;
+*/
+}
+.number li .para,
+.alpha li .para,
+.alphaLowCase li .para,
+.bullet li .para,
+.noMarker li .para,
+.bullet-list li .para{
+	text-indent:0;
+}
+/* SW NOTE: Currently I am setting the "labels" in lists to display:none. For some languages we will begin to display them. */
+span.label{
+	display:none;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Common Image Styles */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* JH NOTE: Changed width to auto so images never blow up larger than their pixel value. Also set max width to 100% so they will never display larger than the screen. */
+img{
+	width:auto;
+	max-width:100%;
+	padding:.5em 0 1.25em 0;
+}
+p img{
+	height:1em;
+	width:auto;
+	padding:0 .2em;
+	display:inline;
+}
+h1 img{ /* JH NOTE: Found <h1>s with inline images, so this needs to be added. */
+	height:1em;
+	width:auto;
+	padding:0;
+	display:inline;
+}
+h2 img,
+h3 img,
+h4 img,
+h5 img{
+	height:1.5em;
+	width:auto;
+	padding:0;
+	display:inline;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Common Video Styles */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* NOTE: These styles are applied as a work around to the iOS treats videos see http://developer.apple.com/library/safari/#documentation/AudioVideo/Conceptual/Using_HTML5_Audio_Video/AudioandVideoTagBasics/AudioandVideoTagBasics.html and http://developer.apple.com/library/safari/#documentation/AudioVideo/Conceptual/Using_HTML5_Audio_Video/Device-SpecificConsiderations/Device-SpecificConsiderations.html  */
+.video{
+	padding:18px 0;
+	position:relative;
+	margin:1em 0;
+}
+.video canvas{
+	top:0;
+	width:100%;
+	height:auto;
+}
+.video video{
+	top:0;
+	width:100%;
+	height:100%;
+	position:absolute;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* END OF STYLES */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */

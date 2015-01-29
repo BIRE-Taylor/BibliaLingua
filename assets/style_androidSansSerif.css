@@ -1,0 +1,29 @@
+
+/* - - - - - - - - - - - - - - - - - - - */
+/* Custom Fonts - Sans-Serif Hack */
+/* - - - - - - - - - - - - - - - - - - - */
+
+@font-face {
+    font-family: "Palatino-Roman";
+    src: url('file:///android_asset/fonts/roboto.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: "Palatino";
+    src: url('file:///android_asset/fonts/roboto.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: "Palatino-Italic";
+    src: url('file:///android_asset/fonts/roboto-italic.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: "Palatino-Bold";
+    src: url('file:///android_asset/fonts/roboto-bold.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: "Palatino-BoldItalic";
+    src: url('file:///android_asset/fonts/roboto-bold-italic.ttf') format("truetype");
+}

@@ -1,0 +1,10 @@
+
+div.title {
+    font-size: 312%;
+    font-variant: small-caps;
+    text-align: center;
+    display: block;
+    margin-bottom: .4em;
+    line-height: 1em;
+    text-transform: none;
+}

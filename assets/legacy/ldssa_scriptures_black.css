@@ -1,0 +1,6 @@
+
+/* subtitle */
+div.subtitle, div.titleNumber, h3 {
+    border-top: 3px solid #dedede;
+    border-bottom: 1px solid #dedede;
+}

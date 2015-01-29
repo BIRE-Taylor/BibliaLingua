@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, MainActivity!</string>
-    <string name="app_name">BibliaLingua</string>
+    <string name="app_name">Bíblia Língua</string>
+	<string name="loading">Loading...</string>
+	<string name="loadingLanguage">Loading language...</string>
+	<string name="loadingCatalog">Loading catalog...</string>
+	<string name="wrappingUp">Wrapping up...</string>
+    <string name="primaryLanguage">Primary language</string>
+	<string name="secondaryLanguage">Secondary language</string>
+	<string name="selectPrimaryLanguage">Select primary language</string>
+	<string name="selectSecondaryLanguage">Select secondary language</string>
+	<string name="colorScheme">Color scheme</string>
+	<string name="portraitDisplay">Portrait display for secondary language</string>
+	<string name="belowPrimary">Display below primary language</string>
+	<string name="besidePrimary">Display beside primary language</string>
 
 </resources>

@@ -1,0 +1,29 @@
+<PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory 
+        android:title="Language"
+        android:key="pref_key_language">
+	<ListPreference
+		android:key="primaryLanguage"
+		android:title="@string/primaryLanguage" />
+	<ListPreference
+		android:key="secondaryLanguage"
+		android:title="@string/secondaryLanguage"/>
+	</PreferenceCategory>
+	<PreferenceCategory 
+        android:title="Display"
+        android:key="pref_key_display">
+	<ListPreference
+		android:key="colorScheme"
+		android:title="@string/colorScheme" 
+		android:entries="@array/colors"
+		android:entryValues="@array/colors"
+		android:defaultValue="Night"/>
+	<ListPreference
+		android:key="portraitVertical"
+		android:title="@string/portraitDisplay"
+		android:entries="@array/portraitDisplay"
+		android:entryValues="@array/portraitDisplayValues"
+		android:defaultValue="horizontal"
+		android:summary="@string/besidePrimary"/>
+	</PreferenceCategory>
+</PreferenceScreen>

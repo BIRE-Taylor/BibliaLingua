@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+	
+<resources>
+	<array name="colors">
+		<item name="day">Day</item>
+		<item name="sepia">Sepia</item>
+		<item name="night">Night</item>
+	</array>
+	<array name="portraitDisplay">
+		<item name="horizontal">Side-by-side</item>
+		<item name="vertical">Below</item>
+	</array>
+	<array name="portraitDisplayValues">
+		<item name="horizontal">horizontal</item>
+		<item name="vertical">vertical</item>
+	</array>
+</resources>

@@ -1,0 +1,15 @@
+/* highlight underline: red underline */
+.hl-red-underline {
+	border-radius: 0px;
+    border-bottom-width: 0.15em;
+    border-bottom-style: solid;
+    /*border-bottom-color: rgba(255, 0, 0, 0.8);*/
+}
+
+/* highlight underline: red underline */
+.hlextra-red-underline {
+    background-color: transparent;
+	padding: 0px;
+	margin: 0px;
+	margin-top: 0.1em;
+}

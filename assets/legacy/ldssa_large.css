@@ -1,0 +1,59 @@
+/*
+ * HTML structure
+ */
+body {
+    padding: 84px 48px;
+}
+
+.sticky {
+	/*background-color: #dddddd;*/
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 80px;
+	height: 80px;
+    /*-webkit-transition: all 0.5s ease-in;*/
+}
+
+.stickyDisambiguate {
+}
+
+.stickyDisambiguateDisplay {
+	z-index: 15;
+	-webkit-transform: scale(1.5);
+}
+
+.stickyRotate1 {
+	z-index: 12;
+	-webkit-transform: translate(0px, 0px);
+}
+
+.stickyRotate2 {
+	z-index: 11;
+	-webkit-transform: translate(2px, -4px);
+	/*-webkit-transform: rotate(-7deg);*/
+}
+
+.stickyRotate3 {
+	z-index: 10;
+	-webkit-transform: translate(4px, -8px);
+	/*-webkit-transform: rotate(-14deg);*/
+}
+
+.stickyDisplay {
+	top: 9px;
+	left: 46px;
+	width: 24px;
+	height: 24px;
+    border-radius: 3px;
+}
+
+.stickyNote {
+    background-size: 24px 24px;
+}
+
+.stickySelected { }
+
+.stickySelectedDisplay {
+	-webkit-box-shadow: 0 0 20px rgb(51, 181, 229);
+}

@@ -1,0 +1,242 @@
+/* Screen Presentation Styles */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* ANDROID 2013-10-08 */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Margin Styles */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+#container{
+  padding: 96px 22px;
+}
+@media screen and (min-width:600px){
+  #container {
+    padding: 96px 48px;
+  }
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Night Styles */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* SW NOTE: should test and see if this can be accomplished with single selector and !important */
+body[scheme = 'night'],
+body[scheme = 'night'] .caption > p,
+body[scheme = 'night'] .citationInfo > .para,
+body[scheme = 'night'] .sideQuote > .para,
+body[scheme = 'night'] .credit > .para,
+body[scheme = 'night'] .annotation > .para,
+body[scheme = 'night'] .sidebar ul,
+body[scheme = 'night'] .sidebar ol,
+body[scheme = 'night'] .sidebar .para,
+body[scheme = 'night'] .sidebar .preamble,
+body[scheme = 'night'] .callout,
+body[scheme = 'night'] .heading .bio > .para,
+body[scheme = 'night'] .resources .citationInfo > .para,
+body[scheme = 'night'] .resources .bio > .para,
+body[scheme = 'night'] .poetry .citationInfo > .para{
+	color:#BFBFBF;
+	border-color:#BFBFBF;
+  background-color:#000000;
+}
+body[scheme = 'night'] .sideQuote,
+body[scheme = 'night'] .sidebar,
+body[scheme = 'night'] .snippet{
+	border:1px solid #BFBFBF;
+	background-color:transparent;
+}
+body[scheme = 'night'] a,
+body[scheme = 'night'] [ref]{
+	color:#6DADD9;
+}
+body[scheme = 'night'] .snippet{
+	background:none;
+	padding-bottom:.85em;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Sepia Styles (Android Only) */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+body[scheme = 'sepia'],
+body[scheme = 'sepia'] .caption > p,
+body[scheme = 'sepia'] .citationInfo > .para,
+body[scheme = 'sepia'] .sideQuote > .para,
+body[scheme = 'sepia'] .credit > .para,
+body[scheme = 'sepia'] .annotation > .para,
+body[scheme = 'sepia'] .sidebar ul,
+body[scheme = 'sepia'] .sidebar ol,
+body[scheme = 'sepia'] .sidebar .para,
+body[scheme = 'sepia'] .sidebar .preamble,
+body[scheme = 'sepia'] .callout,
+body[scheme = 'sepia'] .heading .bio > .para,
+body[scheme = 'sepia'] .resources .citationInfo > .para,
+body[scheme = 'sepia'] .resources .bio > .para,
+body[scheme = 'sepia'] .poetry .citationInfo > .para{
+	color:#5B4129;
+	border-color:#5B4129;
+}
+body[scheme = 'sepia'] .sideQuote,
+body[scheme = 'sepia'] .sidebar,
+body[scheme = 'sepia'] .snippet{
+	border:1px solid #5B4129;
+	background-color:transparent;
+}
+body[scheme = 'sepia'] .snippet{
+	background:none;
+	padding-bottom:.85em;
+}
+video{
+    background: #222222;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Hidden Styles */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+body[footnotes = 'hidden'] [ref],
+body[footnotes = 'hidden'] [href ^= "f_"]{
+	color:#33322e;
+}
+body[scheme = 'night'][footnotes = 'hidden'] [ref],
+body[scheme = 'night'][footnotes = 'hidden'] [href ^= "f_"]{
+	color:#BFBFBF;
+}
+body[scheme = 'sepia'][footnotes = 'hidden'] [ref],
+body[scheme = 'sepia'][footnotes = 'hidden'] [href ^= "f_"]{
+	color:#5B4129;
+}
+body[page-numbers = 'hidden'] span.pageBreak{
+    display:none;
+}
+body[summaries = 'hidden'] .studySummary{
+    display:none;
+}
+body[footnotes = 'hidden'] .studyNoteMarker,
+body[footnotes = 'hidden'] .noteMarker,
+body[footnotes = 'hidden'] sup{
+    display:none;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Media Specific Styles */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* NOTE Can this be simplified if the behavior does not change between the various screen sizes, it only needs to be declared at the point you want the change to happen all smaller screens should inherit it. */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* iPhone 5" landscape */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+@media screen and (max-width:568px) {
+	html{
+		-webkit-text-size-adjust:none;
+	}
+/*	h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  .subtitle{
+		padding-right:0;
+		padding-left:0;
+  }*/
+	.empty{
+		display:block;
+	}
+	table{
+		display:block;
+		border:1px solid #C2C2C2;
+		padding:.0 .5em 1em .5em;
+	}
+	tr{
+		display:block;
+		padding-top:.5em;
+	}
+	td,
+	th{
+		display:block;
+		min-height:1em;
+	}
+	td{
+		vertical-align:inherit;
+		padding:.0;
+		border:none;
+		padding-top:.5em;
+	}
+	th{
+		vertical-align:inherit;
+		padding:.0;
+		text-align:left;
+	}
+	td:not(:first-child){
+		padding-left:.5em;
+		border-left:1px solid #C2C2C2;
+	}
+	th:not(:first-child){
+		padding-left:.5em;
+		border-left:1px solid #C2C2C2;
+	}
+	td:nth-of-type(2),
+	th:nth-of-type(2){
+		margin-left:1em;
+	}
+	td:nth-of-type(3),
+	th:nth-of-type(3){
+		margin-left:2em;
+	}
+	td:nth-of-type(4),
+	th:nth-of-type(4){
+		margin-left:3em;
+	}
+	td:nth-of-type(5),
+	th:nth-of-type(5){
+		margin-left:4em;
+	}
+	td:nth-of-type(6),
+	th:nth-of-type(6){
+		margin-left:5em;
+	}
+	td:nth-of-type(7),
+	th:nth-of-type(7){
+		margin-left:6em;
+	}
+	td:nth-of-type(8),
+	th:nth-of-type(8){
+		margin-left:7em;
+	}
+	[uri $= '/bofm/toc.1'] td:nth-of-type(2),
+	[uri $= '/bofm/toc.1'] th:nth-of-type(2),
+	[uri $= '/pgp/toc.1'] td:nth-of-type(2),
+	[uri $= '/pgp/toc.1'] th:nth-of-type(2){
+		text-align: left;
+	}
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* iPhone landscape */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+@media screen and (max-width:480px){
+  .sideQuote{
+	margin:.5em 0 1.5em 0;
+	}
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Page number in the margin */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+span.pageBreak {
+	display: block;
+	position: absolute;
+	z-index: -10;
+	font-family: "Palatino-Roman"
+	text-transform: none;
+	text-align: right;
+	letter-spacing:.0;
+	color: #8f8d83;
+	right: 10px;
+	font-size: 16px;
+	line-height: 8px;
+	-webkit-transform: rotate(-90deg);
+	-webkit-transform-origin: 100% 100%;
+	-webkit-user-select: none;
+}
+span.pageBreak:after{
+  content:attr(page-number);
+}
+@media screen and (min-width:600px){
+    span.pageBreak {
+	    -webkit-transform: none;
+	    right: 2px;
+    }
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+/* END OF STYLES */
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
