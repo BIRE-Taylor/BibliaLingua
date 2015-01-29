@@ -72,6 +72,8 @@ public class RelatedFragment extends ListFragment
 	
 	public void load(String uri)
 	{
+		if(mActivity==null&&getParentFragment()!=null)
+			mActivity=(BaseActivity) getParentFragment().getActivity();
 		Log.i(TAG,"Load "+uri);
 		loadPending=false;
 		if(uri==null)
