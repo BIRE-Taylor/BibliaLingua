@@ -3,10 +3,15 @@ package es.tjon.bl.data.book;
 import com.mobandme.ada.*;
 import com.mobandme.ada.annotations.*;
 import android.text.*;
+import android.text.style.*;
+import android.util.*;
+import es.tjon.bl.utils.*;
 
 @Table(name="ref")
 public class Reference extends Entity
 {
+	private static final String TAG = "es.tjon.bl.data.book.Reference";
+	
 	@TableField(name="_id", datatype=DATATYPE_INTEGER)
 	public int _id;
 	@TableField(name="uri", datatype=DATATYPE_STRING)
@@ -24,15 +29,24 @@ public class Reference extends Entity
 	{
 		String html="<span>";
 		html+=ref_name;
-		html+="&nbsp;";
-		html+=link_name;
-		html+="</span>&nbsp;&dash;&nbsp;";
+		if(!ref_name.contains(link_name))
+			html+="&nbsp;"+link_name;
+		html+="</span>&nbsp;&nbsp;";
 		html+=ref;
 		return html;
 	}
 
 	public Spanned getSpan()
 	{
-		return Html.fromHtml(getHtml());
+		SpannableStringBuilder builder = SpannableStringBuilder.valueOf(Html.fromHtml(getHtml()));
+		for(URLSpan uSpan : builder.getSpans(0,builder.length()-1,URLSpan.class))
+		{
+			URLSpanPlain newSpan =  new URLSpanPlain( uSpan.getURL());
+			int start = builder.getSpanStart(uSpan);
+			int end = builder.getSpanEnd(uSpan);
+			builder.removeSpan(uSpan);
+			builder.setSpan(newSpan,start,end,0);
+		}
+		return builder;
 	}
 }
