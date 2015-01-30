@@ -11,31 +11,32 @@ import es.tjon.bl.network.*;
 import java.io.*;
 import java.util.*;
 import android.app.*;
+import es.tjon.bl.listener.*;
 
 public class BookUtil
 {
 	Context context;
 	
-	ArrayList<BookDownloadService.ProgressMonitor> monitors=null;
+	ArrayList<ProgressMonitor> monitors=null;
 	
 	public BookUtil(Context context)
 	{
 		this.context=context;
 	}
 	
-	public void requestBook( Book item, BookDownloadService.ProgressMonitor callback)
+	public void requestBook( Book item, ProgressMonitor callback)
 	{
 		if(item==null)
 			return;
 		if(Looper.getMainLooper().equals(Looper.myLooper()))
 		{
-			AsyncTask task = new AsyncTask()
+			AsyncTask<Object,Object,Object> task = new AsyncTask<Object,Object,Object>()
 			{
 
 				@Override
 				protected Object doInBackground(Object[] p1)
 				{
-					requestBook((Book)p1[0],(BookDownloadService.ProgressMonitor)p1[1]);
+					requestBook((Book)p1[0],(ProgressMonitor)p1[1]);
 					return null;
 				}
 
@@ -85,10 +86,10 @@ public class BookUtil
 					{
 						if(monitors==null)
 						{
-							monitors=new ArrayList<BookDownloadService.ProgressMonitor>();
+							monitors=new ArrayList<ProgressMonitor>();
 						}
-						if(!monitors.contains((BookDownloadService.ProgressMonitor)object))
-							monitors.add((BookDownloadService.ProgressMonitor)object);
+						if(!monitors.contains((ProgressMonitor)object))
+							monitors.add((ProgressMonitor)object);
 						if(!mIsBound)
 						{
 							doBindService();
@@ -101,7 +102,7 @@ public class BookUtil
 		
 	}
 	
-	public void removeMonitor(BookDownloadService.ProgressMonitor monitor)
+	public void removeMonitor(ProgressMonitor monitor)
 	{
 		if(monitors!=null)
 			monitors.remove(monitor);
@@ -149,14 +150,14 @@ public class BookUtil
 					Pair<Book, Integer> result = (Pair<Book,Integer>)msg.obj;
 					if(result==null)
 						return;
-					for (BookDownloadService.ProgressMonitor monitor : monitors)
+					for (ProgressMonitor monitor : monitors)
 					{
 						monitor.onProgress(result.first,result.second);
 					}
 					break;
 				case BookDownloadService.MSG_NOTIFY_COMPLETE:
 					Book book = (Book)msg.obj;
-					for (BookDownloadService.ProgressMonitor monitor : monitors)
+					for (ProgressMonitor monitor : monitors)
 					{
 						monitor.onFinish(book);
 					}

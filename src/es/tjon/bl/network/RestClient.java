@@ -30,7 +30,7 @@ public class RestClient<T1> extends AsyncTask
 		public static final String QUERY_CATALOG_MODIFIED = "catalog.query.modified";
 		public static final String QUERY_CATALOG_FOLDER = "catalog.query.folder";
 		public static final String BOOK_VERSIONS = "book.versions";
-		
+		//http://tech.lds.org/glweb/?action=book.versions&languageid=1&platformid=1&lastdate=2010-10-22&format=json
 		public class Parameters
 		{
 			private Parameters(){}

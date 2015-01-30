@@ -8,17 +8,23 @@ import es.tjon.bl.adapter.*;
 import es.tjon.bl.data.catalog.*;
 import es.tjon.bl.network.*;
 import android.content.*;
+import es.tjon.bl.listener.*;
 
-public class CatalogActivity extends BaseActivity implements BookDownloadService.ProgressMonitor
+public class CatalogActivity extends BaseActivity implements ProgressMonitor
 {
-
-	private static final String FOLDER_ID = "folderid";
 
 	@Override
 	public void onProgress(Book book, int progress)
 	{
-
 	}
+
+
+	@Override
+	public void notifyError(Book item)
+	{}
+
+
+	private static final String FOLDER_ID = "folderid";
 
 	@Override
 	public void onFinish(Book book)

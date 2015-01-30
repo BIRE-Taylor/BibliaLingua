@@ -102,6 +102,7 @@ public class CatalogData implements RestClient<CatalogData>.OnFinishListener<Cat
 			cat.get(0).saveAll(adc);
 			adc.folders.save();
 			adc.books.save();
+			context.setLastUpdate(language,System.currentTimeMillis());
 		}
 		catch (AdaFrameworkException e)
 		{

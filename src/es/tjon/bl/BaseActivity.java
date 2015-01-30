@@ -32,11 +32,18 @@ public class BaseActivity extends FragmentActivity
 	private static boolean mInitialized = false;
 	private static boolean mLanguageInitialized=false;
 	private static boolean mCatalogInitialized=false;
+	private static boolean mUpdateInitialized=false;
 
 	private static ArrayList<Class<? extends BaseActivity>> mSaveClass= new ArrayList<Class<? extends BaseActivity>>();
 	private static ArrayList<Bundle> mSaveData=new ArrayList<Bundle>();
 
 	private static boolean mExit = false;
+
+	public void updateInitialized()
+	{
+		mUpdateInitialized=true;
+		initialize();
+	}
 	
 	public void exit()
 	{
@@ -68,6 +75,17 @@ public class BaseActivity extends FragmentActivity
 	public String getColorScheme()
 	{
 		return mColorScheme;
+	}
+
+	public void setLastUpdate(Language language, long timeMillis)
+	{
+		PreferenceManager.getDefaultSharedPreferences(this)
+			.edit().putLong("updated"+language.code_three,timeMillis);
+	}
+	
+	public Long getLastUpdate(Language language)
+	{
+		return PreferenceManager.getDefaultSharedPreferences(this).getLong("updated"+language.code_three,0);
 	}
 
 	@Override
@@ -184,6 +202,10 @@ public class BaseActivity extends FragmentActivity
 			getUtil().setLoadingDialogText(getText(R.string.loadingCatalog).toString());
 			CatalogData.initialize(this);
 			return;
+		}
+		if (!mUpdateInitialized)
+		{
+			UpdateUtil.initialize(this);
 		}
 		PreferenceManager.setDefaultValues(this,R.xml.settings,false);
 		getUtil().setLoadingDialogText(getText(R.string.wrappingUp).toString());
