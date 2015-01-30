@@ -13,10 +13,10 @@ public class SettingsActivity extends BaseActivity
 	{
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.main);
+		setContentView(R.layout.browse);
 		
-		getSupportFragmentManager().beginTransaction()
-		.replace(R.id.content,new SettingsFragment())
+		getFragmentManager().beginTransaction()
+		.replace(R.id.browse,new SettingsFragment())
 		.commit();
 	}
 	

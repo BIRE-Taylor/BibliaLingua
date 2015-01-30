@@ -6,9 +6,7 @@ import es.tjon.bl.*;
 import es.tjon.bl.data.catalog.*;
 import es.tjon.bl.database.*;
 import java.util.*;
-import android.support.v4.preference.*;
-import android.preference.ListPreference;
-import android.preference.Preference;
+import android.preference.*;
 
 public class SettingsFragment extends PreferenceFragment
 {
