@@ -59,6 +59,29 @@ extends EnhancedJsInterface {
 		catch (JSONException e)
 		{e.printStackTrace();}
     }
+	
+	@JavascriptInterface
+    public void jsReportUriOffsets(String string) {
+		Log.i(TAG,"Report offsets");
+        JSONArray jSONArray;
+        NavigableMap<Float,String> sortedMap = new ConcurrentSkipListMap<Float,String>();
+		NavigableMap<String,Float> reverseMap = new ConcurrentSkipListMap<String,Float>();
+        try {
+            jSONArray = new JSONArray(string);
+			for (int i = 0; i < jSONArray.length(); ++i) {
+				JSONObject jSONObject = jSONArray.getJSONObject(i);
+				sortedMap.put(Float.valueOf(jSONObject.getInt("top")), jSONObject.getString("id"));
+				reverseMap.put(jSONObject.getString("id"),Float.valueOf(jSONObject.getInt("top")));
+			}
+			view.uriOffsetMap=sortedMap;
+			view.uriOffsetLookupMap=reverseMap;
+        }
+        catch (Exception e) {
+            Log.e(TAG, "Unable to parse results of reportUriOffsets:" + string, e);
+            return;
+        }
+        
+    }
 
 //    private String fixHeadUri(String string) {
 //        String string2 = Annotation.blockLevelIdentifierFromURI(string);

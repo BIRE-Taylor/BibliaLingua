@@ -293,9 +293,9 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 	}
 
 	@Override
-	public void scrollTo(double center, double scroll)
+	public void scrollTo(String url, double center, float scroll)
 	{
-		((BilingualViewFragment)mAdapter.getItem(mPager.getCurrentItem())).scrollTo(center,scroll);
+		((BilingualViewFragment)mAdapter.getItem(mPager.getCurrentItem())).scrollTo(url,center,scroll);
 	}
 
 	@Override

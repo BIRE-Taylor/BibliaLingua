@@ -12,6 +12,7 @@ import android.content.*;
 import android.util.*;
 import org.restlet.engine.header.*;
 import android.graphics.*;
+import android.widget.*;
 
 public class BookViewer extends WebView
 {
@@ -22,6 +23,10 @@ public class BookViewer extends WebView
 	private boolean mScrolled=false;
 
 	public NavigableMap<Float,String> rcaOffsetMap;
+	public NavigableMap<Float,String> uriOffsetMap;
+	public NavigableMap<String,Float> uriOffsetLookupMap;
+	
+	Toast toast;
 	
 	public BookViewer(BaseActivity context)
 	{
@@ -31,6 +36,7 @@ public class BookViewer extends WebView
 	public BookViewer(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
+		toast = Toast.makeText(context,"",Toast.LENGTH_SHORT);
 		mActivity=(BookInterface) context;
 		getSettings().setJavaScriptEnabled(true);
 		String cs = ((BaseActivity)context).getColorScheme();
@@ -57,7 +63,7 @@ public class BookViewer extends WebView
 				@Override
 				public void run()
 				{
-					BookViewer.this.loadUrl("javascript:ldssa.main.getOffsetsForRcaItems();");
+					BookViewer.this.loadUrl("javascript:ldssa.main.getOffsetsForRcaItems();ldssa.main.getOffsetsForUris();");
 				}
 			
 		});
@@ -76,12 +82,54 @@ public class BookViewer extends WebView
 		{
 			if(t==0)
 			{
-				mActivity.scrollTo(0,0);
+				mActivity.scrollTo(null,0,0);
 				super.onScrollChanged(l,t,oldl,oldt);
 				return;
 			}
-			double center = getHeight()*((double)t)/(getContentHeight()*2-getHeight());
-			mActivity.scrollTo(center,(t+center)/getContentHeight());
+			if(uriOffsetMap!=null)
+			{
+				double center = ((double)t)/(getContentHeight()*2.0-getHeight());
+				if(center>1)
+					center=1;
+				if(center<0)
+					center=0;
+				
+				center*=getHeight();
+				if(center>getHeight())
+					center=getHeight();
+				center=(int)center;
+				final double POWER = 4;
+				if(center/getHeight()<0.5)
+				{
+					double pre = center;
+					center = Math.pow(2.0*center/getHeight(),1.0/POWER)*getHeight()/2.0;
+				}
+				else
+				{
+					center = (1.5-Math.pow(1-(2.0*(center/getHeight()-0.5)),1/POWER))*getHeight();
+				}
+				center=(int)center;
+				double centerT=(t+center);
+				Map.Entry<Float,String> top = uriOffsetMap.floorEntry((float)(centerT));
+				Map.Entry<Float,String> bottom = uriOffsetMap.ceilingEntry((float)(centerT+1));
+				String url=null;
+				float topScroll=0;
+				if(top!=null)
+				{
+					url= top.getValue();
+					topScroll=top.getKey();
+				}
+				float bottomScroll = getContentHeight()*2;
+				if(bottom!=null)
+				{
+					bottomScroll = bottom.getKey();
+				}
+				float scroll = ((float)(centerT)-topScroll)/(bottomScroll-topScroll);
+				mActivity.scrollTo(url,center,scroll);
+			}
+			
+		
+			
 		}
 		super.onScrollChanged(l, t, oldl, oldt);
 	}
@@ -97,6 +145,22 @@ public class BookViewer extends WebView
 		setScrollY(t);
 	}
 	
+	public void scrollTo(String uri, Double center, float scroll)
+	{
+		if(uriOffsetMap==null)
+			return;
+		float top = 0;
+		if(uri!=null)
+			top = uriOffsetLookupMap.floorEntry(uri).getValue();
+		Float bottom = uriOffsetMap.ceilingKey(top+1);
+		if(bottom==null||bottom<=0)
+			bottom=new Float(getContentHeight()*2);
+		double t = top+((bottom-top)*scroll);
+		if(t<0)
+			t=0;
+		mScrolled=true;
+		setScrollY((int)(t-center));
+	}
 	
 	public void requestScrollToUri(String uri, boolean highlight) {
         uri = uri.replace(BookFragment.BASE_URL,"");
