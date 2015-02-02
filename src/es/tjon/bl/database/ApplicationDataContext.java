@@ -7,6 +7,9 @@ import java.util.*;
 
 import com.mobandme.ada.Entity;
 import android.database.sqlite.*;
+import es.tjon.bl.*;
+import android.os.*;
+import java.io.*;
 
 public class ApplicationDataContext extends ObjectContext
 {
@@ -19,6 +22,8 @@ public class ApplicationDataContext extends ObjectContext
 	public ObjectSet<Folder> folders;
 	
 	public ObjectSet<Book> books;
+	
+	public static BaseActivity context;
 	
 	public ApplicationDataContext(Context context) throws AdaFrameworkException
 	{
@@ -34,6 +39,72 @@ public class ApplicationDataContext extends ObjectContext
 		
 		books = new ObjectSet<Book>(Book.class,  this);
 		
+	}
+
+	@Override
+	protected void onCreate(SQLiteDatabase pDataBase) throws AdaFrameworkException
+	{
+		restoreFromAssets("database.db",pDataBase);
+		super.onCreate(pDataBase);
+	}
+	
+	
+
+	public static void initialize(BaseActivity context)
+	{
+		ApplicationDataContext.context=context;
+		if(context.getDatabasePath("database.db").exists())
+		{
+			context.fileInitialized();
+			return;
+		}
+		else
+		{
+			copyFiles();
+		}
+	}
+
+	private static void copyFiles()
+	{
+		if(Looper.getMainLooper().equals(Looper.myLooper()))
+		{
+			new AsyncTask()
+			{
+				@Override
+				protected Object doInBackground(Object[] p1)
+				{
+					copyFiles();
+					return null;
+				}
+				protected void onPostExecute(Object object)
+				{
+					context.fileInitialized();
+				}
+			}.execute();
+			return;
+		}
+		File db = context.getDatabasePath("database.db");
+		try
+		{
+			copy(context.getAssets().open("database.db"),new FileOutputStream(db));
+		}
+		catch (IOException e)
+		{}
+	}
+	
+	private static void copy(InputStream in, OutputStream out)
+	throws IOException
+    {
+        byte[] buffer = new byte[1000];
+        int len;
+        while((len = in.read(buffer)) > 0) {
+            out.write(buffer, 0, len);
+        }
+    }
+
+	public void queueProcessing(Book item)
+	{
+		// TODO: Implement this method
 	}
 
 	public boolean hasDownload(DownloadItem item)

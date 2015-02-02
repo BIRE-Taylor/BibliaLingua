@@ -4,6 +4,7 @@
     <string name="app_name">Bíblia Língua</string>
 	<string name="loading">Loading...</string>
 	<string name="loadingLanguage">Loading language...</string>
+	<string name="loadingFiles">Loading files...</string>
 	<string name="loadingCatalog">Loading catalog...</string>
 	<string name="wrappingUp">Wrapping up...</string>
     <string name="primaryLanguage">Primary language</string>

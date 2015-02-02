@@ -223,6 +223,8 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 			return mPrimaryCss;
 		if(mPrimaryBDC!=null)
 			mPrimaryCss=mPrimaryBDC.getCss();
+		if(mPrimaryCss==null)
+			mPrimaryCss=getSecondaryCss();
 		return mPrimaryCss;
 	}
 
@@ -232,6 +234,8 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 			return mSecondaryCSS;
 		if(mSecondaryBDC!=null)
 			mSecondaryCSS=mSecondaryBDC.getCss();
+		if(mSecondaryCSS==null)
+			mSecondaryCSS=getPrimaryCss();
 		return mSecondaryCSS;
 	}
 

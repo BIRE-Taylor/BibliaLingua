@@ -98,8 +98,10 @@ public class BookDataContext extends ObjectContext
 		try
 		{
 			List<Css> result = css.search(true,new String[]{"css"},null,null,"css ASC",null,null,null,null);
-			csss=new String[result.size()];
+			csss=new String[result==null?0:result.size()];
 			int i=0;
+			if(result==null)
+				return csss;
 			for(Css one: result)
 			{
 				csss[i]=one.toString();

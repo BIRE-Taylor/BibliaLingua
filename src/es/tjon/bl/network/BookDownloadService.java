@@ -30,8 +30,6 @@ public class BookDownloadService extends Service implements ProgressMonitor
 
 	private ApplicationDataContext adc;
 
-	private ObjectSet<DownloadItem> queue;
-
 	private ExecutorService exec;
 
 	public static final int MSG_REGISTER_CLIENT = 2;
@@ -52,7 +50,7 @@ public class BookDownloadService extends Service implements ProgressMonitor
 
 	private Pair<Book,Integer> mProgress;
 
-	private ArrayList<Callable<Pair<Book,Boolean>>> mDownloadQueue;
+	private ArrayList<DownloadTask> mDownloadQueue;
 
 	private long time=0;
 
@@ -131,7 +129,8 @@ public class BookDownloadService extends Service implements ProgressMonitor
 	public void onFinish(Book item)
 	{
 		adc.downloadComplete(item);
-		mDownloadQueue.remove(this);
+		adc.queueProcessing(item);
+		mDownloadQueue.remove(0);
 		onProgress(null,0);
 		completedBooks.add(item);
 		
@@ -152,7 +151,7 @@ public class BookDownloadService extends Service implements ProgressMonitor
 			
 		NotificationManager nm = ((NotificationManager)getSystemService(NOTIFICATION_SERVICE));
 		nm.notify(NOTIFICATION_COMPLETE, notification);
-		if(mDownloadQueue.isEmpty())
+		if(isDone())
 			nm.cancel(NOTIFICATION);
 
 		for (int i=mClients.size() - 1; i >= 0; i--)
@@ -174,10 +173,15 @@ public class BookDownloadService extends Service implements ProgressMonitor
 		showNotification();
 	}
 	
+	public boolean isDone()
+	{
+		return mDownloadQueue.isEmpty();
+	}
+	
 	public void notifyError(Book item)
 	{
 		Notification notification = new Notification.Builder(BookDownloadService.this)
-			.setContentTitle("Download Failed")
+			.setContentTitle("Downloading book failed")
 			.setContentText(item.name)
 			.setContentIntent(PendingIntent.getService(BookDownloadService.this,item.id,new Intent(BookDownloadService.this,BookDownloadService.class),PendingIntent.FLAG_UPDATE_CURRENT))
 			.setSmallIcon(android.R.drawable.stat_notify_error)
@@ -195,7 +199,7 @@ public class BookDownloadService extends Service implements ProgressMonitor
 	{
 
 		mClients = new ArrayList<Messenger>();
-		mDownloadQueue = new ArrayList<Callable<Pair<Book,Boolean>>>();
+		mDownloadQueue = new ArrayList<DownloadTask>();
 		showNotification();
 		super.onCreate();
 	}
@@ -215,20 +219,26 @@ public class BookDownloadService extends Service implements ProgressMonitor
 			return;
 		}
 		empty=false;
-		// In this sample, we'll use the same text for the ticker and the expanded notification
         CharSequence text = "Downloading books...";
+		String bigText = "Downloading book";
+		for(DownloadTask task : mDownloadQueue)
+		{
+			bigText += "\n"+task.getName();
+		}
 		String bookTitle =getProgress() != null && getProgress().first != null ?getProgress().first.getName(): "";
 
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
 																new Intent(this, CatalogActivity.class), 0);
 		int progress = getProgress() == null ?0: getProgress().second;
-		Notification notification = new Notification.Builder(this)
+		Notification notification = new Notification.BigTextStyle(new Notification.Builder(this)
 			.setContentTitle("Downloading " + bookTitle)
 			.setContentText(text)
 			.setContentInfo(mDownloadQueue.size() + " books left")
 			.setProgress(100, progress, progress == 0 ||progress == 100?true: false)
 			.setContentIntent(contentIntent)
-			.setSmallIcon(android.R.drawable.stat_sys_download)
+			.setSmallIcon(android.R.drawable.stat_sys_download))
+			.bigText(bigText)
+			.setSummaryText(text)
 			.build();
 
 		startForeground(NOTIFICATION, notification);
@@ -255,7 +265,7 @@ public class BookDownloadService extends Service implements ProgressMonitor
 		{
 			if (adc == null)
 				adc = new ApplicationDataContext(this);
-			queue = adc.downloadQueue;
+			ObjectSet<DownloadItem> queue = adc.downloadQueue;
 			queue.fill("time");
 			if (mDownloadQueue.isEmpty())
 			{

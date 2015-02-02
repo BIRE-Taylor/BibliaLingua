@@ -30,6 +30,7 @@ public class BaseActivity extends FragmentActivity
 	private static String mColorScheme="Night";
 
 	private static boolean mInitialized = false;
+	private static boolean mFileInitialized = false;
 	private static boolean mLanguageInitialized=false;
 	private static boolean mCatalogInitialized=false;
 	private static boolean mUpdateInitialized=false;
@@ -38,6 +39,12 @@ public class BaseActivity extends FragmentActivity
 	private static ArrayList<Bundle> mSaveData=new ArrayList<Bundle>();
 
 	private static boolean mExit = false;
+
+	public void fileInitialized()
+	{
+		mFileInitialized=true;
+		initialize();
+	}
 
 	public void updateInitialized()
 	{
@@ -191,6 +198,13 @@ public class BaseActivity extends FragmentActivity
 	{
 		if (mInitialized)
 			return;
+		if(!mFileInitialized)
+		{
+			
+			getUtil().setLoadingDialogText(getText(R.string.loadingFiles).toString());
+			ApplicationDataContext.initialize(this);
+			return;
+		}
 		if (!mLanguageInitialized)
 		{
 			getUtil().setLoadingDialogText(getText(R.string.loadingLanguage).toString());

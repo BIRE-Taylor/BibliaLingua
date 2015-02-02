@@ -15,12 +15,17 @@ public class DownloadTask implements Callable<Pair<Book,Boolean>>
 {
 
 	Service context;
-	Book item;
+	Book mItem;
 
 	public DownloadTask(Service c, Book item)
 	{
 		context = c;
-		this.item = item;
+		mItem = item;
+	}
+
+	public String getName()
+	{
+		return mItem.name;
 	}
 
 	@Override
@@ -33,8 +38,8 @@ public class DownloadTask implements Callable<Pair<Book,Boolean>>
 			{
 				try
 				{
-					BookUtil.getDir(item,context).mkdirs();
-					File book = BookUtil.getFile(item, context);
+					BookUtil.getDir(mItem,context).mkdirs();
+					File book = BookUtil.getFile(mItem, context);
 					ZLib.decompressFile(temp, book);
 				}
 				catch (Exception e)
@@ -57,14 +62,14 @@ public class DownloadTask implements Callable<Pair<Book,Boolean>>
 			e.printStackTrace();
 			return null;
 		}
-		((ProgressMonitor)context).onFinish(item);
-		return new Pair<Book,Boolean>(item, false);
+		((ProgressMonitor)context).onFinish(mItem);
+		return new Pair<Book,Boolean>(mItem, false);
 	}
 
 	File downloadFile() throws IOException
 	{
 		int bytesWritten = 0;
-		URL url = new URL(item.url);
+		URL url = new URL(mItem.url);
 		HttpURLConnection conn=null;
 		BufferedInputStream in=null;
 		try
@@ -74,10 +79,10 @@ public class DownloadTask implements Callable<Pair<Book,Boolean>>
 		}
 		catch(UnknownHostException e)
 		{
-			((ProgressMonitor)context).notifyError(item);
+			((ProgressMonitor)context).notifyError(mItem);
 			return null;
 		}
-		File tempFile = File.createTempFile(item.name, null, context.getFilesDir());
+		File tempFile = File.createTempFile(mItem.name, null, context.getFilesDir());
 		OutputStream out = new FileOutputStream(tempFile);
 		byte[] TEMP = new byte[1024];
 		int size = conn.getContentLength();
@@ -103,7 +108,7 @@ public class DownloadTask implements Callable<Pair<Book,Boolean>>
 
 	private void publishProgress(double progress)
 	{
-		((ProgressMonitor)context).onProgress(item, (int)progress);
+		((ProgressMonitor)context).onProgress(mItem, (int)progress);
 	}
 
 
