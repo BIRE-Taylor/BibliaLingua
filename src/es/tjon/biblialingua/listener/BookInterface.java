@@ -5,6 +5,8 @@ import es.tjon.biblialingua.*;
 public abstract class BookInterface  extends BaseActivity
 {
 
+	public abstract void scrollTo(double center, double contentHeight);
+
 
 	public abstract int getTopUiHeight();
 

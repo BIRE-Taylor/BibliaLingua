@@ -39,7 +39,7 @@ extends BaseAdapter
 		if(Looper.getMainLooper().equals(Looper.myLooper()))
 		{
 			if(((BrowseFragment)mFragment).isListViewAvailable())
-				mFragment.setListShown(false);
+				setListShown(false);
 			new AsyncTask()
 			{
 
@@ -66,6 +66,14 @@ extends BaseAdapter
             e.printStackTrace();
         }
     }
+
+	private void setListShown(boolean show)
+	{
+		try
+		{
+			mFragment.setListShown(show);
+		}finally{}
+	}
 	
 	public void update(ArrayList<Node> nodes)
 	{
@@ -93,7 +101,7 @@ extends BaseAdapter
 		}
 		mItems = nodes;
 		if(((BrowseFragment)mFragment).isListViewAvailable())
-			mFragment.setListShown(true);
+			setListShown(true);
 		notifyDataSetChanged();
 		if(nodes.size()==1)
 		{

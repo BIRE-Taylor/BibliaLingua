@@ -136,6 +136,7 @@ public class BilingualViewFragment extends Fragment
 			mContentRelated = (RelatedFragment)((RelatedAdapter)((ListView)mRelatedView.findViewById(android.R.id.list)).getAdapter()).getFragment();
 			mContentSecondary = (BookViewer)getView().findViewById(R.id.secondaryContent);
 		}
+		refreshDisplayMode();
 		super.onResume();
 	}
 

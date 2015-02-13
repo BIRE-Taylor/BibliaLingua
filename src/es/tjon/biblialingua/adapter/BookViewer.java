@@ -86,6 +86,21 @@ public class BookViewer extends WebView
 				super.onScrollChanged(l,t,oldl,oldt);
 				return;
 			}
+			if(true)
+			{
+				double center = ((double)t)/(getContentHeight()*2.0-getHeight());
+				if(center>1)
+					center=1;
+				if(center<0)
+					center=0;
+
+				center*=getHeight();
+				if(center>getHeight())
+					center=getHeight();
+				mActivity.scrollTo(center,(t+center)/getContentHeight());
+				super.onScrollChanged(l,t,oldl,oldt);
+				return;
+			}
 			if(uriOffsetMap!=null)
 			{
 				double center = ((double)t)/(getContentHeight()*2.0-getHeight());

@@ -54,8 +54,10 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-		getActionBar().setHideOnContentScrollEnabled(true);
+		if(false)
+			getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+		if(false)
+			getActionBar().setHideOnContentScrollEnabled(true);
         setContentView(R.layout.pager);
 		setFullscreen(true);
 		if(savedInstanceState==null)
@@ -289,7 +291,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 
 	private void setFullscreen(boolean fullscreen)
 	{
-		if(mFullscreen==fullscreen)
+		if(true||mFullscreen==fullscreen)
 			return;
 		mFullscreen = fullscreen;
 		if (mFullscreen)
@@ -317,6 +319,14 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		if(!mFullscreen)
 			setFullscreen(true);
 		((BilingualViewFragment)mAdapter.getItem(mPager.getCurrentItem())).scrollTo(url,center,scroll);
+	}
+
+	@Override
+	public void scrollTo(double center, double scroll)
+	{
+		if(!mFullscreen)
+			setFullscreen(true);
+		((BilingualViewFragment)mAdapter.getItem(mPager.getCurrentItem())).scrollTo(center,scroll);
 	}
 
 	@Override

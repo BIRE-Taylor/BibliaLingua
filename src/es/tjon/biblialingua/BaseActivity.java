@@ -17,12 +17,15 @@ import android.widget.*;
 import android.text.*;
 import java.util.*;
 import android.support.v4.app.*;
+import android.support.v7.app.*;
 import android.hardware.display.*;
 import android.support.v4.hardware.display.*;
+import android.app.*;
+import android.graphics.*;
 
 public class BaseActivity extends FragmentActivity
 {
-
+	
 	private ApplicationDataContext mAppDataContext = null;
 	private BookUtil mBookUtil=null;
 	private Util mUtil = null;
@@ -41,10 +44,13 @@ public class BaseActivity extends FragmentActivity
 	private static ArrayList<Bundle> mSaveData=new ArrayList<Bundle>();
 
 	private static boolean mExit = false;
+	private static boolean mHome = false;
 
 	private static boolean mDisplayPrimary = true;
 	private static boolean mDisplaySecondary = false;
 	private static boolean mDisplayRelated = false;
+
+	
 
 	public void fileInitialized()
 	{
@@ -75,6 +81,7 @@ public class BaseActivity extends FragmentActivity
 				break;
 			case "Sepia":
 				setTheme(android.R.style.Theme_DeviceDefault_Light_DarkActionBar);
+				//findViewById(android.R.id.content).setBackgroundColor(Color.rgb(250,230,175));
 				break;
 			case "Day":
 				setTheme(android.R.style.Theme_DeviceDefault_Light);
@@ -144,6 +151,17 @@ public class BaseActivity extends FragmentActivity
 			super.onCreate(savedInstanceState);
 			return;
 		}
+		if(mHome)
+		{
+			if(this instanceof CatalogActivity)
+				mHome=false;
+			else
+			{
+				finish();
+				super.onCreate(savedInstanceState);
+				return;
+			}
+		}
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		if(isBaseActivity())
 		{
@@ -167,9 +185,21 @@ public class BaseActivity extends FragmentActivity
 			Intent i = new Intent(this, CatalogActivity.class);
 			startActivity(i);
 		}
+		getActionBar().setDisplayShowHomeEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
 		super.onCreate(savedInstanceState);
 	}
 
+	@Override
+	public boolean onNavigateUp()
+	{
+		if(!(this instanceof CatalogActivity))
+		{
+			mHome=true;
+			finish();
+		}
+		return super.onNavigateUp();
+	}
 
 	private boolean isBaseActivity()
 	{

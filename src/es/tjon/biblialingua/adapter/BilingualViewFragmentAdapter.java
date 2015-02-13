@@ -163,7 +163,7 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 	@Override
 	public Fragment getItem(int position)
 	{
-		if(mFragments.containsKey(mIndex.get(position)))
+		if(mFragments!=null&&mFragments.containsKey(mIndex.get(position)))
 		{
 			return mFragments.get(mIndex.get(position));
 		}
