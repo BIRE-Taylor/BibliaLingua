@@ -58,7 +58,6 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		{
 			getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 			getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-			getActionBar().setBackgroundDrawable(Drawable);
 			//getActionBar().setHideOnContentScrollEnabled(true);
 		}
         super.onCreate(savedInstanceState);
