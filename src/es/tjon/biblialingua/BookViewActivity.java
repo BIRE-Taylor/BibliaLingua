@@ -16,7 +16,7 @@ import android.app.*;
 import android.graphics.drawable.*;
 
 
-public class BookViewActivity extends BookInterface implements CustomLinkMovementMethod.LinkListener
+public class BookViewActivity extends BookInterface implements CustomLinkMovementMethod.LinkListener, View.OnSystemUiVisibilityChangeListener
 {
 	
 	public static final String TAG = "es.tjon.biblialingua.BookViewActovity";
@@ -37,7 +37,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 	private MenuItem mBilingualMenuItem;
 	private MenuItem mRelatedMenuItem;
 	
-	boolean mFullscreen = false;
+	boolean mFullscreen = true;
 
 	private BookDataContext mBDCSecondary;
 
@@ -101,6 +101,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 					{}
 				});
 		}
+		mPager.setOnSystemUiVisibilityChangeListener(this);
 		start();
   	}
 	
@@ -308,7 +309,6 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 					| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 					| View.SYSTEM_UI_FLAG_FULLSCREEN
 				);
-				getActionBar().hide();
 			}
 			else
 			{
@@ -316,7 +316,6 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 					View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 					| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 				);
-				getActionBar().show();
 			}
 			return;
 		}
@@ -336,6 +335,19 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 				View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 				| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+		}
+	}
+	
+	@Override
+	public void onSystemUiVisibilityChange(int visibility)
+	{
+		if((visibility&View.SYSTEM_UI_FLAG_FULLSCREEN)==View.SYSTEM_UI_FLAG_FULLSCREEN)
+		{
+			getActionBar().hide();
+		}
+		else
+		{
+			getActionBar().show();
 		}
 	}
 
