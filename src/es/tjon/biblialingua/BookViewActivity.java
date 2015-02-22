@@ -54,12 +54,8 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
-		if(true||Build.VERSION.SDK_INT>=21)
-		{
-			getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-			getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-			//getActionBar().setHideOnContentScrollEnabled(true);
-		}
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pager);
 		setFullscreen(false);
