@@ -222,8 +222,31 @@ public class BilingualViewFragment extends Fragment
 		};
 
 	}
-
+	
 	public void refreshDisplayMode()
+	{
+		if(Looper.getMainLooper().equals(Looper.myLooper()))
+		{
+			AsyncTask.execute(new Runnable(){
+
+					@Override
+					public void run()
+					{
+						refreshDisplayMode();
+					}
+				});
+		}
+		getActivity().runOnUiThread(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					refreshDisplay();
+				}
+		});
+	}
+
+	public void refreshDisplay()
 	{
 		Log.i(TAG,"Setting Display");
 		if (mState == null)
@@ -247,7 +270,7 @@ public class BilingualViewFragment extends Fragment
 		{
 			loadSecondary();
 		}
-		View content = (View)mContentPrimary.getParent().getParent();
+		View content = getActivity().findViewById(android.R.id.content);
 		ViewGroup.LayoutParams ll = mContentPrimary.getLayoutParams();
 		ViewGroup.LayoutParams lr = mContentSecondary.getLayoutParams();
 		ViewGroup.LayoutParams lb = mRelatedView.getLayoutParams();
@@ -307,6 +330,8 @@ public class BilingualViewFragment extends Fragment
 		}
 		else
 		{
+			if(!dispRelated)
+				height=ll.MATCH_PARENT;
 			ll.height = lr.height = height;
 			if (dispSecond && dispFirst)
 			{
@@ -344,8 +369,7 @@ public class BilingualViewFragment extends Fragment
 														  {getActivity().runOnUiThread(new Runnable(){String mRef;public Runnable setup(String reference)
 																						   {mRef = reference;return this;}@Override
 																						   public void run()
-																						   { mContentPrimary.onFinishRender(mState.mPrimaryNode.uri); if (mContentSecondary != null)
-																							   {mContentSecondary.onFinishRender(mState.mPrimaryNode.uri);}if (mRef == null&&BaseActivity.isDisplayRelated()) mContentRelated.scrollTo(mContentPrimary.findFirstRCAItem()); else if(BaseActivity.isDisplayRelated()) mContentRelated.scrollTo(mRef);}}.setup(mRef));}}.setup(mContentPrimary.findFirstRCAItem()));
+																						   { if (mRef == null&&BaseActivity.isDisplayRelated()) mContentRelated.scrollTo(mContentPrimary.findFirstRCAItem()); else if(BaseActivity.isDisplayRelated()) mContentRelated.scrollTo(mRef);}}.setup(mRef));}}.setup(mContentPrimary.findFirstRCAItem()));
 	}
 
 }

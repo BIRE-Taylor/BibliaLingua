@@ -11,9 +11,9 @@ public class OsisActivity extends BaseActivity
 	private GridView gridview;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState)
+	public void onCreate(Bundle savedInstanceState)
 	{
-		super.onCreate(savedInstanceState, persistentState);
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.catalog);
 		getActionBar().setTitle("OSIS Library");
 		gridview = (GridView) findViewById(R.id.catalog);

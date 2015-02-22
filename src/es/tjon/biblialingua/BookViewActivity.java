@@ -13,6 +13,7 @@ import es.tjon.biblialingua.listener.*;
 import es.tjon.biblialingua.utils.*;
 import android.support.v4.app.*;
 import android.app.*;
+import android.graphics.drawable.*;
 
 
 public class BookViewActivity extends BookInterface implements CustomLinkMovementMethod.LinkListener
@@ -53,13 +54,16 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-		if(false)
+		if(true||Build.VERSION.SDK_INT>=21)
+		{
+			getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 			getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-		if(false)
-			getActionBar().setHideOnContentScrollEnabled(true);
+			getActionBar().setBackgroundDrawable(Drawable);
+			//getActionBar().setHideOnContentScrollEnabled(true);
+		}
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.pager);
-		setFullscreen(true);
+		setFullscreen(false);
 		if(savedInstanceState==null)
 		{
 			mCurrentUri=getIntent().getStringExtra(KEY_URI);
@@ -164,7 +168,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 				@Override
 				public boolean onSingleTapUp(MotionEvent e)
 				{
-					if(mFullscreen==false&&e.getY()<getActionBar().getHeight())
+					if(mFullscreen==false&&e.getY()<getActionBar().getHeight()*2)
 						return true;
 					new AsyncTask()
 					{
@@ -213,6 +217,8 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		getActionBar().hide();
+		setFullscreen(true);
 		if (item == null)
 			return super.onOptionsItemSelected(item);
 		if (item.equals(mRelatedMenuItem))
@@ -291,9 +297,34 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 
 	private void setFullscreen(boolean fullscreen)
 	{
-		if(true||mFullscreen==fullscreen)
+		if(mFullscreen==fullscreen)
 			return;
 		mFullscreen = fullscreen;
+		if(Build.VERSION.SDK_INT<21)
+		{
+			findViewById(android.R.id.content).setSystemUiVisibility(
+				View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+				);
+			if(fullscreen)
+			{
+				findViewById(android.R.id.content).setSystemUiVisibility(
+					View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+					| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+					| View.SYSTEM_UI_FLAG_FULLSCREEN
+				);
+				getActionBar().hide();
+			}
+			else
+			{
+				findViewById(android.R.id.content).setSystemUiVisibility(
+					View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+					| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+				);
+				getActionBar().show();
+			}
+			return;
+		}
 		if (mFullscreen)
 		{
 			findViewById(android.R.id.content).setSystemUiVisibility(
