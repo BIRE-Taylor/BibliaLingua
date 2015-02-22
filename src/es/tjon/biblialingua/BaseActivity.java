@@ -44,7 +44,6 @@ public class BaseActivity extends FragmentActivity
 	private static ArrayList<Bundle> mSaveData=new ArrayList<Bundle>();
 
 	private static boolean mExit = false;
-	private static boolean mHome = false;
 
 	private static boolean mDisplayPrimary = true;
 	private static boolean mDisplaySecondary = false;
@@ -77,17 +76,17 @@ public class BaseActivity extends FragmentActivity
 		switch(mColorScheme)
 		{
 			case "Night":
-				setTheme(android.R.style.Theme_DeviceDefault);
+				setTheme(R.style.Dark);
 				break;
 			case "Sepia":
-				setTheme(android.R.style.Theme_DeviceDefault_Light_DarkActionBar);
+				setTheme(R.style.Sepia);
 				//findViewById(android.R.id.content).setBackgroundColor(Color.rgb(250,230,175));
 				break;
 			case "Day":
-				setTheme(android.R.style.Theme_DeviceDefault_Light);
+				setTheme(R.style.Light);
 				break;
 			default:
-				setTheme(android.R.style.Theme_DeviceDefault_Light);
+				setTheme(R.style.Dark);
 				break;
 		}
 	}
@@ -151,21 +150,9 @@ public class BaseActivity extends FragmentActivity
 			super.onCreate(savedInstanceState);
 			return;
 		}
-		if(mHome)
-		{
-			if(this instanceof CatalogActivity)
-				mHome=false;
-			else
-			{
-				finish();
-				super.onCreate(savedInstanceState);
-				return;
-			}
-		}
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		if(isBaseActivity())
 		{
-			getActionBar().hide();
 			setContentView(R.layout.splash);
 		}
 		else
@@ -185,20 +172,20 @@ public class BaseActivity extends FragmentActivity
 			Intent i = new Intent(this, CatalogActivity.class);
 			startActivity(i);
 		}
-		getActionBar().setDisplayShowHomeEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
+		if(!isBaseActivity())
+		{
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+			getActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
+			getActionBar().setDisplayShowHomeEnabled(false);
+		}
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public boolean onNavigateUp()
 	{
-		if(!(this instanceof CatalogActivity))
-		{
-			mHome=true;
-			finish();
-		}
-		return super.onNavigateUp();
+		navigateUpTo(new Intent(this, BaseActivity.class));
+		return true;
 	}
 
 	private boolean isBaseActivity()

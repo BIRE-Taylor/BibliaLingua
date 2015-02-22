@@ -33,6 +33,13 @@ public class CatalogActivity extends BaseActivity implements ProgressMonitor
 			((CatalogAdapter)gridview.getAdapter()).notifyDataSetChanged();
 	}
 
+	@Override
+	public boolean onNavigateUp()
+	{
+		if(currentFolder!=null)
+			setFolder(null);
+		return true;
+	}
 
 	Folder currentFolder = null;
 	GridView gridview=null;
