@@ -73,6 +73,7 @@ extends EnhancedJsInterface {
 				sortedMap.put(Float.valueOf(jSONObject.getInt("top")), jSONObject.getString("id"));
 				reverseMap.put(jSONObject.getString("id"),Float.valueOf(jSONObject.getInt("top")));
 			}
+			view.mCount+=1;
 			view.uriOffsetMap=sortedMap;
 			view.uriOffsetLookupMap=reverseMap;
         }

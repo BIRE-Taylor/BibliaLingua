@@ -18,6 +18,8 @@ import android.os.*;
 public class BookViewer extends WebView
 {
 	
+	public int mCount=0;
+	
 	private static final String TAG = "es.tjon.biblialingua.adapter.BookViewer";
 
 	private BookInterface mActivity;
@@ -65,13 +67,14 @@ public class BookViewer extends WebView
 	{
 		((Activity)getContext()).runOnUiThread(new Runnable()
 			{
-
 				@Override
 				public void run()
 				{
-					BookViewer.this.loadUrl("javascript:ldssa.main.getOffsetsForRcaItems();ldssa.main.getOffsetsForUris();");
+					uriOffsetMap=null;
+					uriOffsetLookupMap=null;
+					BookViewer.this.loadUrl("javascript:ldssa.main.getOffsetsForRcaItems();");
+					BookViewer.this.loadUrl("javascript:ldssa.main.getOffsetsForUris();");
 				}
-			
 		});
 	}
 	
@@ -147,8 +150,8 @@ public class BookViewer extends WebView
 				float scroll = ((float)(centerT)-topScroll)/(bottomScroll-topScroll);
 				if(toast==null)
 					toast=Toast.makeText(mActivity,url,Toast.LENGTH_SHORT);
-					toast.setText(url);
-				//toast.show();
+				toast.setText(url+" "+mCount);
+				toast.show();
 				mActivity.scrollTo(url,center,scroll);
 			}
 			

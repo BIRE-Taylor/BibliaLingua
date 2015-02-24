@@ -150,6 +150,8 @@ public class BaseActivity extends FragmentActivity
 			super.onCreate(savedInstanceState);
 			return;
 		}
+		getWindow().setNavigationBarColor(Color.rgb(10,1,50));
+		getWindow().setStatusBarColor(Color.rgb(10,1,50));
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		if(isBaseActivity())
 		{

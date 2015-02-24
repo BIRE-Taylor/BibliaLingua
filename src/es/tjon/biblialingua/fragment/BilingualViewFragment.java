@@ -363,13 +363,25 @@ public class BilingualViewFragment extends Fragment
 			mRelatedView.setVisibility(View.GONE);
 		else
 			mRelatedView.setVisibility(View.VISIBLE);
-		AsyncTask.execute(new Runnable(){String mRef;public Runnable setup(String reference)
-														  {mRef = reference;return this;}@Override
-														  public void run()
-														  {getActivity().runOnUiThread(new Runnable(){String mRef;public Runnable setup(String reference)
-																						   {mRef = reference;return this;}@Override
-																						   public void run()
-																						   { if (mRef == null&&BaseActivity.isDisplayRelated()) mContentRelated.scrollTo(mContentPrimary.findFirstRCAItem()); else if(BaseActivity.isDisplayRelated()) mContentRelated.scrollTo(mRef);}}.setup(mRef));}}.setup(mContentPrimary.findFirstRCAItem()));
+		AsyncTask.execute(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				getActivity().runOnUiThread(new Runnable()
+				{
+					
+					@Override
+					public void run()						   
+					{
+						mContentPrimary.onFinishRender(null);
+						mContentSecondary.onFinishRender(null);
+						if (BaseActivity.isDisplayRelated())
+							mContentRelated.scrollTo(mContentPrimary.findFirstRCAItem()); 
+					}
+				});
+			}
+		});
 	}
 
 }
