@@ -150,11 +150,11 @@ public class BaseActivity extends FragmentActivity
 			super.onCreate(savedInstanceState);
 			return;
 		}
-		getWindow().setNavigationBarColor(Color.rgb(10,1,50));
-		getWindow().setStatusBarColor(Color.rgb(10,1,50));
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		if(isBaseActivity())
 		{
+			if(getActionBar()!=null)
+				getActionBar().hide();
 			setContentView(R.layout.splash);
 		}
 		else
@@ -176,9 +176,14 @@ public class BaseActivity extends FragmentActivity
 		}
 		if(!isBaseActivity())
 		{
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-			getActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
-			getActionBar().setDisplayShowHomeEnabled(false);
+			if(Build.VERSION.SDK_INT>=21)
+			{
+				getWindow().setNavigationBarColor(Color.rgb(10,1,50));
+				getWindow().setStatusBarColor(Color.rgb(10,1,50));
+				getActionBar().setDisplayHomeAsUpEnabled(true);
+				getActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
+				getActionBar().setDisplayShowHomeEnabled(false);
+			}
 		}
 		super.onCreate(savedInstanceState);
 	}
