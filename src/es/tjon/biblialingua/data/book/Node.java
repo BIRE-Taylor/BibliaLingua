@@ -77,13 +77,13 @@ public class Node extends Entity implements Comparable<Node>, Parcelable
 		return content;
 	}
 	
-	public static String staticGenerateHtmlText(Context context, String string, String title, String content, String css, Integer n) {
+	public static String staticGenerateHtmlText(Context context, String string, String title, String content, String css, Integer n, boolean hideFootnotes) {
         String contentFinal;
         StringBuilder stringBuilder = new StringBuilder();
         boolean black = ((BaseActivity)context).getColorScheme().equals("Night");
         boolean sepia = ((BaseActivity)context).getColorScheme().equals("Sepia");
         boolean serif = true; //SettingsActivity.getIsSerifFontFromPrefs(context);
-        boolean hideFootnotes = false; //SettingsActivity.getIsHideFootnotesFromPrefs(context);
+        //SettingsActivity.getIsHideFootnotesFromPrefs(context);
         stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML Basic 1.1//EN\"\n    \"http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd\">");
         stringBuilder.append("\n<html>\n<head>\n<title>");
         stringBuilder.append(title);
@@ -133,7 +133,7 @@ public class Node extends Entity implements Comparable<Node>, Parcelable
     /*
      * Enabled aggressive block sorting
      */
-    public static String staticGenerateHtmlText(Context context,String[] csss, Node bookNode) {
+    public static String staticGenerateHtmlText(Context context,String[] csss, Node bookNode, boolean hideFootnotes) {
         if (context == null) {
             return null;
         }
@@ -152,7 +152,7 @@ public class Node extends Entity implements Comparable<Node>, Parcelable
         }
 		else
 			return null;
-        return staticGenerateHtmlText(context, bookNode.uri, bookNode.title, bookNode.content, css, bookNode.language_id);
+        return staticGenerateHtmlText(context, bookNode.uri, bookNode.title, bookNode.content, css, bookNode.language_id, hideFootnotes);
 	}
 	
 	@Override

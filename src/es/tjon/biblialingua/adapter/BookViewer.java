@@ -70,14 +70,26 @@ public class BookViewer extends WebView
 				@Override
 				public void run()
 				{
-					uriOffsetMap=null;
-					uriOffsetLookupMap=null;
 					BookViewer.this.loadUrl("javascript:ldssa.main.getOffsetsForRcaItems();");
 					BookViewer.this.loadUrl("javascript:ldssa.main.getOffsetsForUris();");
 				}
 		});
 	}
 	
+	public void refreshMaps()
+	{
+		((Activity)getContext()).runOnUiThread(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					uriOffsetMap=null;
+					uriOffsetLookupMap=null;
+					BookViewer.this.loadUrl("javascript:ldssa.main.getOffsetsForRcaItems();");
+					BookViewer.this.loadUrl("javascript:ldssa.main.getOffsetsForUris();");
+				}
+			});
+	}
 	
 	@Override
 	protected void onScrollChanged(int l, int t, int oldl, int oldt)
@@ -148,10 +160,10 @@ public class BookViewer extends WebView
 					bottomScroll = bottom.getKey();
 				}
 				float scroll = ((float)(centerT)-topScroll)/(bottomScroll-topScroll);
-				if(toast==null)
-					toast=Toast.makeText(mActivity,url,Toast.LENGTH_SHORT);
-				toast.setText(url+" "+mCount);
-				toast.show();
+//				if(toast==null)
+//					toast=Toast.makeText(mActivity,url,Toast.LENGTH_SHORT);
+//				toast.setText(url+" "+mCount);
+//				toast.show();
 				mActivity.scrollTo(url,center,scroll);
 			}
 			

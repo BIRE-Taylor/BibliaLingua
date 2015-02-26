@@ -10,6 +10,9 @@ import es.tjon.biblialingua.data.book.*;
 import es.tjon.biblialingua.listener.*;
 import android.support.v4.app.*;
 import java.net.*;
+import android.content.*;
+import android.preference.*;
+import android.content.res.*;
 
 public class BilingualViewFragment extends Fragment
 {
@@ -112,7 +115,7 @@ public class BilingualViewFragment extends Fragment
 		mContentPrimary = (BookViewer)view.findViewById(R.id.content);
 		mViewClientPrimary = new BookViewClient((BookInterface)getActivity(), true);
 		mContentPrimary.setWebViewClient(mViewClientPrimary);
-		mContentPrimary.loadDataWithBaseURL(BookFragment.BASE_URL, Node.staticGenerateHtmlText(getActivity(), mState.mPrimaryCSS, mState.mPrimaryNode), "text/html", null, BookFragment.BASE_URL + (mState.mUri == null ?mState.mPrimaryNode.uri: mState.mUri));
+		mContentPrimary.loadDataWithBaseURL(BookFragment.BASE_URL, Node.staticGenerateHtmlText(getActivity(), mState.mPrimaryCSS, mState.mPrimaryNode, false), "text/html", null, BookFragment.BASE_URL + (mState.mUri == null ?mState.mPrimaryNode.uri: mState.mUri));
 		mContentSecondary = (BookViewer)view.findViewById(R.id.secondaryContent);
 		if (mState.mSecondaryNode != null && BaseActivity.isDisplaySecondary())
 		{
@@ -147,7 +150,7 @@ public class BilingualViewFragment extends Fragment
 		mSecondaryLoaded = true;
 		mViewClientSecondary = new BookViewClient((BookInterface)getActivity(), false);
 		mContentSecondary.setWebViewClient(mViewClientSecondary);
-		mContentSecondary.loadDataWithBaseURL(BookFragment.BASE_URL, Node.staticGenerateHtmlText(getActivity(), mState.mSecondaryCSS, mState.mSecondaryNode), "text/html", null, BookFragment.BASE_URL + mState.mSecondaryNode.uri);
+		mContentSecondary.loadDataWithBaseURL(BookFragment.BASE_URL, Node.staticGenerateHtmlText(getActivity(), mState.mSecondaryCSS, mState.mSecondaryNode, true), "text/html", null, BookFragment.BASE_URL + mState.mSecondaryNode.uri);
 	}
 
 	@Override
@@ -223,6 +226,15 @@ public class BilingualViewFragment extends Fragment
 
 	}
 	
+	public boolean isVertical()
+	{
+		if(getActivity()==null)
+			return false;
+		boolean pref = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(SettingsFragment.PREFERENCE_DISPLAY,"horizontal").equals("vertical");
+		boolean portrait = getActivity().getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT;
+		return pref&&portrait;
+	}
+	
 	public void refreshDisplayMode()
 	{
 		if(Looper.getMainLooper().equals(Looper.myLooper()))
@@ -249,9 +261,9 @@ public class BilingualViewFragment extends Fragment
 	public void refreshDisplay()
 	{
 		Log.i(TAG,"Setting Display");
-		if (mState == null)
+		if (getView() == null||mContentPrimary==null)
 		{
-			Log.i(TAG,"mState null");
+			Log.i(TAG,"View is null");
 			return;
 		}
 		boolean dispFirst=mActivity.isDisplayPrimary();
@@ -261,19 +273,14 @@ public class BilingualViewFragment extends Fragment
 		{
 			dispSecond = false;
 		}
-		if (mContentPrimary == null || mContentPrimary.getParent() == null)
-		{
-			Log.i(TAG, "Missing view " + mState.mPrimaryNode.title + (isCreated ?" view created": " view not created"));
-			return;
-		}
 		if (dispSecond)
 		{
 			loadSecondary();
 		}
-		View content = getActivity().findViewById(android.R.id.content);
-		ViewGroup.LayoutParams ll = mContentPrimary.getLayoutParams();
-		ViewGroup.LayoutParams lr = mContentSecondary.getLayoutParams();
-		ViewGroup.LayoutParams lb = mRelatedView.getLayoutParams();
+		View content = getView();
+		FrameLayout.LayoutParams ll = (FrameLayout.LayoutParams) mContentPrimary.getLayoutParams();
+		FrameLayout.LayoutParams lr = (FrameLayout.LayoutParams) mContentSecondary.getLayoutParams();
+		FrameLayout.LayoutParams lb = (FrameLayout.LayoutParams) mRelatedView.getLayoutParams();
 		if (content == null)
 			return;
 		int height = content.getHeight();
@@ -304,35 +311,39 @@ public class BilingualViewFragment extends Fragment
 		}
 		if (dispRelated)
 		{
-			lb.height = (int) (height / 3.0);
-			height = (int)(height * (2.0 / 3));
+			double div = dispFirst&&dispSecond&&isVertical()?4:3;
+			lb.height = (int) (height / div);
+			height = (int)(height * ((div - 1) / div));
 			lb.width = lb.FILL_PARENT;
 			mContentRelated.load(mState.mPrimaryNode.uri);
 
 		}
-		if (false)// (mVertical)
+		if (isVertical())
 		{
 			if (dispSecond && dispFirst)
 			{
-				ll.height = lr.height = (int)(height / 2.0);
-
+				ll.height = lr.height = lr.topMargin = (int)((height-2) / 2.0);
+				lr.topMargin+=2;
 			}
 			else if (dispFirst)
 			{
-				ll.height = height;
+				ll.height = dispRelated ? height : ll.FILL_PARENT;
 				lr.height = 0;
 			}
 			else if (dispSecond)
 			{
-				ll.height = 0;
-				lr.height = height;
+				ll.height = lr.topMargin = 0;
+				lr.height = dispRelated ? height : lr.FILL_PARENT;
 			}
+			ll.width=ll.FILL_PARENT;
+			lr.width=lr.FILL_PARENT;
 		}
 		else
 		{
 			if(!dispRelated)
 				height=ll.MATCH_PARENT;
 			ll.height = lr.height = height;
+			lr.topMargin = 0;
 			if (dispSecond && dispFirst)
 			{
 				ll.width = lr.width = width / 2;
@@ -374,8 +385,8 @@ public class BilingualViewFragment extends Fragment
 					@Override
 					public void run()						   
 					{
-						mContentPrimary.onFinishRender(null);
-						mContentSecondary.onFinishRender(null);
+						mContentPrimary.refreshMaps();
+						mContentSecondary.refreshMaps();
 						if (BaseActivity.isDisplayRelated())
 							mContentRelated.scrollTo(mContentPrimary.findFirstRCAItem()); 
 					}

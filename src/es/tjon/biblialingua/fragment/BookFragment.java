@@ -149,7 +149,7 @@ public class BookFragment extends Fragment
 		}
 		mViewClient = new BookViewClient((BookInterface)getActivity(), mMaster);
 		getWebView().setWebViewClient(mViewClient);
-		getWebView().loadDataWithBaseURL(BASE_URL, Node.staticGenerateHtmlText(getActivity(), mCSS, mNode), "text/html", null, BASE_URL+mUri);
+		getWebView().loadDataWithBaseURL(BASE_URL, Node.staticGenerateHtmlText(getActivity(), mCSS, mNode, false), "text/html", null, BASE_URL+mUri);
 	}
 	
 	public void scrollTo(double l, double t)

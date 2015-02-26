@@ -135,6 +135,8 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 			return;
 		}
 		mBookPrimary=getAppDataContext().getBook(getPrimaryLanguage(),mCurrentUri);
+		if(mBookPrimary==null)
+			return;
 		mBDCPrimary=new BookDataContext(this,mBookPrimary);
 		mBookSecondary=getAppDataContext().getBook(getSecondaryLanguage(),mCurrentUri);
 		if(mBookSecondary==null||!getBookUtil().doesExist(mBookSecondary))
