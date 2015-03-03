@@ -60,8 +60,8 @@ public class BookUtil
 			{
 				downloadQueue.save(newDISecond);
 			}
-			Intent i = new Intent(context, BookDownloadService.class);
-			i.putExtra(BookDownloadService.QUEUE_ITEM_ID,item.getID());
+			Intent i = new Intent(context, DownloadService.class);
+			i.putExtra(DownloadService.QUEUE_ITEM_ID,item.getID());
 			context.startService(i);
 		}
 		catch (AdaFrameworkException e)
@@ -129,7 +129,7 @@ public class BookUtil
 	{
 		if(book==null)
 			return null;
-		return new File(context.getExternalFilesDir("books"),book.gl_uri+"/"+book.language.id+"."+book.file);
+		return new File(context.getExternalFilesDir("books"),book.gl_uri+"/"+book.language.id+"."+book.file.replace("."+book.file_version,""));
 	}
 	
 	/** Messenger for communicating with service. */
@@ -144,7 +144,7 @@ public class BookUtil
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-				case BookDownloadService.MSG_SET_PROGRESS:
+				case DownloadService.MSG_SET_PROGRESS:
 					Pair<Book, Integer> result = (Pair<Book,Integer>)msg.obj;
 					if(result==null)
 						return;
@@ -153,7 +153,7 @@ public class BookUtil
 						monitor.onProgress(result.first,result.second);
 					}
 					break;
-				case BookDownloadService.MSG_NOTIFY_COMPLETE:
+				case DownloadService.MSG_NOTIFY_COMPLETE:
 					Book book = (Book)msg.obj;
 					for (ProgressMonitor monitor : monitors)
 					{
@@ -189,7 +189,7 @@ public class BookUtil
 			// connected to it.
 			try {
 				Message msg = Message.obtain(null,
-											 BookDownloadService.MSG_REGISTER_CLIENT);
+											 DownloadService.MSG_REGISTER_CLIENT);
 				msg.replyTo = mMessenger;
 				mService.send(msg);
 			} catch (RemoteException e) {
@@ -216,7 +216,7 @@ public class BookUtil
 		// class name because there is no reason to be able to let other
 		// applications replace our component.
 		context.bindService(new Intent(context, 
-							   BookDownloadService.class), mConnection, Context.BIND_AUTO_CREATE);
+							   DownloadService.class), mConnection, Context.BIND_AUTO_CREATE);
 		mIsBound = true;
 	}
 	
@@ -232,7 +232,7 @@ public class BookUtil
 			if (mService != null) {
 				try {
 					Message msg = Message.obtain(null,
-												 BookDownloadService.MSG_UNREGISTER_CLIENT);
+												 DownloadService.MSG_UNREGISTER_CLIENT);
 					msg.replyTo = mMessenger;
 					mService.send(msg);
 				} catch (RemoteException e) {

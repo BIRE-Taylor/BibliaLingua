@@ -10,7 +10,6 @@ import es.tjon.biblialingua.listener.*;
 import android.app.*;
 import android.content.*;
 import android.util.*;
-import org.restlet.engine.header.*;
 import android.graphics.*;
 import android.widget.*;
 import android.os.*;

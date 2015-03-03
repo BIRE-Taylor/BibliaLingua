@@ -47,8 +47,8 @@
 			android:name=".BookViewActivity">
 		</activity>
 		<service
-			android:label="BookDownloadService"
-			android:name=".network.BookDownloadService"
+			android:label="DownloadService"
+			android:name=".network.DownloadService"
 			android:process=":download">
 		</service>
     </application>

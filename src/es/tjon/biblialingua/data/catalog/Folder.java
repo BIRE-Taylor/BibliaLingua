@@ -3,11 +3,15 @@ import com.mobandme.ada.*;
 import com.mobandme.ada.annotations.*;
 import es.tjon.biblialingua.database.*;
 import java.util.*;
-import com.google.gson.*;
+import com.mobandme.ada.exceptions.AdaFrameworkException;
+import android.content.Context;
+import android.util.Log;
 
 @Table(name="Folder")
 public class Folder extends Entity implements CatalogItem
 {
+	
+	public static final String TAG = "es.tjon.biblialingua.data.catalog.Folder";
 
 	public boolean contains(Book book)
 	{
@@ -62,6 +66,7 @@ public class Folder extends Entity implements CatalogItem
 
 	public void saveAll(ApplicationDataContext adc)
 	{
+		Log.i(TAG,"Save all "+name+" "+language);
 		adc.folders.addAll(folders);
 		adc.books.addAll(books);
 		for(Folder folder:folders)
@@ -94,6 +99,7 @@ public class Folder extends Entity implements CatalogItem
 
 	public void setup(ApplicationDataContext adc)
 	{
+		Log.i(TAG,"Setup "+name+" "+language);
 		for(Folder folder:folders)
 		{
 			folder.folder=this.id;
@@ -111,13 +117,18 @@ public class Folder extends Entity implements CatalogItem
 	}
 
 
-	public void update(Folder folder, ApplicationDataContext adc)
+	public void update(Folder folder, ApplicationDataContext adc, Context context)
 	{
+		Log.i(TAG,"Update "+name+" "+language);
 		name = folder.name;
 		language = folder.language;
 		display_order = folder.display_order;
 		eng_name = folder.eng_name;
 		daysexpire=folder.daysexpire;
+		if(folders==null||folders.size()==0)
+		{
+			folders = new ArrayList<Folder>(Arrays.asList( adc.getFolders(language,getID()) ));
+		}
 		ArrayList<Folder> newFolders = new ArrayList<Folder>();
 		int i = 0;
 		for (Folder newFolder : folder.folders)
@@ -129,7 +140,8 @@ public class Folder extends Entity implements CatalogItem
 				if(oldFolder.id==newFolder.id)
 				{
 					found = oldFolder;
-					found.update(newFolder,adc);
+					found.language=language;
+					found.update(newFolder,adc,context);
 					break;
 				}
 			}
@@ -141,6 +153,7 @@ public class Folder extends Entity implements CatalogItem
 			else
 			{
 				newFolder.folder=this.id;
+				newFolder.language=language;
 				newFolder.setStatus(STATUS_NEW);
 				newFolders.add(newFolder);
 				newFolder.setup(adc);
@@ -148,6 +161,10 @@ public class Folder extends Entity implements CatalogItem
 			i++;
 		}
 		folders = newFolders;
+		if(books==null||books.size()==0)
+		{
+			books = new ArrayList<Book>(Arrays.asList( adc.getBooks(language,getID()) ));
+		}
 		ArrayList<Book> newBooks = new ArrayList<Book>();
 		i = 0;
 		for (Book book : folder.books)
@@ -159,7 +176,8 @@ public class Folder extends Entity implements CatalogItem
 				if(oldBook.id==book.id)
 				{
 					found = oldBook;
-					found.update(book,adc);
+					found.language=language;
+					found.update(book,adc,context);
 					break;
 				}
 			}
@@ -171,6 +189,7 @@ public class Folder extends Entity implements CatalogItem
 			else
 			{
 				book.folder=this;
+				book.language=language;
 				book.setStatus(STATUS_NEW);
 				newBooks.add(book);
 				book.setup(adc);

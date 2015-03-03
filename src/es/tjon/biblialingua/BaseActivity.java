@@ -260,20 +260,18 @@ public class BaseActivity extends FragmentActivity
 			return;
 		if(!mFileInitialized)
 		{
-			
-			getUtil().setLoadingDialogText(getText(R.string.loadingFiles).toString());
 			ApplicationDataContext.initialize(this);
 			return;
 		}
 		if (!mLanguageInitialized)
 		{
-			getUtil().setLoadingDialogText(getText(R.string.loadingLanguage).toString());
 			LanguageData.initialize(this);
 			return;
 		}
+		if(getPrimaryLanguage()==null)
+			System.err.println("Langiage not initialoized");
 		if (!mCatalogInitialized)
 		{
-			getUtil().setLoadingDialogText(getText(R.string.loadingCatalog).toString());
 			CatalogData.initialize(this);
 			return;
 		}
@@ -282,10 +280,10 @@ public class BaseActivity extends FragmentActivity
 			UpdateUtil.initialize(this);
 		}
 		PreferenceManager.setDefaultValues(this,R.xml.settings,false);
-		getUtil().setLoadingDialogText(getText(R.string.wrappingUp).toString());
-		startService(new Intent(this, BookDownloadService.class));
+		Intent service = new Intent(this, DownloadService.class);
+		service.putExtra(DownloadService.CHECK_UPDATES,true);
+		startService(service);
 		mInitialized = true;
-		getUtil().dismissLoadingDialog();
 		initFinished();
 	}
 

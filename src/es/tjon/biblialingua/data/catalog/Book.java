@@ -4,10 +4,16 @@ import com.mobandme.ada.*;
 import com.mobandme.ada.annotations.*;
 import es.tjon.biblialingua.data.*;
 import es.tjon.biblialingua.database.*;
+import es.tjon.biblialingua.utils.BookUtil;
+import java.io.File;
+import android.content.Context;
+import android.util.Log;
 
 @Table(name="Book")
 public class Book extends Entity implements CatalogItem
 {
+	
+	private static final String TAG = "es.tjon.biblialingua.data.catalog.Book";
 
 	@Override
 	public String getCoverURL()
@@ -71,10 +77,11 @@ public class Book extends Entity implements CatalogItem
 
 	public void setup(ApplicationDataContext adc)
 	{
+		Log.i(TAG,"Setup "+full_name+" "+language);
 	}
 
 
-	public void update(Book book, ApplicationDataContext adc)
+	public void update(Book book, ApplicationDataContext adc, Context context)
 	{
 		cb_id=book.cb_id;
 		name=book.name;
@@ -84,7 +91,6 @@ public class Book extends Entity implements CatalogItem
 		url=book.url;
 		display_order=book.display_order;
 		version=book.version;
-		file_version=book.file_version;
 		file=book.file;
 		size=book.size;
 		dateadded=book.dateadded;
@@ -92,6 +98,16 @@ public class Book extends Entity implements CatalogItem
 		media_available=book.media_available;
 		size_index=book.size_index;
 		cover_art=book.cover_art;
+		Log.i(TAG,"Update "+full_name+" "+language);
+		if(file_version!=book.file_version)
+		{
+			file_version=book.file_version;
+			File file = BookUtil.getFile(this,context);
+			if(file!=null&&file.exists())
+			{
+				adc.queueUpdate(this);
+			}
+		}
 		
 	}
 }

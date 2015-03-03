@@ -12,9 +12,13 @@ import android.os.*;
 import java.io.*;
 import android.content.res.*;
 import es.tjon.biblialingua.utils.*;
+import es.tjon.biblialingua.network.DownloadService;
+import android.util.Log;
 
 public class ApplicationDataContext extends ObjectContext
 {
+	private static final String TAG = "es.tjon.biblialingua.database.ApplicationDataContext";
+	
 	public ObjectSet<DownloadItem> downloadQueue;
 	
 	public ObjectSet<Language> languages;
@@ -26,12 +30,16 @@ public class ApplicationDataContext extends ObjectContext
 	public ObjectSet<Book> books;
 	
 	public static BaseActivity context;
+
+	private Context mContext;
 	
 	public ApplicationDataContext(Context context) throws AdaFrameworkException
 	{
 		super(context);
 		
-		downloadQueue = new ObjectSet<DownloadItem>(DownloadItem.class, this);
+		mContext = context;
+
+		downloadQueue = new ObjectSet<DownloadItem>( DownloadItem.class, this );
 		
 		languages = new ObjectSet<Language>(Language.class, this);
 		
@@ -154,6 +162,26 @@ public class ApplicationDataContext extends ObjectContext
 	{
 		// TODO: Implement this method
 	}
+	
+	public void queueUpdate(Book item)
+	{
+		DownloadItem newDI = new DownloadItem(item);
+		newDI.setStatus(DownloadItem.STATUS_NEW);
+		try
+		{
+			if(!hasDownload(newDI))
+			{
+				downloadQueue.save(newDI);
+			}
+			Intent i = new Intent(mContext, DownloadService.class);
+			i.putExtra(DownloadService.QUEUE_ITEM_ID,item.getID());
+			mContext.startService(i);
+		}
+		catch (AdaFrameworkException e)
+		{
+			e.printStackTrace();
+		}
+	}
 
 	public boolean hasDownload(DownloadItem item)
 	{
@@ -189,10 +217,13 @@ public class ApplicationDataContext extends ObjectContext
 	{
 		try
 		{
+			Log.d(TAG,language==null?"Language NULL":language.name);
 			catalog.fill("ID IN(SELECT Catalog_ID FROM LINK_Catalog_c_language_Language WHERE Language_ID=?)", new String[]{language.getID().toString()}, null);
+			if(catalog==null||catalog.size()==0)
+				return null;
 			return catalog.get(0);
 		}
-		catch (AdaFrameworkException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			return null;

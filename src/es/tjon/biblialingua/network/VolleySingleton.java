@@ -1,4 +1,4 @@
-package es.tjon.biblialingua.utils;
+package es.tjon.biblialingua.network;
 
 import android.content.*;
 import android.graphics.*;
@@ -7,14 +7,14 @@ import com.android.volley.*;
 import com.android.volley.toolbox.*;
 import java.io.*;
 
-public class MySingleton
+public class VolleySingleton
 {
-	private static MySingleton mInstance;
+	private static VolleySingleton mInstance;
 	private RequestQueue mRequestQueue;
 	private ImageLoader mImageLoader;
 	private static Context mCtx;
 
-	private MySingleton(Context context)
+	private VolleySingleton(Context context)
 	{
 		mCtx = context;
 		mRequestQueue = getRequestQueue();
@@ -41,13 +41,15 @@ public class MySingleton
 				}
 			});
 			
+			
+			
 	}
 
-	public static synchronized MySingleton getInstance(Context context)
+	public static synchronized VolleySingleton getInstance(Context context)
 	{
 		if (mInstance == null)
 		{
-			mInstance = new MySingleton(context);
+			mInstance = new VolleySingleton(context);
 		}
 		return mInstance;
 	}
@@ -68,7 +70,7 @@ public class MySingleton
 		getRequestQueue().add(req);
 	}
 
-	public ImageLoader getImageLoader()
+	public com.android.volley.toolbox.ImageLoader getImageLoader()
 	{
 		return mImageLoader;
 	}
@@ -77,7 +79,7 @@ public class MySingleton
 	{
 		public void put(String key, Bitmap image)
 		{
-			File cacheFile = new File(mCtx.getCacheDir(),new String(key.hashCode()+""));
+			File cacheFile = new File(mCtx.getExternalFilesDir("images"),new String(key.hashCode()+""));
 			try
 			{
 				image.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(cacheFile,false));
@@ -88,7 +90,7 @@ public class MySingleton
 		
 		public Bitmap get(String key)
 		{
-			File cacheFile = new File(mCtx.getCacheDir(),new String(key.hashCode()+""));
+			File cacheFile = new File(mCtx.getExternalFilesDir("images"),new String(key.hashCode()+""));
 			if(!cacheFile.isFile()||!cacheFile.canRead())
 				return null;
 			return BitmapFactory.decodeFile(cacheFile.getAbsolutePath());

@@ -8,6 +8,7 @@ import es.tjon.biblialingua.*;
 import es.tjon.biblialingua.data.catalog.*;
 import es.tjon.biblialingua.utils.*;
 import android.os.*;
+import es.tjon.biblialingua.network.VolleySingleton;
 
 public class CatalogAdapter extends BaseAdapter
 {
@@ -163,7 +164,7 @@ public class CatalogAdapter extends BaseAdapter
 			mImageView.setImageAlpha(255);
 		}
 		ImageLoader mImageLoader;
-		mImageLoader = MySingleton.getInstance(mContext).getImageLoader();
+		mImageLoader = VolleySingleton.getInstance(mContext).getImageLoader();
 		String imageUrl=null;
 		imageUrl = ImageUtil.getImageUrl(getItem(position).getCoverURL(), ImageUtil.LARGE_SIZE);
 		if (imageUrl != null)

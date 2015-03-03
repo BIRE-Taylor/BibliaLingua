@@ -4,9 +4,6 @@
 <classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 <classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 <classpathentry kind="output" path="bin/classes"/>
-<classpathentry kind="lib" path="/storage/emulated/0/AppProjects/BibliaLingua/libs/com.google.gson_2.2/com.google.gson.jar"/>
 <classpathentry kind="lib" path="/storage/emulated/0/AppProjects/BibliaLingua/libs/com.mobandme.ada_v2.4.1.jar"/>
-<classpathentry kind="lib" path="/storage/emulated/0/AppProjects/BibliaLingua/libs/org.restlet.ext.json.jar"/>
-<classpathentry kind="lib" path="/storage/emulated/0/AppProjects/BibliaLingua/libs/org.restlet.jar"/>
-<classpathentry kind="lib" path="/storage/emulated/0/AppProjects/libs/restlet-android-2.2.3/lib/com.google.gson_2.2/com.google.gson.jar"/>
+<classpathentry kind="lib" path="/storage/emulated/0/AppProjects/BibliaLingua/libs/com.google.gson.jar"/>
 </classpath>

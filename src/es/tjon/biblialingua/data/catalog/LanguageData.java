@@ -13,8 +13,9 @@ import es.tjon.biblialingua.fragment.*;
 import es.tjon.biblialingua.network.*;
 import es.tjon.biblialingua.utils.*;
 import java.util.*;
+import com.android.volley.Response;
 
-public class LanguageData implements RestClient.OnFinishListener<LanguageData>
+public class LanguageData implements Response.Listener<LanguageData>
 {
 
 	public static Language[] mLanguages = null;
@@ -62,8 +63,13 @@ public class LanguageData implements RestClient.OnFinishListener<LanguageData>
 			{e.printStackTrace();}
 			if (!langsDownloaded && (mLanguages == null || mLanguages.length < 1))
 			{
-				if(Util.getInstance(context).isConnectionWithFail())
-					RestClient.query(context, new LanguageData(), RestClient.Actions.QUERY_LANGUAGES);
+				try
+				{
+					if (Util.getInstance(context).isConnectionWithFail())
+						RestClient.query(context, new LanguageData(), new RestClient.ParameterSet(RestClient.Actions.QUERY_LANGUAGES));
+				}
+				catch (Exception e)
+				{context.finish();}
 				return;
 			}
 		}
@@ -215,7 +221,7 @@ public class LanguageData implements RestClient.OnFinishListener<LanguageData>
 	}
 
 	@Override
-	public void onFinish(LanguageData result)
+	public void onResponse(LanguageData result)
 	{
 		mLanguages=result.languages;
 		if (result == null || !result.success)

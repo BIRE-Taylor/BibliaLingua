@@ -3,6 +3,8 @@ import com.mobandme.ada.*;
 import com.mobandme.ada.annotations.*;
 import es.tjon.biblialingua.database.*;
 import java.util.*;
+import com.mobandme.ada.exceptions.AdaFrameworkException;
+import android.content.Context;
 
 @Table(name="Catalog")
 public class Catalog extends Entity
@@ -46,12 +48,17 @@ public class Catalog extends Entity
 		}
 	}
 
-	public void update(Catalog catalog, ApplicationDataContext adc)
+	public void update(Catalog catalog, ApplicationDataContext adc, Context context)
 	{
 		name = catalog.name;
 		date_changed = catalog.date_changed;
 		language = catalog.language;
 		display_order = catalog.display_order;
+		if(folders==null||folders.size()==0)
+		{
+				folders = new ArrayList<Folder>(Arrays.asList( adc.getFolders(language,0) ));
+		}
+		System.out.println(folders.size()+" folders after");
 		ArrayList<Folder> newFolders = new ArrayList<Folder>();
 		int i = 0;
 		for (Folder folder : catalog.folders)
@@ -64,7 +71,7 @@ public class Catalog extends Entity
 				if(oldFolder.id==folder.id)
 				{
 					found = oldFolder;
-					found.update(folder,adc);
+					found.update(folder,adc, context);
 					break;
 				}
 			}
@@ -76,6 +83,7 @@ public class Catalog extends Entity
 			else
 			{
 				folder.catalog=this;
+				folder.language=language;
 				folder.setStatus(STATUS_NEW);
 				newFolders.add(folder);
 				folder.setup(adc);
@@ -85,6 +93,10 @@ public class Catalog extends Entity
 		folders = newFolders;
 		ArrayList<Book> newBooks = new ArrayList<Book>();
 		i = 0;
+		if(books==null||books.size()==0)
+		{
+			books = new ArrayList<Book>(Arrays.asList( adc.getBooks(language,0) ));
+		}
 		for (Book book : catalog.books)
 		{
 			book.language=language;
@@ -94,7 +106,7 @@ public class Catalog extends Entity
 				if(oldBook.id==book.id)
 				{
 					found = oldBook;
-					found.update(book,adc);
+					found.update(book,adc,context);
 					break;
 				}
 			}

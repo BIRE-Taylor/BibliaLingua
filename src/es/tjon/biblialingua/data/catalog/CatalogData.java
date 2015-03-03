@@ -1,17 +1,19 @@
 package es.tjon.biblialingua.data.catalog;
-import com.mobandme.ada.*;
-import com.mobandme.ada.exceptions.*;
-import es.tjon.biblialingua.*;
-import es.tjon.biblialingua.database.*;
-import es.tjon.biblialingua.network.*;
-import java.util.*;
-import org.restlet.data.*;
 import android.os.*;
+import com.mobandme.ada.*;
 
-public class CatalogData implements RestClient<CatalogData>.OnFinishListener<CatalogData>
+import com.android.volley.Response;
+import com.mobandme.ada.exceptions.AdaFrameworkException;
+import es.tjon.biblialingua.BaseActivity;
+import es.tjon.biblialingua.data.catalog.CatalogData;
+import es.tjon.biblialingua.database.ApplicationDataContext;
+import es.tjon.biblialingua.network.RestClient;
+import java.util.List;
+
+public class CatalogData implements Response.Listener<CatalogData>
 {
 	
-	Catalog catalog;
+	public Catalog catalog;
 	public boolean success;
 
 	private static BaseActivity context;
@@ -45,20 +47,20 @@ public class CatalogData implements RestClient<CatalogData>.OnFinishListener<Cat
 		if(adc.getCatalog(context.getPrimaryLanguage())==null)
 		{
 			language = context.getPrimaryLanguage();
-			RestClient.query(context, new CatalogData(), RestClient.Actions.QUERY_CATALOG, new Parameter(RestClient.Actions.Parameters.LANGUAGE_ID,language.id+""));
+			RestClient.query(context, new CatalogData(), new RestClient.ParameterSet(RestClient.Actions.QUERY_CATALOG, new RestClient.ParameterSet.Parameter(RestClient.Actions.Parameters.LANGUAGE_ID,language.id)));
 			return;
 		}
 		if(adc.getCatalog(context.getSecondaryLanguage())==null)
 		{
 			language = context.getSecondaryLanguage();
-			RestClient.query(context, new CatalogData(), RestClient.Actions.QUERY_CATALOG, new Parameter(RestClient.Actions.Parameters.LANGUAGE_ID,language.id+""));
+			RestClient.query(context, new CatalogData(), new RestClient.ParameterSet(RestClient.Actions.QUERY_CATALOG, new RestClient.ParameterSet.Parameter(RestClient.Actions.Parameters.LANGUAGE_ID,language.id)));
 			return;
 		}
 		context.catalogInitialized();
 	}
 
 	@Override
-	public void onFinish(CatalogData result)
+	public void onResponse(CatalogData result)
 	{
 		if(result==null||!result.success)
 		{
@@ -87,7 +89,7 @@ public class CatalogData implements RestClient<CatalogData>.OnFinishListener<Cat
 					runInit();
 					return;
 				}
-				cats.get(0).update(result.catalog,adc);
+				cats.get(0).update(result.catalog,adc,context);
 				cats.get(0).setStatus(Entity.STATUS_UPDATED);
 				cat.add(cats.get(0));
 			}

@@ -14,8 +14,11 @@ import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
 import es.tjon.biblialingua.listener.*;
+import android.widget.*;
+import android.preference.PreferenceManager;
+import es.tjon.biblialingua.fragment.SettingsFragment;
 
-public class BookDownloadService extends Service implements ProgressMonitor
+public class DownloadService extends Service implements ProgressMonitor
 {
 
 	private static final int NOTIFICATION = 995678;
@@ -55,6 +58,14 @@ public class BookDownloadService extends Service implements ProgressMonitor
 	private long time=0;
 
 	private boolean empty;
+
+	public static final String CHECK_UPDATES = "CHECKUPDATE";
+	int updating = 0;
+
+	public void finishedUpdating( UpdateTask task )
+	{
+		updating-=1;
+	}
 
 	@Override
 	public IBinder onBind(Intent p1)
@@ -175,15 +186,15 @@ public class BookDownloadService extends Service implements ProgressMonitor
 	
 	public boolean isDone()
 	{
-		return mDownloadQueue.isEmpty();
+		return mDownloadQueue.isEmpty()&&updating<=0;
 	}
 	
 	public void notifyError(Book item)
 	{
-		Notification notification = new Notification.Builder(BookDownloadService.this)
+		Notification notification = new Notification.Builder(DownloadService.this)
 			.setContentTitle("Downloading book failed")
 			.setContentText(item.name)
-			.setContentIntent(PendingIntent.getService(BookDownloadService.this,item.id,new Intent(BookDownloadService.this,BookDownloadService.class),PendingIntent.FLAG_UPDATE_CURRENT))
+			.setContentIntent(PendingIntent.getService(DownloadService.this,item.id,new Intent(DownloadService.this,DownloadService.class),PendingIntent.FLAG_UPDATE_CURRENT))
 			.setSmallIcon(android.R.drawable.stat_notify_error)
 			.build();
 
@@ -197,8 +208,13 @@ public class BookDownloadService extends Service implements ProgressMonitor
 	@Override
 	public void onCreate()
 	{
-
-		mClients = new ArrayList<Messenger>();
+		try
+		{
+			if ( adc == null )
+				adc = new ApplicationDataContext( this );
+		} catch (AdaFrameworkException e)
+		{}
+		mClients = new ArrayList<Messenger>( );
 		mDownloadQueue = new ArrayList<DownloadTask>();
 		showNotification();
 		super.onCreate();
@@ -247,13 +263,38 @@ public class BookDownloadService extends Service implements ProgressMonitor
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
+		try
+		{
+			if ( adc == null )
+				adc = new ApplicationDataContext( this );
+		} catch (AdaFrameworkException e)
+		{}
+		if ( !Util.getInstance( this ).isConnected( ) )
+		{
+			Toast.makeText(this,"Internet required to download or update.",Toast.LENGTH_SHORT).show();
+			if(running&&exec!=null)
+			{
+				exec.shutdown();
+			}
+			stopSelf();
+			return START_NOT_STICKY;
+		}
 		if (!running)
 		{
 			running = true;
 			exec = Executors.newSingleThreadExecutor();
 		}
 		if(intent!=null)
+		{
+			if(intent.getBooleanExtra(CHECK_UPDATES,false))
+			{
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
+				updating+=2;
+				new UpdateTask( this, adc.getLanguage( prefs.getString( SettingsFragment.PREFERENCE_PRIMARY_LANGUAGE, "-1" ) ) ).check( );
+				new UpdateTask( this, adc.getLanguage( prefs.getString( SettingsFragment.PREFERENCE_SECONDARY_LANGUAGE, "-1" ) ) ).check( );
+			}
 			checkNewDownloads(intent.getLongExtra(QUEUE_ITEM_ID,-1));
+		}
 		else
 			checkNewDownloads(-1);
 		return START_STICKY;
@@ -263,8 +304,6 @@ public class BookDownloadService extends Service implements ProgressMonitor
 	{
 		try
 		{
-			if (adc == null)
-				adc = new ApplicationDataContext(this);
 			ObjectSet<DownloadItem> queue = adc.downloadQueue;
 			queue.fill("time");
 			if (mDownloadQueue.isEmpty())

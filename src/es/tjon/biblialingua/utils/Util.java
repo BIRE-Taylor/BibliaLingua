@@ -5,15 +5,30 @@ import android.net.*;
 import es.tjon.biblialingua.*;
 import android.widget.*;
 import android.os.*;
+import es.tjon.biblialingua.network.*;
 
 public class Util
 {
 	
-	BaseActivity context;
+	BaseActivity bContext;
+	
+	Service sContext;
 	
 	private static Util instance = null;
 
 	private Dialog mLoadingDialog = null;
+
+	private static Util sInstance = null;
+
+	public static Util getInstance(Service context)
+	{
+		if(context==null)
+			return sInstance;
+		if(sInstance==null)
+			sInstance = new Util();
+		sInstance.sContext = context;
+		return sInstance;
+	}
 	
 	public static Util getInstance(BaseActivity context)
 	{
@@ -21,12 +36,15 @@ public class Util
 			return instance;
 		if(instance==null)
 			instance = new Util();
-		instance.context = context;
+		instance.bContext = context;
 		return instance;
 	}
 
 	public boolean isConnected()
 	{
+		if(bContext==null&&sContext==null)
+			return false;
+		Context context=bContext==null?sContext:bContext;
         ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
         if (connectivityManager == null) return false;
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -41,17 +59,19 @@ public class Util
         return true;
     }
 	
-	public boolean isConnectionWithFail()
+	public boolean isConnectionWithFail() throws Exception
 	{
+		if(bContext==null)
+			throw new Exception("Must be called from an Activity context");
 		if (!isConnected())
 		{
-			context.runOnUiThread(new Runnable()
+			bContext.runOnUiThread(new Runnable()
 				{
 
 					@Override
 					public void run()
 					{
-						new AlertDialog.Builder(context)
+						new AlertDialog.Builder(bContext)
 							.setTitle("Initiatialization failed")
 							.setMessage("Please connect to the internet and try again.")
 							.setCancelable(false)
@@ -70,7 +90,7 @@ public class Util
 								@Override
 								public void onClick(DialogInterface p1, int p2)
 								{
-									context.initialize();
+									bContext.initialize();
 								}
 							})
 							.show();
@@ -88,32 +108,41 @@ public class Util
 		return true;
 	}
 
-	private Dialog getLoadingDialog()
+	private Dialog getLoadingDialog() throws Exception
 	{
-		if(mLoadingDialog!=null)
+		if (bContext == null)
+			throw new Exception("Must be called from an Activity context");
+		if (mLoadingDialog != null)
 			return mLoadingDialog;
-		Dialog loading = new Dialog(context);
+		Dialog loading = new Dialog(bContext);
 		loading.setContentView(R.layout.loadingdialog);
 		return loading;
 	}
 	
-	public void showLoadingDialog(String text)
+	public void showLoadingDialog(String text) throws Exception
 	{
 		setLoadingDialogText(text);
 		getLoadingDialog().show();
 	}
 	
-	public void dismissLoadingDialog()
+	public void dismissLoadingDialog() throws Exception
 	{
+		if(bContext==null)
+			throw new Exception("Must be called from an Activity context");
 		if(!Looper.getMainLooper().equals(Looper.myLooper()))
 		{
-			context.runOnUiThread(new Runnable()
+			bContext.runOnUiThread(new Runnable()
 				{
 
 					@Override
 					public void run()
 					{
-						dismissLoadingDialog();
+						try
+						{
+							dismissLoadingDialog();
+						}
+						catch (Exception e)
+						{}
 					}
 				});
 			return;
@@ -133,11 +162,13 @@ public class Util
 		instance=null;
 	}
 	
-	public void setLoadingDialogText(CharSequence message)
+	public void setLoadingDialogText(CharSequence message) throws Exception
 	{
+		if(bContext==null)
+			throw new Exception("Must be called from an Activity context");
 		if(!Looper.getMainLooper().equals(Looper.myLooper()))
 		{
-			context.runOnUiThread(new Runnable()
+			bContext.runOnUiThread(new Runnable()
 				{
 
 					private CharSequence message;
@@ -151,7 +182,12 @@ public class Util
 					@Override
 					public void run()
 					{
-						setLoadingDialogText(message);
+						try
+						{
+							setLoadingDialogText(message);
+						}
+						catch (Exception e)
+						{}
 					}
 				}.setup(message));
 			return;
