@@ -64,6 +64,7 @@ public class Folder extends Entity implements CatalogItem
 	@TableField(name="f_cover_art",datatype=DATATYPE_TEXT)
 	public String cover_art=null;
 
+
 	public void saveAll(ApplicationDataContext adc)
 	{
 		Log.i(TAG,"Save all "+name+" "+language);
@@ -99,20 +100,25 @@ public class Folder extends Entity implements CatalogItem
 
 	public void setup(ApplicationDataContext adc)
 	{
+		int i = 0;
 		Log.i(TAG,"Setup "+name+" "+language);
 		for(Folder folder:folders)
 		{
 			folder.folder=this.id;
 			folder.language=language;
 			folder.setStatus(STATUS_NEW);
+			folder.display_order=i;
 			folder.setup(adc);
+			i++;
 		}
 		for(Book book:books)
 		{
 			book.folder=this;
 			book.language=language;
+			book.display_order=i;
 			book.setStatus(STATUS_NEW);
 			book.setup(adc);
+			i++;
 		}
 	}
 
@@ -134,6 +140,7 @@ public class Folder extends Entity implements CatalogItem
 		for (Folder newFolder : folder.folders)
 		{
 			newFolder.language=language;
+			newFolder.display_order=i;
 			Folder found = null;
 			for(Folder oldFolder: folders)
 			{
@@ -166,9 +173,9 @@ public class Folder extends Entity implements CatalogItem
 			books = new ArrayList<Book>(Arrays.asList( adc.getBooks(language,getID()) ));
 		}
 		ArrayList<Book> newBooks = new ArrayList<Book>();
-		i = 0;
 		for (Book book : folder.books)
 		{
+			book.display_order=i;
 			book.language=language;
 			Book found = null;
 			for(Book oldBook: books)
