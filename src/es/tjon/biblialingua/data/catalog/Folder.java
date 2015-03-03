@@ -154,6 +154,7 @@ public class Folder extends Entity implements CatalogItem
 			}
 			if(found!=null)
 			{
+				folders.remove(found);
 				found.setStatus(STATUS_UPDATED);
 				newFolders.add(found);
 			}
@@ -165,6 +166,12 @@ public class Folder extends Entity implements CatalogItem
 				newFolders.add(newFolder);
 				newFolder.setup(adc);
 			}
+			i++;
+		}
+		for(Folder extra : folders)
+		{
+			extra.display_order=i;
+			newFolders.add(extra);
 			i++;
 		}
 		folders = newFolders;
@@ -190,6 +197,7 @@ public class Folder extends Entity implements CatalogItem
 			}
 			if(found!=null)
 			{
+				books.remove(found);
 				found.setStatus(STATUS_UPDATED);
 				newBooks.add(found);
 			}
@@ -201,6 +209,12 @@ public class Folder extends Entity implements CatalogItem
 				newBooks.add(book);
 				book.setup(adc);
 			}
+			i++;
+		}
+		for(Book extra : books)
+		{
+			extra.display_order=i;
+			newBooks.add(extra);
 			i++;
 		}
 		books = newBooks;
