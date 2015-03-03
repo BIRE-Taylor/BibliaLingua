@@ -15,8 +15,8 @@ import android.support.v4.app.*;
 
 public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 {
-	BookDataContext mPrimaryBDC;
-	BookDataContext mSecondaryBDC;
+	private BookDataContext mPrimaryBDC;
+	private BookDataContext mSecondaryBDC;
 	
 	private static final String TAG = "es.tjon.biblialingua.BVFAdapter";
 	
@@ -85,9 +85,14 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 	
 	public void update(BookDataContext primaryBDC, BookDataContext secondaryBDC, String currentUri)
 	{
-		mPrimaryBDC=primaryBDC;
-		mSecondaryBDC=secondaryBDC;
-		mCurrentUri=currentUri;
+		if(primaryBDC!=null)
+			mPrimaryBDC=primaryBDC;
+		if(secondaryBDC!=null)
+			mSecondaryBDC=secondaryBDC;
+		if(currentUri!=null)
+			mCurrentUri=currentUri;
+		if(mPrimaryBDC==null)
+			Log.e(TAG,"mPrimaryBDC NULL");
 		update();
 	}
 
@@ -114,6 +119,8 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 				
 				public void onPostExecute(ArrayList<String> object)
 				{
+					if(object == null)
+						return;
 					mIndex = object;
 					notifyDataSetChanged();
 					if(mSetUri)
@@ -124,6 +131,10 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 			}.execute();
 			return null;
 		}
+		BookDataContext pbdc = mPrimaryBDC;
+		BookDataContext sbdc = mSecondaryBDC;
+		if(pbdc==null)
+			return null;
 		String uri = mCurrentUri.substring(0,mCurrentUri.lastIndexOf("/"));
 		ArrayList<String> index = new ArrayList<String>();
 		mPrimaryNodes = new ConcurrentSkipListMap<String, Node>();
@@ -131,18 +142,18 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 		mFragments.clear();
 		try
 		{
-			mPrimaryBDC.nodes.fill("NOT(content IS NULL OR trim(content) = '') AND uri LIKE '"+uri+"%'",new String[]{},null, null);
+			pbdc.nodes.fill("NOT(content IS NULL OR trim(content) = '') AND uri LIKE '"+uri+"%'",new String[]{},null, null);
 			List<Node> nodes = new ArrayList<Node>(mPrimaryBDC.nodes);
 			for(Node node : nodes)
 			{
 				mPrimaryNodes.put(node.uri,node);
 				index.add(node.uri);
 			}
-			if(mSecondaryBDC!=null)
+			if(sbdc!=null)
 			{
 				try
 				{
-					mSecondaryBDC.nodes.fill("NOT(content IS NULL OR trim(content) = '') AND uri LIKE '"+uri+"%'",new String[]{},null, null);
+					sbdc.nodes.fill("NOT(content IS NULL OR trim(content) = '') AND uri LIKE '"+uri+"%'",new String[]{},null, null);
 				nodes.clear();
 				nodes.addAll(mSecondaryBDC.nodes);
 				for(Node node : nodes)
