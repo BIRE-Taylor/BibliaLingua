@@ -125,7 +125,14 @@ public class RelatedFragment extends ListFragment
 			{
 				mScrollPending=false;
 				int pos= mRA.getPosition(mReference);
-				getListView().smoothScrollToPositionFromTop(pos,0);
+				try
+				{
+					getListView().smoothScrollToPositionFromTop(pos,0);
+				}catch(IllegalStateException e)
+				{
+					e.printStackTrace();
+					mScrollPending=true;
+				}
 				if(select)
 					getListView().setSelection(pos);
 			}

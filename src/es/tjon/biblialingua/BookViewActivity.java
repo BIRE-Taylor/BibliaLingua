@@ -47,6 +47,8 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 
 	private boolean mLinkClicked=false;
 
+	private boolean mPaused=false;
+
 	public void showProgress(boolean visibility)
 	{
 		findViewById(R.id.pagerProgressBar).setVisibility(visibility?View.VISIBLE:View.GONE);
@@ -105,6 +107,8 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		start();
   	}
 	
+	
+	
 	public void start()
 	{
 		if(Looper.getMainLooper().equals(Looper.myLooper()))
@@ -117,6 +121,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 					if(mAdapter==null)
 						mAdapter = new BilingualViewFragmentAdapter(getSupportFragmentManager(),BookViewActivity.this);
 					mPager.setAdapter(mAdapter);
+					getBookUtil();
 				}
 				
 				@Override
@@ -128,21 +133,25 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 				
 				protected void onPostExecute( Object object)
 				{
+					if(mPaused)
+						return;
 					mAdapter.setUri(mCurrentUri,mPager);
 					mAdapter.update(mBDCPrimary,mBDCSecondary,mCurrentUri);
 				}
 			}.execute();
 			return;
 		}
+		if(mPaused)
+			return;
 		mBookPrimary=getAppDataContext().getBook(getPrimaryLanguage(),mCurrentUri);
 		if(mBookPrimary==null)
 			return;
 		mBDCPrimary=new BookDataContext(this,mBookPrimary);
 		mBookSecondary=getAppDataContext().getBook(getSecondaryLanguage(),mCurrentUri);
-		if(mBookSecondary==null||!getBookUtil().doesExist(mBookSecondary))
+		if(mBookSecondary==null||getBookUtil()==null||!getBookUtil().doesExist(mBookSecondary))
 			mBDCSecondary=null;
 		else
-			mBDCSecondary=new BookDataContext(this,mBookSecondary);
+			mBDCSecondary=new BookDataContext(BookViewActivity.this,mBookSecondary);
 	}
 
 	@Override
@@ -189,6 +198,20 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 				}
 			});
 		super.onPostCreate(savedInstanceState);
+	}
+
+	@Override
+	protected void onResume( )
+	{
+		mPaused=false;
+		super.onResume( );
+	}
+
+	@Override
+	protected void onPause( )
+	{
+		mPaused=true;
+		super.onPause( );
 	}
 	
 	@Override

@@ -30,14 +30,9 @@ public class BilingualViewFragment extends Fragment
 
 	private BookViewClient mViewClientPrimary;
 	private BookViewClient mViewClientSecondary;
-
-	private boolean isCreated=false;
+	
 	private boolean mSecondaryLoaded=false;
-
-	public BilingualViewFragment()
-	{
-		super();
-	}
+	private boolean mStopped=false;
 
 	public void showReference(String uri)
 	{
@@ -111,7 +106,6 @@ public class BilingualViewFragment extends Fragment
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState)
 	{
-		isCreated = true;
 		mContentPrimary = (BookViewer)view.findViewById(R.id.content);
 		mViewClientPrimary = new BookViewClient((BookInterface)getActivity(), true);
 		mContentPrimary.setWebViewClient(mViewClientPrimary);
@@ -234,9 +228,18 @@ public class BilingualViewFragment extends Fragment
 		boolean portrait = getActivity().getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT;
 		return pref&&portrait;
 	}
+
+	@Override
+	public void onStop( )
+	{
+		mStopped=true;
+		super.onStop( );
+	}
 	
 	public void refreshDisplayMode()
 	{
+		if(mStopped)
+			return;
 		if(Looper.getMainLooper().equals(Looper.myLooper()))
 		{
 			AsyncTask.execute(new Runnable(){
@@ -260,6 +263,8 @@ public class BilingualViewFragment extends Fragment
 
 	public void refreshDisplay()
 	{
+		if(mStopped)
+			return;
 		Log.i(TAG,"Setting Display");
 		if (getView() == null||mContentPrimary==null)
 		{
@@ -379,15 +384,21 @@ public class BilingualViewFragment extends Fragment
 			@Override
 			public void run()
 			{
+				if(getActivity()==null)
+					return;
 				getActivity().runOnUiThread(new Runnable()
 				{
 					
 					@Override
 					public void run()						   
 					{
-						mContentPrimary.refreshMaps();
+						if(mStopped)
+							return;
+						if(mContentPrimary!=null&&BaseActivity.isDisplayPrimary())
+							mContentPrimary.refreshMaps();
+						if(mContentSecondary!=null&&BaseActivity.isDisplaySecondary())
 						mContentSecondary.refreshMaps();
-						if (BaseActivity.isDisplayRelated())
+						if (BaseActivity.isDisplayRelated()&&mContentPrimary!=null&&mContentRelated!=null)
 							mContentRelated.scrollTo(mContentPrimary.findFirstRCAItem()); 
 					}
 				});

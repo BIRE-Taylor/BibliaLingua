@@ -27,8 +27,6 @@ public class BookViewer extends WebView
 	public NavigableMap<Float,String> rcaOffsetMap;
 	public NavigableMap<Float,String> uriOffsetMap;
 	public NavigableMap<String,Float> uriOffsetLookupMap;
-	
-	Toast toast;
 
 	private float mScale;
 	
@@ -40,11 +38,10 @@ public class BookViewer extends WebView
 	public BookViewer(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
-		toast = Toast.makeText(context,"",Toast.LENGTH_SHORT);
 		mActivity=(BookInterface) context;
 		DisplayMetrics metrics = new DisplayMetrics();
 		mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		mScale=metrics.scaledDensity;
+		mScale=metrics.density;
 		getSettings().setJavaScriptEnabled(true);
 		String cs = ((BaseActivity)context).getColorScheme();
 		if(cs.equalsIgnoreCase("Night"))
