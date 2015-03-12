@@ -238,7 +238,7 @@ public class BilingualViewFragment extends Fragment
 	
 	public void refreshDisplayMode()
 	{
-		if(mStopped)
+		if(mStopped||getActivity()==null)
 			return;
 		if(Looper.getMainLooper().equals(Looper.myLooper()))
 		{
@@ -263,7 +263,7 @@ public class BilingualViewFragment extends Fragment
 
 	public void refreshDisplay()
 	{
-		if(mStopped)
+		if(mStopped||getActivity()==null)
 			return;
 		Log.i(TAG,"Setting Display");
 		if (getView() == null||mContentPrimary==null)
