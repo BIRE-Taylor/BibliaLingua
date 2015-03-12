@@ -20,13 +20,12 @@ extends BaseAdapter
     private BookDataContext mBDC;
     private FragmentActivity mContext;
     private ArrayList<Node> mItems;
-    private Long parentID;
+    private Long parentID=new Long(0);
 
 	private ListFragment mFragment;
 
     public BookAdapter(BaseActivity context, ListFragment fragment, BookDataContext bookDataContext)
 	{
-		parentID = new Long(0);
         mContext = context;
 		mFragment = fragment;
         mBDC = bookDataContext;

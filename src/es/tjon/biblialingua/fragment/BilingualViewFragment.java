@@ -62,6 +62,13 @@ public class BilingualViewFragment extends Fragment
 	}
 
 	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		refreshDisplayMode();
+		super.onConfigurationChanged( newConfig );
+	}
+	
+	@Override
 	public void onAttach(FragmentActivity activity)
 	{
 		if (activity instanceof BookInterface)
@@ -81,11 +88,13 @@ public class BilingualViewFragment extends Fragment
 			State state = savedInstanceState.getParcelable(KEY_STATE);
 			if (state != null)
 				mState = state;
+			if (mState==null&&getArguments()!=null)
+				getArguments().getParcelable(KEY_STATE);
 			if (mState == null)
 				mState = new State();
 		}
-		Log.i(TAG,"State "+(mState!=null));
 		Log.i(TAG, "onCreate " + mState.mPrimaryNode.title);
+		Log.i(TAG,"State "+(mState!=null));
 		super.onCreate(savedInstanceState);
 	}
 
@@ -111,7 +120,7 @@ public class BilingualViewFragment extends Fragment
 		mContentPrimary.setWebViewClient(mViewClientPrimary);
 		mContentPrimary.loadDataWithBaseURL(BookFragment.BASE_URL, Node.staticGenerateHtmlText(getActivity(), mState.mPrimaryCSS, mState.mPrimaryNode, false), "text/html", null, BookFragment.BASE_URL + (mState.mUri == null ?mState.mPrimaryNode.uri: mState.mUri));
 		mContentSecondary = (BookViewer)view.findViewById(R.id.secondaryContent);
-		if (mState.mSecondaryNode != null && BaseActivity.isDisplaySecondary())
+		if (getSecondaryNode() != null && BaseActivity.isDisplaySecondary())
 		{
 			loadSecondary();
 		}
@@ -144,7 +153,7 @@ public class BilingualViewFragment extends Fragment
 		mSecondaryLoaded = true;
 		mViewClientSecondary = new BookViewClient((BookInterface)getActivity(), false);
 		mContentSecondary.setWebViewClient(mViewClientSecondary);
-		mContentSecondary.loadDataWithBaseURL(BookFragment.BASE_URL, Node.staticGenerateHtmlText(getActivity(), mState.mSecondaryCSS, mState.mSecondaryNode, true), "text/html", null, BookFragment.BASE_URL + mState.mSecondaryNode.uri);
+		mContentSecondary.loadDataWithBaseURL(BookFragment.BASE_URL, Node.staticGenerateHtmlText(getActivity(), mState.mSecondaryCSS, getSecondaryNode(), true), "text/html", null, BookFragment.BASE_URL + getSecondaryNode().uri);
 	}
 
 	@Override
@@ -161,6 +170,17 @@ public class BilingualViewFragment extends Fragment
 		if(mState==null)
 			return null;
 		return mState.mPrimaryNode;
+	}
+	
+	public Node getSecondaryNode()
+	{
+		if(mState==null)
+			mState=getArguments().getParcelable(KEY_STATE);
+		if(mState==null)
+			return null;
+		if(mState.mSecondaryNode==null)
+			mState=getArguments().getParcelable(KEY_STATE);
+		return mState.mSecondaryNode;
 	}
 
 	public static class State implements Parcelable
@@ -239,7 +259,10 @@ public class BilingualViewFragment extends Fragment
 	public void refreshDisplayMode()
 	{
 		if(mStopped||getActivity()==null)
+		{
+			System.out.println("Not refreshing display mode "+getPrimaryNode().title);
 			return;
+		}
 		if(Looper.getMainLooper().equals(Looper.myLooper()))
 		{
 			AsyncTask.execute(new Runnable(){
@@ -264,18 +287,22 @@ public class BilingualViewFragment extends Fragment
 	public void refreshDisplay()
 	{
 		if(mStopped||getActivity()==null)
+		{
+			Log.i(TAG,"Not Setting Display "+getPrimaryNode().title);
 			return;
-		Log.i(TAG,"Setting Display");
+		}
+		Log.i(TAG,"Setting Display "+getPrimaryNode().title);
 		if (getView() == null||mContentPrimary==null)
 		{
 			Log.i(TAG,"View is null");
 			return;
 		}
-		boolean dispFirst=mActivity.isDisplayPrimary();
+		boolean dispFirst = mActivity.isDisplayPrimary();
 		boolean dispSecond = mActivity.isDisplaySecondary();
 		boolean dispRelated = mActivity.isDisplayRelated();
-		if (dispSecond && mState.mSecondaryNode == null)
+		if (dispSecond && getSecondaryNode() == null)
 		{
+			System.out.println("Disp Second Failed "+getPrimaryNode().title);
 			dispSecond = false;
 		}
 		if (dispSecond)
@@ -313,6 +340,12 @@ public class BilingualViewFragment extends Fragment
 				display.getSize(size);
 				width = (size.x);
 			}
+		}
+		if((getActivity().getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT&&width>height)||(getActivity().getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE&&width<height))
+		{
+			int x = width;
+			width = height;
+			height = x;
 		}
 		if (dispRelated)
 		{

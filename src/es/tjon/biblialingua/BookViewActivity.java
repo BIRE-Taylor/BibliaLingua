@@ -14,12 +14,13 @@ import es.tjon.biblialingua.utils.*;
 import android.support.v4.app.*;
 import android.app.*;
 import android.graphics.drawable.*;
+import android.content.res.Configuration;
 
 
 public class BookViewActivity extends BookInterface implements CustomLinkMovementMethod.LinkListener, View.OnSystemUiVisibilityChangeListener
 {
 	
-	public static final String TAG = "es.tjon.biblialingua.BookViewActovity";
+	public static final String TAG = "es.tjon.biblialingua.BookViewActivity";
 	public static final String KEY_URI = TAG+".uri";
 	private static final String BOOKPRIMARYDISPLAY = TAG+".BookPrimaryDisplay";
 	private static final String BOOKSECONDARYDISPLAY = TAG+".BookSecondaryDisplay";
@@ -152,6 +153,12 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 			mBDCSecondary=null;
 		else
 			mBDCSecondary=new BookDataContext(BookViewActivity.this,mBookSecondary);
+	}
+
+	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		super.onConfigurationChanged( newConfig );
 	}
 
 	@Override
@@ -313,7 +320,10 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		if(!isDisplayPrimary())
 			setDisplayRelated(false);
 		if(mPager!=null&&mAdapter!=null)
+		{
+			System.out.println("Refresh Display "+((BilingualViewFragment)mAdapter.getItem(mPager.getCurrentItem())).getPrimaryNode().title);
 			((BilingualViewFragment)mAdapter.getItem(mPager.getCurrentItem())).refreshDisplayMode();
+		}
 	}
 
 	private void setFullscreen(boolean fullscreen)

@@ -44,7 +44,8 @@
         </activity>
 		<activity
 			android:label="View Book"
-			android:name=".BookViewActivity">
+			android:name=".BookViewActivity"
+			android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
 		</activity>
 		<service
 			android:label="DownloadService"

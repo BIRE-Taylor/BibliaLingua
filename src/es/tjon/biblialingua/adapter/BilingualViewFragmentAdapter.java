@@ -201,7 +201,6 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 		if(fragment instanceof BilingualViewFragment)
 		{
 			String uri = mIndex.get(position);
-			mFragments.remove(uri);
 			mFragments.put(uri,(BilingualViewFragment)fragment);
 		}
 		return fragment;

@@ -34,7 +34,7 @@ public class BrowseActivity extends BaseActivity implements BrowseFragment.BookC
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-			setContentView(R.layout.browse);
+		setContentView(R.layout.browse);
 		setTitle("Browse");
 	}
 
@@ -52,7 +52,7 @@ public class BrowseActivity extends BaseActivity implements BrowseFragment.BookC
 			savedInstanceState = getIntent().getExtras();
 		}
 		mUri = savedInstanceState.getString(BOOK_URI);
-		mContentBrowse.start(this,savedInstanceState);
+		mContentBrowse.start(this);
 		super.onPostCreate(savedInstanceState);
 	
 	}

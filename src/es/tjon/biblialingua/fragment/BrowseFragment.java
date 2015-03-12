@@ -13,10 +13,13 @@ import android.widget.AdapterView.*;
 import android.widget.*;
 import es.tjon.biblialingua.*;
 import android.support.v4.app.*;
+import android.util.Log;
 
 public class BrowseFragment extends ListFragment
 {
 
+	private static final String TAG = "es.tjon.biblialingua.BrowseFragment";
+	
 	private BrowseFragment.BookController mActivity;
 
 	private BookDataContext bdc;
@@ -37,12 +40,18 @@ public class BrowseFragment extends ListFragment
 		mParent=node.getID();
 		((BookAdapter)getListAdapter()).setParent(node.getID());
 	}
-	
+
 	@Override
-	public void start(BrowseActivity activity, Bundle savedInstanceState)
+	public void onCreate( Bundle savedInstanceState )
 	{
 		if(savedInstanceState!=null)
 			mParent=savedInstanceState.getLong(BUNDLE_PARENT);
+		super.onCreate( savedInstanceState );
+	}
+	
+	@Override
+	public void start(BrowseActivity activity)
+	{
 		mActivity = activity;
 		new AsyncTask()
 		{
@@ -59,6 +68,7 @@ public class BrowseFragment extends ListFragment
 			{
 				((BrowseActivity)mActivity).getActionBar().setTitle(mActivity.mBookPrimary.name);
 				setListAdapter(new BookAdapter((BaseActivity)mActivity,BrowseFragment.this,bdc));
+				Log.i(TAG,"Parent "+mParent);
 				if(mParent!=0)
 				{
 					((BookAdapter)getListAdapter()).setParent(mParent);
@@ -91,7 +101,7 @@ public class BrowseFragment extends ListFragment
 	@Override
 	public void onResume()
 	{
-		if(mParent!=0&&getListAdapter().getCount()==1)
+		if(mParent!=0&&getListAdapter()!=null&&getListAdapter().getCount()==1)
 			getActivity().onBackPressed();
 		super.onResume();
 	}
@@ -162,7 +172,22 @@ public class BrowseFragment extends ListFragment
 	public void onSaveInstanceState(Bundle outState)
 	{
 		if(getListAdapter()!=null)
-			outState.putLong(BUNDLE_PARENT, ((BookAdapter)getListAdapter()).getParent());
+		{
+			mParent = ((BookAdapter)getListAdapter()).getParent();
+			if(getListAdapter().getCount()==1)
+			{
+				try
+				{
+					Node node = bdc.nodes.getElementByID( mParent );
+					if(node!=null)
+						mParent=node.parent_id;
+				}
+				catch (AdaFrameworkException e)
+				{}
+			}
+		}
+		outState.putLong(BUNDLE_PARENT,mParent);
+		Log.i(TAG,"SaveParent "+mParent);
 		super.onSaveInstanceState(outState);
 	}
 	
