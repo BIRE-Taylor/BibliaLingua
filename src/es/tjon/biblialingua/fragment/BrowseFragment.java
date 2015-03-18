@@ -39,6 +39,7 @@ public class BrowseFragment extends ListFragment
 	{
 		mParent=node.getID();
 		((BookAdapter)getListAdapter()).setParent(node.getID());
+		getListView().setSelection(0);
 	}
 
 	@Override

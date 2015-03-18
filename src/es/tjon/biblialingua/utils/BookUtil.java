@@ -12,6 +12,7 @@ import java.io.*;
 import java.util.*;
 import android.app.*;
 import es.tjon.biblialingua.listener.*;
+import es.tjon.biblialingua.database.ApplicationDataContext;
 
 public class BookUtil
 {
@@ -22,6 +23,53 @@ public class BookUtil
 	public BookUtil(Context context)
 	{
 		this.context=context;
+	}
+
+	public void deleteAll( ArrayList<CatalogItem> items )
+	{
+		ArrayList<Book> books = getBooks( items );
+		for(Book book : books)
+		{
+			if(doesExist(book))
+				getFile(book).delete();
+		}
+	}
+
+	public void requestAll( ArrayList<CatalogItem> items )
+	{
+		ArrayList<Book> books = getBooks( items );
+		for ( Book book : books )
+		{
+			if(!doesExist(book))
+				requestBook(book,null);
+		}
+	}
+
+	private ArrayList<Book> getBooks( ArrayList<CatalogItem> items )
+	{
+		ApplicationDataContext adc = null;
+			try
+			{
+				adc = new ApplicationDataContext( context );
+			}
+			catch (AdaFrameworkException e)
+			{return null;}
+		ArrayList<Book> books=new ArrayList<Book>( );
+		for(CatalogItem item : items)
+		{
+			if(item instanceof Book)
+			{
+				books.add((Book)item);
+				
+			}
+			else if(item instanceof Folder)
+			{
+				Book[] folder = adc.getBooks((Folder)item);
+				if(folder!=null)
+					books.addAll(Arrays.asList(folder));
+			}
+		}
+		return books;
 	}
 	
 	public void requestBook( Book item, ProgressMonitor callback)
@@ -88,7 +136,7 @@ public class BookUtil
 						{
 							monitors=new ArrayList<ProgressMonitor>();
 						}
-						if(!monitors.contains((ProgressMonitor)object))
+						if(!monitors.contains((ProgressMonitor)object)&&object!=null)
 							monitors.add((ProgressMonitor)object);
 						if(!mIsBound)
 						{

@@ -1,14 +1,16 @@
 package es.tjon.biblialingua.adapter;
 
-import android.content.*;
+import android.os.*;
 import android.view.*;
 import android.widget.*;
-import com.android.volley.toolbox.*;
 import es.tjon.biblialingua.*;
 import es.tjon.biblialingua.data.catalog.*;
-import es.tjon.biblialingua.utils.*;
-import android.os.*;
+
+import android.content.Context;
+import android.graphics.Color;
+import com.android.volley.toolbox.ImageLoader;
 import es.tjon.biblialingua.network.VolleySingleton;
+import es.tjon.biblialingua.utils.ImageUtil;
 
 public class CatalogAdapter extends BaseAdapter
 {
@@ -19,11 +21,10 @@ public class CatalogAdapter extends BaseAdapter
 		return mContext;
 	}
 
-    public CatalogAdapter(BaseActivity c)
+    public CatalogAdapter(BaseActivity c, Folder folder)
 	{
         mContext = c;
-		mFolders = mContext.getAppDataContext().getFolders(mContext.getPrimaryLanguage(), 0);
-		mBooks = mContext.getAppDataContext().getBooks(mContext.getPrimaryLanguage(), 0);
+		setFolder(folder);
     }
 
 	public void setFolder(Folder folder)
@@ -144,6 +145,8 @@ public class CatalogAdapter extends BaseAdapter
 		{
             itemLayout = (RelativeLayout) convertView;
         }
+		itemLayout.setTag(getItem(position));
+		itemLayout.setBackgroundColor(Color.argb(getItem(position).isSelected()?25:0,255,255,255));
 		ImageView mImageView = (ImageView)itemLayout.findViewById(R.id.item_cover);
         mImageView.setImageResource(R.drawable.cover_default_list);
 		if (getItem(position) instanceof Book)

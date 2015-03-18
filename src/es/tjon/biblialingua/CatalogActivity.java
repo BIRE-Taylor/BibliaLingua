@@ -3,12 +3,14 @@ package es.tjon.biblialingua;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
-import android.widget.AdapterView.*;
-import es.tjon.biblialingua.adapter.*;
 import es.tjon.biblialingua.data.catalog.*;
-import es.tjon.biblialingua.network.*;
-import android.content.*;
-import es.tjon.biblialingua.listener.*;
+
+import android.content.Intent;
+import android.graphics.Color;
+import android.widget.AdapterView.OnItemClickListener;
+import es.tjon.biblialingua.adapter.CatalogAdapter;
+import es.tjon.biblialingua.listener.ProgressMonitor;
+import java.util.ArrayList;
 
 public class CatalogActivity extends BaseActivity implements ProgressMonitor
 {
@@ -48,11 +50,92 @@ public class CatalogActivity extends BaseActivity implements ProgressMonitor
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		int folder=0;
+		if (savedInstanceState != null)
+		{
+			folder = savedInstanceState.getInt(FOLDER_ID, 0);
+
+			currentFolder=getAppDataContext().getFolder(folder);
+		}
 		setContentView(R.layout.catalog);
 		getActionBar().setTitle("Library");
 		gridview = (GridView) findViewById(R.id.catalog);
-		gridview.setAdapter(new CatalogAdapter(this));
+		gridview.setAdapter(new CatalogAdapter(this,currentFolder));
+		gridview.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
+		gridview.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener()
+			{
+				ArrayList<Integer> selected;
 
+				private MenuItem download;
+
+				private MenuItem delete;
+
+				@Override
+				public boolean onCreateActionMode( ActionMode p1, Menu menu )
+				{
+					selected = new ArrayList<Integer>();
+					download = menu.add("Download");
+					delete = menu.add("Delete");
+					return true;
+				}
+
+				@Override
+				public boolean onPrepareActionMode( ActionMode p1, Menu menu )
+				{
+					return false;
+				}
+
+				@Override
+				public boolean onActionItemClicked( ActionMode p1, MenuItem item )
+				{
+					if(item.equals(download))
+					{
+						downloadAll(selected);
+						p1.finish();
+						Toast.makeText(CatalogActivity.this,"Items Requested",Toast.LENGTH_SHORT).show();
+						return true;
+					}
+					if(item.equals(delete))
+					{
+						deleteAll(selected);
+						p1.finish();
+						Toast.makeText(CatalogActivity.this,"Items Deleted",Toast.LENGTH_SHORT).show();
+						setFolder(currentFolder);
+						return true;
+					}
+					return false;
+				}
+
+				@Override
+				public void onDestroyActionMode( ActionMode p1 )
+				{
+					for(Integer position : selected)
+					{
+						if(gridview.findViewWithTag(gridview.getItemAtPosition(position))==null)
+							return;
+						gridview.findViewWithTag(gridview.getItemAtPosition(position)).setBackgroundColor(Color.argb(0,255,255,255));
+						((CatalogItem)gridview.getItemAtPosition(position)).setSelected(false);
+					}
+				}
+
+				@Override
+				public void onItemCheckedStateChanged( ActionMode cab, int position, long id, boolean state )
+				{
+					((CatalogItem)gridview.getItemAtPosition(position)).setSelected(state);
+					if(state)
+					{
+						gridview.findViewWithTag(gridview.getItemAtPosition(position)).setBackgroundColor(Color.argb(25,255,255,255));
+						selected.add(position);
+					}
+					else
+					{
+						gridview.findViewWithTag(gridview.getItemAtPosition(position)).setBackgroundColor(Color.argb(0,255,255,255));
+						selected.remove((Integer)position);
+					}
+					cab.setTitle(selected.size()+" item"+(selected.size()==1?"":"s")+" selected");
+				}
+
+			});
 		gridview.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View v, int position, long id)
 				{
@@ -60,6 +143,7 @@ public class CatalogActivity extends BaseActivity implements ProgressMonitor
 					if (item instanceof Folder)
 					{
 						setFolder((Folder) item);
+						gridview.smoothScrollToPosition(0);
 						return;
 					}
 					if (item instanceof Book)
@@ -71,9 +155,9 @@ public class CatalogActivity extends BaseActivity implements ProgressMonitor
 		if (savedInstanceState != null)
 		{
 			((CatalogAdapter)gridview.getAdapter()).notifyDataSetInvalidated();
-			int folder = savedInstanceState.getInt(FOLDER_ID, -1);
-			if (folder != -1)
-				setFolder(getAppDataContext().getFolder(folder));
+			int folderId = savedInstanceState.getInt(FOLDER_ID, -1);
+			if (folderId != -1)
+				setFolder(getAppDataContext().getFolder(folderId));
 		}
 	}
 
@@ -121,6 +205,26 @@ public class CatalogActivity extends BaseActivity implements ProgressMonitor
 			getBookUtil().requestBook(item, this);
 
 		}
+	}
+
+	public void downloadAll(ArrayList<Integer> positions)
+	{
+		ArrayList<CatalogItem> items = new ArrayList<CatalogItem>();
+		for(int position : positions)
+		{
+			items.add((CatalogItem)gridview.getItemAtPosition(position));
+		}
+		getBookUtil().requestAll(items);
+	}
+
+	public void deleteAll(ArrayList<Integer> positions)
+	{
+		ArrayList<CatalogItem> items = new ArrayList<CatalogItem>();
+		for(int position : positions)
+		{
+			items.add((CatalogItem)gridview.getItemAtPosition(position));
+		}
+		getBookUtil().deleteAll(items);
 	}
 
 	@Override

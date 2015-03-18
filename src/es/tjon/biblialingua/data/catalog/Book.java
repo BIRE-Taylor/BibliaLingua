@@ -74,6 +74,18 @@ public class Book extends Entity implements CatalogItem
 	public String cover_art;
 	@TableField(name="b_folder",datatype=DATATYPE_ENTITY_LINK)
 	public Folder folder=null;
+	
+	private boolean mSelected;
+	
+	public boolean isSelected()
+	{
+		return mSelected;
+	}
+	
+	public void setSelected(boolean selected)
+	{
+		mSelected=selected;
+	}
 
 	public void setup(ApplicationDataContext adc)
 	{

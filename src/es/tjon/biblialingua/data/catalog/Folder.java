@@ -64,6 +64,17 @@ public class Folder extends Entity implements CatalogItem
 	@TableField(name="f_cover_art",datatype=DATATYPE_TEXT)
 	public String cover_art=null;
 
+	private boolean mSelected;
+
+	public boolean isSelected()
+	{
+		return mSelected;
+	}
+
+	public void setSelected(boolean selected)
+	{
+		mSelected=selected;
+	}
 
 	public void saveAll(ApplicationDataContext adc)
 	{

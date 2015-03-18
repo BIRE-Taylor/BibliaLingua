@@ -51,6 +51,24 @@ public class ApplicationDataContext extends ObjectContext
 		
 	}
 
+	public Book[] getBooks( Folder item )
+	{
+		if(item==null)
+			return null;
+		books.clear();
+		try
+		{
+			books.fill("ID IN(SELECT Book_ID FROM LINK_Book_b_folder_Folder WHERE Folder_ID=?)", new String[]{new Long(item.getID()).toString()}, "b_display_order");
+
+		}
+		catch (AdaFrameworkException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		return books.toArray(new Book[books.size()]);
+	}
+
 	@Override
 	protected void onCreate(SQLiteDatabase pDataBase) throws AdaFrameworkException
 	{
