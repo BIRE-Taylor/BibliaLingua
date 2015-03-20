@@ -30,20 +30,20 @@ public class Catalog extends Entity
 		}
 	}
 
-	public void setup(ApplicationDataContext adc)
+	public void setup(ApplicationDataContext adc,Context context)
 	{
 		for(Folder folder:folders)
 		{
 			folder.language=language;
 			folder.catalog=this;
 			folder.setStatus(STATUS_NEW);
-			folder.setup(adc);
+			folder.setup(adc,context);
 		}
 		for(Book book:books)
 		{
 			book.language=language;
 			book.catalog=this;
-			book.setup(adc);
+			book.setup(adc,context);
 			book.setStatus(STATUS_NEW);
 		}
 	}
@@ -86,7 +86,7 @@ public class Catalog extends Entity
 				folder.language=language;
 				folder.setStatus(STATUS_NEW);
 				newFolders.add(folder);
-				folder.setup(adc);
+				folder.setup(adc,context);
 			}
 			i++;
 		}
@@ -120,7 +120,7 @@ public class Catalog extends Entity
 				book.catalog=this;
 				book.setStatus(STATUS_NEW);
 				newBooks.add(book);
-				book.setup(adc);
+				book.setup(adc,context);
 			}
 			i++;
 		}

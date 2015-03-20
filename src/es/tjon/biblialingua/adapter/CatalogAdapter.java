@@ -1,16 +1,16 @@
 package es.tjon.biblialingua.adapter;
 
+import android.content.*;
+import android.graphics.*;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
+import com.android.volley.toolbox.*;
 import es.tjon.biblialingua.*;
 import es.tjon.biblialingua.data.catalog.*;
-
-import android.content.Context;
-import android.graphics.Color;
-import com.android.volley.toolbox.ImageLoader;
-import es.tjon.biblialingua.network.VolleySingleton;
-import es.tjon.biblialingua.utils.ImageUtil;
+import es.tjon.biblialingua.network.*;
+import es.tjon.biblialingua.utils.*;
+import java.util.*;
 
 public class CatalogAdapter extends BaseAdapter
 {
@@ -42,31 +42,31 @@ public class CatalogAdapter extends BaseAdapter
 			}.execute(folder);
 			return;
 		}
-		Folder[] folders;
-		Book[] books;
+		List<Folder> folders;
+		List<Book> books;
 		if (folder == null)
 		{
-			folders = mContext.getAppDataContext().getFolders(mContext.getPrimaryLanguage(), 0);
-			books = mContext.getAppDataContext().getBooks(mContext.getPrimaryLanguage(), 0);
+			folders = mContext.getAppDataContext().getFolders(mContext.getPrimaryLanguage(), 0, mContext.getHideNotDownloaded());
+			books = mContext.getAppDataContext().getBooks(mContext.getPrimaryLanguage(), 0, mContext.getHideNotDownloaded());
 			update(folders,books);
 			return;
 		}
-		folders = mContext.getAppDataContext().getFolders(mContext.getPrimaryLanguage(), folder.getID());
-		books = mContext.getAppDataContext().getBooks(mContext.getPrimaryLanguage(), folder.getID());
+		folders = mContext.getAppDataContext().getFolders(mContext.getPrimaryLanguage(), folder.getID(),mContext.getHideNotDownloaded());
+		books = mContext.getAppDataContext().getBooks(mContext.getPrimaryLanguage(), folder.getID(),mContext.getHideNotDownloaded());
 		update(folders, books);
 	}
 
-	private void update(Folder[] folders, Book[] books)
+	private void update(List<Folder> folders, List<Book> books)
 	{
 		if (!Looper.getMainLooper().equals(Looper.myLooper()))
 		{
 			getContext().runOnUiThread(new Runnable()
 			{
 
-				private Folder[] folders;
-				private Book[] books;
+				private List<Folder> folders;
+				private List<Book> books;
 				
-				public Runnable setup(Folder[] folders, Book[] books)
+				public Runnable setup(List<Folder> folders, List<Book> books)
 				{
 					this.folders=folders;
 					this.books=books;
@@ -112,19 +112,19 @@ public class CatalogAdapter extends BaseAdapter
     public int getCount()
 	{
 		int count=0;
-		count += mFolders != null ?mFolders.length: 0;
-		count += mBooks != null ?mBooks.length: 0;
+		count += mFolders != null ?mFolders.size(): 0;
+		count += mBooks != null ?mBooks.size(): 0;
         return count;
     }
 
     public CatalogItem getItem(int position)
 	{
 
-		if (mFolders != null && position < mFolders.length)
-			return mFolders[position];
-		position = position - (mFolders != null ?mFolders.length: 0);
-		if (mBooks != null && mBooks.length > position)
-			return mBooks[position];
+		if (mFolders != null && position < mFolders.size())
+			return mFolders.get(position);
+		position = position - (mFolders != null ?mFolders.size(): 0);
+		if (mBooks != null && mBooks.size() > position)
+			return mBooks.get(position);
         return null;
     }
 
@@ -178,6 +178,6 @@ public class CatalogAdapter extends BaseAdapter
         return itemLayout;
     }
 
-    private Folder[] mFolders = null;
-	private Book[] mBooks = null;
+    private List<Folder> mFolders = null;
+	private List<Book> mBooks = null;
 }

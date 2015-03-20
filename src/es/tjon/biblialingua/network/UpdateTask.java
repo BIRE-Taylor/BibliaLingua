@@ -83,7 +83,7 @@ public class UpdateTask implements Response.Listener<Object>, Response.ErrorList
 			{
 				System.out.println("Creating catalog");
 				cat.clear( );
-				result.catalog.setup( adc );
+				result.catalog.setup( adc ,mContext);
 				cat.add( result.catalog );
 				result.catalog.setStatus( Entity.STATUS_NEW );
 			}

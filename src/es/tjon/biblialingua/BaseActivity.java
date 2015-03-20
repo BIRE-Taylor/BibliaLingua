@@ -22,6 +22,7 @@ import android.hardware.display.*;
 import android.support.v4.hardware.display.*;
 import android.app.*;
 import android.graphics.*;
+import android.text.method.*;
 
 public class BaseActivity extends FragmentActivity
 {
@@ -49,7 +50,7 @@ public class BaseActivity extends FragmentActivity
 	private static boolean mDisplaySecondary = false;
 	private static boolean mDisplayRelated = false;
 
-	
+	private static boolean mHideNotDownloaded = false;
 
 	public void fileInitialized()
 	{
@@ -269,7 +270,7 @@ public class BaseActivity extends FragmentActivity
 			return;
 		}
 		if(getPrimaryLanguage()==null)
-			System.err.println("Langiage not initialoized");
+			System.err.println("Language not initialoized");
 		if (!mCatalogInitialized)
 		{
 			CatalogData.initialize(this);
@@ -279,7 +280,9 @@ public class BaseActivity extends FragmentActivity
 		{
 			UpdateUtil.initialize(this);
 		}
-		PreferenceManager.setDefaultValues(this,R.xml.settings,false);
+		PreferenceManager.setDefaultValues(this, R.xml.settings, false);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		mHideNotDownloaded=prefs.getBoolean(SettingsFragment.PREFERENCE_HIDE_NOT_DOWNLOADED,false);
 		Intent service = new Intent(this, DownloadService.class);
 		service.putExtra(DownloadService.CHECK_UPDATES,true);
 		startService(service);
@@ -355,7 +358,19 @@ public class BaseActivity extends FragmentActivity
 	{
 		mSecondaryLanguage = language;
 	}
-
+	
+	public void setHideNotDownloaded(boolean hide)
+	{
+		mHideNotDownloaded=hide;
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		prefs.edit().putBoolean(SettingsFragment.PREFERENCE_HIDE_NOT_DOWNLOADED,hide).apply();
+	}
+	
+	public boolean getHideNotDownloaded()
+	{
+		return mHideNotDownloaded;
+	}
+	
 	@Override
 	public void onBackPressed()
 	{

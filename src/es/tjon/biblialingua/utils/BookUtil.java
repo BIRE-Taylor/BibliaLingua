@@ -17,12 +17,38 @@ import es.tjon.biblialingua.database.ApplicationDataContext;
 public class BookUtil
 {
 	Context context;
+	private static final String TAG = "es.tjon.biblialingua.util.BookUtil";
 	
 	ArrayList<ProgressMonitor> monitors=null;
 	
 	public BookUtil(Context context)
 	{
 		this.context=context;
+	}
+
+	public static boolean doesExist(Folder folder, BaseActivity mContext)
+	{
+		if(folder==null)
+			return false;
+		Log.i(TAG,folder.name);
+		Book[] books=mContext.getAppDataContext().getBooks(folder);
+		for(Book book: books)
+		{
+			Log.i(TAG,book.name+doesExist(book,mContext));
+			if(doesExist(book,mContext))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean doesExist(Book book, Context mContext)
+	{
+		if(book==null)
+			return false;
+		File file = getFile(book,mContext);
+		return file!=null&&file.exists();
 	}
 
 	public void deleteAll( ArrayList<CatalogItem> items )
@@ -175,7 +201,7 @@ public class BookUtil
 	
 	public static File getFile(Book book, Context context)
 	{
-		if(book==null)
+		if(book==null||context==null||context.getExternalFilesDir("books")==null||book.language==null)
 			return null;
 		return new File(context.getExternalFilesDir("books"),book.gl_uri+"/"+book.language.id+"."+book.file.replace("."+book.file_version,""));
 	}

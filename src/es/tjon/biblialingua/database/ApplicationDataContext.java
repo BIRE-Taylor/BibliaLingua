@@ -1,19 +1,21 @@
 package es.tjon.biblialingua.database;
 import android.content.*;
+import android.content.res.*;
+import android.database.sqlite.*;
+import android.os.*;
+import android.util.*;
+import android.widget.*;
 import com.mobandme.ada.*;
 import com.mobandme.ada.exceptions.*;
+import es.tjon.biblialingua.*;
 import es.tjon.biblialingua.data.catalog.*;
+import es.tjon.biblialingua.network.*;
+import es.tjon.biblialingua.utils.*;
+import java.io.*;
 import java.util.*;
 
 import com.mobandme.ada.Entity;
-import android.database.sqlite.*;
-import es.tjon.biblialingua.*;
-import android.os.*;
-import java.io.*;
-import android.content.res.*;
-import es.tjon.biblialingua.utils.*;
-import es.tjon.biblialingua.network.DownloadService;
-import android.util.Log;
+import android.app.*;
 
 public class ApplicationDataContext extends ObjectContext
 {
@@ -165,16 +167,6 @@ public class ApplicationDataContext extends ObjectContext
 			out.write(buffer, 0, read);
         }
 		}
-	
-	private static void copy(InputStream in, OutputStream out)
-	throws IOException
-    {
-        byte[] buffer = new byte[1000];
-        int len;
-        while((len = in.read(buffer)) > 0) {
-            out.write(buffer, 0, len);
-        }
-    }
 
 	public void queueProcessing(Book item)
 	{
@@ -263,14 +255,17 @@ public class ApplicationDataContext extends ObjectContext
 		return null;
 	}
 
-	public Book[] getBooks(Language language, long parentId)
+	public List<Book> getBooks(Language language, long parentId, boolean hideNotDownloaded)
 	{
 		if(language==null||parentId<0)
 			return null;
 		books.clear();
+		String hide="";
+		if(hideNotDownloaded)
+			hide="AND b_downloaded";
 		try
 		{
-			books.fill("ID IN(SELECT Book_ID FROM LINK_Book_b_folder_Folder WHERE Folder_ID=?) AND ID IN(SELECT Book_ID FROM LINK_Book_b_language_Language WHERE Language_ID=?)", new String[]{new Long(parentId).toString(),language.getID().toString()}, "b_display_order");
+			books.fill("ID IN(SELECT Book_ID FROM LINK_Book_b_folder_Folder WHERE Folder_ID=? "+hide+") AND ID IN(SELECT Book_ID FROM LINK_Book_b_language_Language WHERE Language_ID=?)", new String[]{new Long(parentId).toString(),language.getID().toString()}, "b_display_order");
 			
 		}
 		catch (AdaFrameworkException e)
@@ -278,7 +273,12 @@ public class ApplicationDataContext extends ObjectContext
 			e.printStackTrace();
 			return null;
 		}
-		return books.toArray(new Book[books.size()]);
+		return new ArrayList<Book>(books);
+	}
+	
+	public List<Book> getBooks(Language language, long parentId)
+	{
+		return getBooks(language, parentId, false);
 	}
 	
 	public Book getBook(Language language, String uri)
@@ -308,21 +308,29 @@ public class ApplicationDataContext extends ObjectContext
 		return books.get(0);
 	}
 
-	public Folder[] getFolders(Language language, long parentId)
+	public List<Folder> getFolders(Language language, long parentId, boolean hideNotDownloaded)
 	{
 		if(language==null||parentId<0)
 			return null;
 		folders.clear();
 		try
 		{
-			folders.fill("f_folder=? AND ID IN(SELECT Folder_ID FROM LINK_Folder_f_language_Language WHERE Language_ID=?)", new String[]{new Long(parentId).toString(),language.getID().toString()}, "f_display_order");
+			if(!hideNotDownloaded)
+				folders.fill("f_folder=? AND ID IN(SELECT Folder_ID FROM LINK_Folder_f_language_Language WHERE Language_ID=?)", new String[]{new Long(parentId).toString(),language.getID().toString()}, "f_display_order");
+			else
+				folders.fill("f_folder=? AND ID IN(SELECT Folder_ID FROM LINK_Folder_f_language_Language WHERE Language_ID=?) AND ID IN(SELECT Folder_ID FROM LINK_Book_b_folder_Folder WHERE Book_ID IN(SELECT ID FROM Book WHERE b_downloaded))", new String[]{new Long(parentId).toString(),language.getID().toString()}, "f_display_order");
 		}
 		catch (AdaFrameworkException e)
 		{
 			e.printStackTrace();
 			return null;
 		}
-		return folders.toArray(new Folder[folders.size()]);
+		return new ArrayList<Folder>(folders);
+	}
+	
+	public List<Folder> getFolders(Language language, long parentId)
+	{
+		return getFolders(language, parentId, false);
 	}
 	
 	public Folder getFolder(int folder)
@@ -336,5 +344,40 @@ public class ApplicationDataContext extends ObjectContext
 		catch (AdaFrameworkException e)
 		{}
 		return null;
+	}
+	
+	public void updateBooks(Context context)
+	{
+		int offset=0;
+		books.clear();
+		try
+		{
+			books.clear();
+			books.fill(offset, 10);
+			ArrayList<Book> booksup = new ArrayList<Book>();
+			while(books.size()>0)
+			{
+				System.out.println(offset);
+				for(Book book:books)
+				{
+					if(BookUtil.doesExist(book,context))
+					{
+						Log.i("Update",book.name);
+						book.downloaded=true;
+						book.setStatus(Entity.STATUS_UPDATED);
+						booksup.add(book);
+					}
+				}
+				offset+=10;
+				books.clear();
+				books.fill(offset,10);
+			}
+			books.clear();
+			books.addAll(booksup);
+			books.save();
+		}
+		catch (AdaFrameworkException e)
+		{e.printStackTrace();}
+
 	}
 }

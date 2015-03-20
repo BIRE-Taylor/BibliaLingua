@@ -74,6 +74,8 @@ public class Book extends Entity implements CatalogItem
 	public String cover_art;
 	@TableField(name="b_folder",datatype=DATATYPE_ENTITY_LINK)
 	public Folder folder=null;
+	@TableField(name="b_downloaded",datatype=DATATYPE_BOOLEAN)
+	public boolean downloaded=false;
 	
 	private boolean mSelected;
 	
@@ -87,9 +89,15 @@ public class Book extends Entity implements CatalogItem
 		mSelected=selected;
 	}
 
-	public void setup(ApplicationDataContext adc)
+	public void setup(ApplicationDataContext adc, Context context)
 	{
 		Log.i(TAG,"Setup "+full_name+" "+language);
+		File file = BookUtil.getFile(this,context);
+		if(file!=null&&file.exists())
+		{
+			adc.queueUpdate(this);
+			downloaded=true;
+		}
 	}
 
 
@@ -111,14 +119,16 @@ public class Book extends Entity implements CatalogItem
 		size_index=book.size_index;
 		cover_art=book.cover_art;
 		Log.i(TAG,"Update "+full_name+" "+language);
+		File file = BookUtil.getFile(this,context);
+		if(file!=null&&file.exists())
+		{
+			downloaded=true;
+		}
 		if(file_version!=book.file_version)
 		{
 			file_version=book.file_version;
-			File file = BookUtil.getFile(this,context);
-			if(file!=null&&file.exists())
-			{
+			if(downloaded)
 				adc.queueUpdate(this);
-			}
 		}
 		
 	}

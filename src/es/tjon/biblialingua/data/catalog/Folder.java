@@ -109,7 +109,7 @@ public class Folder extends Entity implements CatalogItem
 		}
 	}
 
-	public void setup(ApplicationDataContext adc)
+	public void setup(ApplicationDataContext adc,Context context)
 	{
 		int i = 0;
 		Log.i(TAG,"Setup "+name+" "+language);
@@ -119,7 +119,7 @@ public class Folder extends Entity implements CatalogItem
 			folder.language=language;
 			folder.setStatus(STATUS_NEW);
 			folder.display_order=i;
-			folder.setup(adc);
+			folder.setup(adc,context);
 			i++;
 		}
 		for(Book book:books)
@@ -128,7 +128,7 @@ public class Folder extends Entity implements CatalogItem
 			book.language=language;
 			book.display_order=i;
 			book.setStatus(STATUS_NEW);
-			book.setup(adc);
+			book.setup(adc,context);
 			i++;
 		}
 	}
@@ -175,7 +175,7 @@ public class Folder extends Entity implements CatalogItem
 				newFolder.language=language;
 				newFolder.setStatus(STATUS_NEW);
 				newFolders.add(newFolder);
-				newFolder.setup(adc);
+				newFolder.setup(adc,context);
 			}
 			i++;
 		}
@@ -188,7 +188,7 @@ public class Folder extends Entity implements CatalogItem
 		folders = newFolders;
 		if(books==null||books.size()==0)
 		{
-			books = new ArrayList<Book>(Arrays.asList( adc.getBooks(language,getID()) ));
+			books = new ArrayList<Book>(adc.getBooks(language,getID()));
 		}
 		ArrayList<Book> newBooks = new ArrayList<Book>();
 		for (Book book : folder.books)
@@ -218,7 +218,7 @@ public class Folder extends Entity implements CatalogItem
 				book.language=language;
 				book.setStatus(STATUS_NEW);
 				newBooks.add(book);
-				book.setup(adc);
+				book.setup(adc,context);
 			}
 			i++;
 		}

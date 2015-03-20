@@ -32,6 +32,8 @@ public class SettingsFragment extends PreferenceFragment
 	private ArrayList<CharSequence> entryValues;
 
 	private ArrayList<CharSequence> entries;
+
+	public static String PREFERENCE_HIDE_NOT_DOWNLOADED = "hideNotDownloaded";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)

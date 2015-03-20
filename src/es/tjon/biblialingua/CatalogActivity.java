@@ -15,6 +15,10 @@ import java.util.ArrayList;
 public class CatalogActivity extends BaseActivity implements ProgressMonitor
 {
 
+	private MenuItem downloadedOnly;
+	public static final String HIDE_NOT_DOWNLOADED = "Hide items not downloaded";
+	public static final String SHOW_NOT_DOWNLOADED = "Show items not downloaded";
+
 	@Override
 	public void onProgress(Book book, int progress)
 	{
@@ -205,6 +209,25 @@ public class CatalogActivity extends BaseActivity implements ProgressMonitor
 			getBookUtil().requestBook(item, this);
 
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		downloadedOnly=menu.add(getHideNotDownloaded()?SHOW_NOT_DOWNLOADED:HIDE_NOT_DOWNLOADED);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		if(item.equals(downloadedOnly))
+		{
+			setHideNotDownloaded(!getHideNotDownloaded());
+			downloadedOnly.setTitle(getHideNotDownloaded()?SHOW_NOT_DOWNLOADED:HIDE_NOT_DOWNLOADED);
+			((CatalogAdapter)gridview.getAdapter()).setFolder(currentFolder);
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	public void downloadAll(ArrayList<Integer> positions)

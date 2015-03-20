@@ -96,7 +96,7 @@ public class CatalogData implements Response.Listener<CatalogData>
 			else
 			{
 				cat.clear();
-				result.catalog.setup(adc);
+				result.catalog.setup(adc,context);
 				cat.add(result.catalog);
 				result.catalog.setStatus(Entity.STATUS_NEW);
 			}
