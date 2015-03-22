@@ -52,6 +52,7 @@ public class BaseActivity extends FragmentActivity
 
 	private static boolean mHideNotDownloaded = false;
 
+
 	public void fileInitialized()
 	{
 		mFileInitialized=true;
@@ -261,11 +262,13 @@ public class BaseActivity extends FragmentActivity
 			return;
 		if(!mFileInitialized)
 		{
+			setLoadingMessage(R.string.loadingFiles);
 			ApplicationDataContext.initialize(this);
 			return;
 		}
 		if (!mLanguageInitialized)
 		{
+			setLoadingMessage(R.string.loadingLanguage);
 			LanguageData.initialize(this);
 			return;
 		}
@@ -273,6 +276,7 @@ public class BaseActivity extends FragmentActivity
 			System.err.println("Language not initialoized");
 		if (!mCatalogInitialized)
 		{
+			setLoadingMessage(R.string.loadingCatalog);
 			CatalogData.initialize(this);
 			return;
 		}
@@ -289,6 +293,60 @@ public class BaseActivity extends FragmentActivity
 		mInitialized = true;
 		initFinished();
 	}
+	
+	public void setLoadingMessage(String loading)
+	{
+		if(!Looper.getMainLooper().equals(Looper.myLooper()))
+		{
+			runOnUiThread(new Runnable()
+						  {
+
+							  private String mLoading;
+
+							  public Runnable setup(String loading)
+							  {
+								  mLoading=loading;
+								  return this;
+							  }
+
+							  @Override
+							  public void run()
+							  {
+								  setLoadingMessage(mLoading);
+							  }
+						  }.setup(loading));
+			return;
+		}
+		((TextView)findViewById(R.id.splashTextView)).setText(loading);
+	}
+
+	public void setLoadingMessage(int loading)
+	{
+		if(!Looper.getMainLooper().equals(Looper.myLooper()))
+		{
+			runOnUiThread(new Runnable()
+						  {
+
+							  private int mLoading;
+
+							  public Runnable setup(int loading)
+							  {
+								  mLoading=loading;
+								  return this;
+							  }
+
+					@Override
+					public void run()
+					{
+						setLoadingMessage(mLoading);
+					}
+				}.setup(loading));
+				return;
+		}
+		((TextView)findViewById(R.id.splashTextView)).setText(loading);
+	}
+	
+	
 
 	private void initFinished()
 	{
@@ -412,6 +470,17 @@ public class BaseActivity extends FragmentActivity
 	public void exit(MenuItem item)
 	{
 		exit();
+	}
+
+	@Override
+	public void finish()
+	{
+		if(mInitialized)
+		{
+			super.finish();
+			return;
+		}
+		getUtil().failInit();
 	}
 
 }

@@ -25,6 +25,8 @@ public class DownloadTask implements Callable<Pair<Book,Boolean>>
 
 	public String getName()
 	{
+		if(mItem==null)
+			return "";
 		return mItem.name;
 	}
 

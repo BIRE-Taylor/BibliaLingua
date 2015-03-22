@@ -56,7 +56,7 @@ public class Catalog extends Entity
 		display_order = catalog.display_order;
 		if(folders==null||folders.size()==0)
 		{
-				folders = new ArrayList<Folder>(Arrays.asList( adc.getFolders(language,0) ));
+				folders = new ArrayList<Folder>( adc.getFolders(language,0) );
 		}
 		System.out.println(folders.size()+" folders after");
 		ArrayList<Folder> newFolders = new ArrayList<Folder>();

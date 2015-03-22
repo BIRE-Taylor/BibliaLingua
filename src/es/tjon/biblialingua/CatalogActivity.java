@@ -35,7 +35,7 @@ public class CatalogActivity extends BaseActivity implements ProgressMonitor
 	@Override
 	public void onFinish(Book book)
 	{
-		if (currentFolder != null && currentFolder.contains(book))
+		if (currentFolder == null || currentFolder.contains(book))
 			((CatalogAdapter)gridview.getAdapter()).notifyDataSetChanged();
 	}
 

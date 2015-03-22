@@ -18,8 +18,8 @@ import com.android.volley.Response;
 public class LanguageData implements Response.Listener<LanguageData>
 {
 
-	public static Language[] mLanguages = null;
-	public Language[] languages = null;
+	public static ArrayList<Language> mLanguages = null;
+	public ArrayList<Language> languages = null;
 	public int count = 0;
 	public boolean success = false;
 	public static boolean mSelectPrimary = false;
@@ -51,31 +51,41 @@ public class LanguageData implements Response.Listener<LanguageData>
 			return;
 		}
 		ApplicationDataContext adc = context.getAppDataContext();
-		if (mLanguages == null || mLanguages.length < 1)
+		if (mLanguages == null || mLanguages.size() < 1)
 		{
 			try
 			{
 				if (adc.languages.isEmpty())
-					adc.languages.fill();
-				mLanguages = adc.languages.toArray(new Language[adc.languages.size()]);
+					adc.languages.fill("l_engName");
+				mLanguages = new ArrayList<Language>(adc.languages);
 			}
 			catch (AdaFrameworkException e)
 			{e.printStackTrace();}
-			if (!langsDownloaded && (mLanguages == null || mLanguages.length < 1))
+			if (!langsDownloaded && (mLanguages == null || mLanguages.size() < 1))
 			{
 				try
 				{
 					if (Util.getInstance(context).isConnectionWithFail())
 						RestClient.query(context, new LanguageData(), new RestClient.ParameterSet(RestClient.Actions.QUERY_LANGUAGES));
+					return;
 				}
 				catch (Exception e)
-				{context.finish();}
-				return;
+				{
+					e.printStackTrace();
+					context.finish();
+					return;
+				}
 			}
 		}
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		if (!prefs.contains(SettingsFragment.PREFERENCE_PRIMARY_LANGUAGE))
+		if(mLanguages==null||mLanguages.size()<1)
 		{
+			context.finish();
+			return;
+		}
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		if (langsDownloaded||!prefs.contains(SettingsFragment.PREFERENCE_PRIMARY_LANGUAGE))
+		{
+			langsDownloaded=false;
 			if(mSelectPrimary)
 				return;
 			mSelectPrimary=true;
@@ -84,7 +94,7 @@ public class LanguageData implements Response.Listener<LanguageData>
 		}
 		else
 			context.setPrimaryLanguage(adc.getLanguage(prefs.getString(SettingsFragment.PREFERENCE_PRIMARY_LANGUAGE, "-1")));
-		if (!prefs.contains(SettingsFragment.PREFERENCE_SECONDARY_LANGUAGE))
+		if (langsDownloaded||!prefs.contains(SettingsFragment.PREFERENCE_SECONDARY_LANGUAGE))
 		{
 			if(mSelectSecondary)
 				return;
@@ -118,7 +128,7 @@ public class LanguageData implements Response.Listener<LanguageData>
 	public static void selectPrimaryLanguage()
 	{
 		CharSequence[] items = null;
-			items = new CharSequence[mLanguages.length];
+			items = new CharSequence[mLanguages.size()];
 			int i = 0;
 			for (Language lang : mLanguages)
 			{
@@ -162,7 +172,7 @@ public class LanguageData implements Response.Listener<LanguageData>
 
 	public static void setPrimaryLanguage(int language)
 	{
-		Language lang = context.getAppDataContext().languages.get(language);
+		Language lang = mLanguages.get(language);
 		PreferenceManager.getDefaultSharedPreferences(context).edit().putString(SettingsFragment.PREFERENCE_PRIMARY_LANGUAGE, (lang!=null?lang.id:(-1)) + "").apply();
 		context.setPrimaryLanguage(lang);
 	}
@@ -170,7 +180,7 @@ public class LanguageData implements Response.Listener<LanguageData>
 	public static void selectSecondaryLanguage()
 	{
 
-		CharSequence[] items = new CharSequence[mLanguages.length + 1];
+		CharSequence[] items = new CharSequence[mLanguages.size() + 1];
 			items[0] = "None";
 			int i = 1;
 			for (Language lang : mLanguages)
@@ -215,9 +225,10 @@ public class LanguageData implements Response.Listener<LanguageData>
 
 	public static void setSecondaryLanguage(int language)
 	{
-		Language lang = context.getAppDataContext().languages.get(language);
-		PreferenceManager.getDefaultSharedPreferences(context).edit().putString(SettingsFragment.PREFERENCE_SECONDARY_LANGUAGE, (lang!=null?lang.id:(-1)) + "").apply();
-		context.setSecondaryLanguage(lang);
+		Language lang = mLanguages.get(language);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		prefs.edit().putString(SettingsFragment.PREFERENCE_SECONDARY_LANGUAGE, (lang!=null?lang.id:(context.getPrimaryLanguage().id)) + "").apply();
+		context.setSecondaryLanguage(lang==null?context.getPrimaryLanguage():lang);
 	}
 
 	@Override
@@ -237,18 +248,22 @@ public class LanguageData implements Response.Listener<LanguageData>
 			}
 			langs.save();
 			langs.clear();
-			langs.addAll(Arrays.asList(result.languages));
+			langs.addAll(result.languages);
 			for (Language l : langs)
 			{
 				l.setStatus(com.mobandme.ada.Entity.STATUS_NEW);
 			}
 			langs.save();
+			langs.fill();
+			System.out.println(langs.size() + " languages");
 		}
 		catch (AdaFrameworkException e)
 		{
 			e.printStackTrace();
+			context.finish();
+			return;
 		}
-		runInit();
 		langsDownloaded=true;
+		runInit();
 	}
 }

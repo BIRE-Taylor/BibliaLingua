@@ -313,7 +313,8 @@ public class DownloadService extends Service implements ProgressMonitor
 				{
 					if(item.time>time)
 						time=item.time;
-					dQueue.add(new DownloadTask(this, item.item));
+					if(item.item!=null)
+						dQueue.add(new DownloadTask(this, item.item));
 				}
 				this.mDownloadQueue.addAll(dQueue);
 				exec.invokeAll(dQueue);

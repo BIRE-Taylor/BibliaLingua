@@ -65,42 +65,47 @@ public class Util
 			throw new Exception("Must be called from an Activity context");
 		if (!isConnected())
 		{
-			bContext.runOnUiThread(new Runnable()
-				{
-
-					@Override
-					public void run()
-					{
-						new AlertDialog.Builder(bContext)
-							.setTitle("Initiatialization failed")
-							.setMessage("Please connect to the internet and try again.")
-							.setCancelable(false)
-							.setNegativeButton("Exit", 
-							new DialogInterface.OnClickListener()
-							{
-								@Override
-								public void onClick(DialogInterface dialog, int which)
-								{
-									System.exit(0);
-								}
-							})
-							.setPositiveButton("Retry",
-							new DialogInterface.OnClickListener()
-							{
-								@Override
-								public void onClick(DialogInterface p1, int p2)
-								{
-									bContext.initialize();
-								}
-							})
-							.show();
-					}
-					
-				
-			});
+			failInit();
 			return false;
 		}
 		return true;
+	}
+
+	public void failInit()
+	{
+		bContext.runOnUiThread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					new AlertDialog.Builder(bContext)
+						.setTitle("Initiatialization failed")
+						.setMessage("Please connect to the internet and try again.")
+						.setCancelable(false)
+						.setNegativeButton("Exit", 
+						new DialogInterface.OnClickListener()
+						{
+							@Override
+							public void onClick(DialogInterface dialog, int which)
+							{
+								System.exit(0);
+							}
+						})
+						.setPositiveButton("Retry",
+						new DialogInterface.OnClickListener()
+						{
+							@Override
+							public void onClick(DialogInterface p1, int p2)
+							{
+								bContext.initialize();
+							}
+						})
+						.show();
+				}
+
+
+			});
 	}
 
 	public boolean allowMobile()

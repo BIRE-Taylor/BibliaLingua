@@ -12,6 +12,7 @@ import es.tjon.biblialingua.data.catalog.*;
 import org.json.*;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import javax.xml.transform.*;
 
 public class RestClient<T1> implements Response.ErrorListener
 {
@@ -124,26 +125,26 @@ public class RestClient<T1> implements Response.ErrorListener
 			params.addParameter(new ParameterSet.Parameter( Actions.Parameters.PLATFORM_ID, "17" ));
 			if ( action == Actions.QUERY_LANGUAGES )
 			{
-				new RestClient<LanguageData>( ).fetch( context, LanguageData.class, callback, params );
+				new RestClient<LanguageData>( ).fetch( context, LanguageData.class, callback, errorHandler, params );
 				return;
 			}
 			if ( action == Actions.QUERY_CATALOG )
 			{
-				new RestClient<CatalogData>( ).fetch( context, CatalogData.class, callback, params );
+				new RestClient<CatalogData>( ).fetch( context, CatalogData.class, callback, errorHandler, params );
 				return;
 			}
 			if ( action == Actions.QUERY_CATALOG_MODIFIED )
 			{
-				new RestClient<CatalogModified>( ).fetch( context, CatalogModified.class, callback, params );
+				new RestClient<CatalogModified>( ).fetch( context, CatalogModified.class, callback, errorHandler,  params );
 				return;
 			}
 		} catch (JSONException e)
 		{}
 	}
 
-	public void fetch( Context c, Class<T1> result, Response.Listener<T1> callback, ParameterSet params )
+	public void fetch( Context c, Class<T1> result, Response.Listener<T1> callback, Response.ErrorListener errorHandler, ParameterSet params )
 	{
-		GsonObjectRequest<T1> request = new GsonObjectRequest<T1>(GsonObjectRequest.Method.GET,BASEURL,params,callback,this,result);
+		GsonObjectRequest<T1> request = new GsonObjectRequest<T1>(GsonObjectRequest.Method.GET,BASEURL,params,callback,errorHandler,result);
 		VolleySingleton.getInstance(c).addToRequestQueue(request);
 	}
 

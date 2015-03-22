@@ -74,7 +74,7 @@ public class ApplicationDataContext extends ObjectContext
 	@Override
 	protected void onCreate(SQLiteDatabase pDataBase) throws AdaFrameworkException
 	{
-		restoreFromAssets("database.db",pDataBase);
+		//restoreFromAssets("database.db",pDataBase);
 		super.onCreate(pDataBase);
 	}
 	
@@ -218,6 +218,11 @@ public class ApplicationDataContext extends ObjectContext
 				di.setStatus(Entity.STATUS_DELETED);
 			}
 			downloadQueue.save();
+			
+			item.downloaded=true;
+			item.setStatus(Entity.STATUS_UPDATED);
+			books.add(item);
+			books.save();
 		}
 		catch (AdaFrameworkException e)
 		{}
@@ -265,7 +270,7 @@ public class ApplicationDataContext extends ObjectContext
 			hide="AND b_downloaded";
 		try
 		{
-			books.fill("ID IN(SELECT Book_ID FROM LINK_Book_b_folder_Folder WHERE Folder_ID=? "+hide+") AND ID IN(SELECT Book_ID FROM LINK_Book_b_language_Language WHERE Language_ID=?)", new String[]{new Long(parentId).toString(),language.getID().toString()}, "b_display_order");
+			books.fill("ID IN(SELECT Book_ID FROM LINK_Book_b_folder_Folder WHERE Folder_ID=?) AND ID IN(SELECT Book_ID FROM LINK_Book_b_language_Language WHERE Language_ID=? "+hide+" )", new String[]{new Long(parentId).toString(),language.getID().toString()}, "b_display_order");
 			
 		}
 		catch (AdaFrameworkException e)
