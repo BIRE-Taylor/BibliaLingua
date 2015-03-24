@@ -11,6 +11,7 @@ import es.tjon.biblialingua.data.catalog.*;
 import es.tjon.biblialingua.network.*;
 import es.tjon.biblialingua.utils.*;
 import java.util.*;
+import com.mobandme.ada.exceptions.*;
 
 public class CatalogAdapter extends BaseAdapter
 {
@@ -42,6 +43,8 @@ public class CatalogAdapter extends BaseAdapter
 			}.execute(folder);
 			return;
 		}
+		try
+		{
 		List<Folder> folders;
 		List<Book> books;
 		if (folder == null)
@@ -54,6 +57,11 @@ public class CatalogAdapter extends BaseAdapter
 		folders = mContext.getAppDataContext().getFolders(mContext.getPrimaryLanguage(), folder.getID(),mContext.getHideNotDownloaded());
 		books = mContext.getAppDataContext().getBooks(mContext.getPrimaryLanguage(), folder.getID(),mContext.getHideNotDownloaded());
 		update(folders, books);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private void update(List<Folder> folders, List<Book> books)

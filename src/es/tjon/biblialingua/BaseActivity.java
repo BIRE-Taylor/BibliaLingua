@@ -182,19 +182,21 @@ public class BaseActivity extends FragmentActivity
 			{
 				getWindow().setNavigationBarColor(Color.rgb(10,1,50));
 				getWindow().setStatusBarColor(Color.rgb(10,1,50));
-				getActionBar().setDisplayHomeAsUpEnabled(true);
-				getActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
-				getActionBar().setDisplayShowHomeEnabled(false);
 			}
+			getActionBar().setHomeButtonEnabled(true);
 		}
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
-	public boolean onNavigateUp()
+	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		navigateUpTo(new Intent(this, BaseActivity.class));
-		return true;
+		if(item.getItemId()==android.R.id.home)
+		{
+			startActivity(new Intent(this, BaseActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private boolean isBaseActivity()

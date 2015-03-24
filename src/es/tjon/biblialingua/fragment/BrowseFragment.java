@@ -15,7 +15,7 @@ import es.tjon.biblialingua.*;
 import android.support.v4.app.*;
 import android.util.Log;
 
-public class BrowseFragment extends ListFragment
+public class BrowseFragment extends HeaderListFragment
 {
 
 	private static final String TAG = "es.tjon.biblialingua.BrowseFragment";

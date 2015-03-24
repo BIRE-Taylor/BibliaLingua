@@ -278,6 +278,11 @@ public class ApplicationDataContext extends ObjectContext
 			e.printStackTrace();
 			return null;
 		}
+		catch(IllegalStateException ie)
+		{
+			ie.printStackTrace();
+			return null;
+		}
 		return new ArrayList<Book>(books);
 	}
 	

@@ -263,6 +263,7 @@ public class BilingualViewFragment extends Fragment
 			System.out.println("Not refreshing display mode "+getPrimaryNode().title);
 			return;
 		}
+		System.out.println("Refresh display mode "+getPrimaryNode().title);
 		if(Looper.getMainLooper().equals(Looper.myLooper()))
 		{
 			AsyncTask.execute(new Runnable(){

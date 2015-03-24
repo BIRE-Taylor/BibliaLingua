@@ -39,11 +39,18 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 
 	private boolean mSetUri;
 
+	private BilingualViewFragment mCurrent;
+
 	public BilingualViewFragmentAdapter(FragmentManager fragmentManager, BookViewActivity bva)
 	{
 		super(fragmentManager);
 		mFragmentManager = fragmentManager;
 		mActivity = bva;
+	}
+
+	public BilingualViewFragment getCurrent()
+	{
+		return mCurrent;
 	}
 
 	public String getPageUri(int position)
@@ -59,6 +66,13 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 		if(mIndex==null||mPrimaryNodes==null)
 			return super.getPageTitle(position);
 		return mPrimaryNodes.get(mIndex.get(position)).title;
+	}
+
+	@Override
+	public void setPrimaryItem(ViewGroup container, int position, Object object)
+	{
+		mCurrent = (BilingualViewFragment)object;
+		super.setPrimaryItem(container, position, object);
 	}
 
 	public void setUri(String currentUri, ViewPager pager)
@@ -201,10 +215,20 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 		if(fragment instanceof BilingualViewFragment)
 		{
 			String uri = mIndex.get(position);
+			mFragments.remove(uri);
 			mFragments.put(uri,(BilingualViewFragment)fragment);
 		}
 		return fragment;
 	}
+
+	@Override
+	public void destroyItem(ViewGroup container, int position, Object object)
+	{
+		mFragments.remove(mIndex.get(position));
+		super.destroyItem(container, position, object);
+	}
+	
+	
 
 	@Override
 	public int getItemPosition(Object object)
