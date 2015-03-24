@@ -68,6 +68,7 @@ public class BrowseFragment extends HeaderListFragment
 			public void onPostExecute(Object object)
 			{
 				((BrowseActivity)mActivity).getActionBar().setTitle(mActivity.mBookPrimary.name);
+				((BrowseActivity)mActivity).getActionBar().setSubtitle(null);
 				setListAdapter(new BookAdapter((BaseActivity)mActivity,BrowseFragment.this,bdc));
 				Log.i(TAG,"Parent "+mParent);
 				if(mParent!=0)
@@ -147,10 +148,12 @@ public class BrowseFragment extends HeaderListFragment
 			if(node==null)
 			{
 				getActivity().getActionBar().setTitle(mActivity.mBookPrimary.name);
+				getActivity().getActionBar().setSubtitle(null);
 			}
 			else
 			{
 				getActivity().getActionBar().setTitle(node.short_title);
+				getActivity().getActionBar().setSubtitle(mActivity.mBookPrimary.name);
 			}
 		}
 		else

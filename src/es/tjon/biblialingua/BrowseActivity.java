@@ -87,6 +87,7 @@ public class BrowseActivity extends BaseActivity implements BrowseFragment.BookC
 			mNode = node;
 			mUri = mNode.uri;
 			getActionBar().setTitle(node.title);
+			getActionBar().setSubtitle(mBookPrimary.name);
 			mContentBrowse.open(node);
 			return;
 		}

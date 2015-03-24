@@ -15,6 +15,7 @@ import android.support.v4.app.*;
 import android.app.*;
 import android.graphics.drawable.*;
 import android.content.res.Configuration;
+import android.support.v7.widget.*;
 
 
 public class BookViewActivity extends BookInterface implements CustomLinkMovementMethod.LinkListener, View.OnSystemUiVisibilityChangeListener
@@ -59,6 +60,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
     public void onCreate(Bundle savedInstanceState) {
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+		
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pager);
 		setFullscreen(false);
@@ -136,6 +138,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 				{
 					if(mPaused)
 						return;
+					getActionBar().setSubtitle(mBookPrimary.name);
 					mAdapter.setUri(mCurrentUri,mPager);
 					mAdapter.update(mBDCPrimary,mBDCSecondary,mCurrentUri);
 				}
