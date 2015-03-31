@@ -39,7 +39,6 @@ public class RelatedAdapter extends BaseAdapter
 	
 	public void update(BookDataContext bdc, String uri)
 	{
-		Log.i(TAG,"Update RCA "+uri);
 		mBDC=bdc;
 		if(mUri!=null&&mUri.equals(uri)&&mRefsIndex!=null&&!mRefs.isEmpty())
 			return;
@@ -56,7 +55,6 @@ public class RelatedAdapter extends BaseAdapter
 		{
 			notifyDataSetChanged();
 			showListView(true);
-			Log.i(TAG,"No refs found");
 			return;
 		}
 		for(Reference ref:list)
@@ -65,7 +63,6 @@ public class RelatedAdapter extends BaseAdapter
 			mRefsIndex.add(ref.ref_name);
 			
 		}
-		Log.i(TAG,"Ref count "+mRefsIndex.size());
 		notifyDataSetChanged();
 		showListView(true);
 	}

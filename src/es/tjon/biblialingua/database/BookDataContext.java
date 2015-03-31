@@ -14,6 +14,7 @@ public class BookDataContext extends ObjectContext
 	public ObjectSet<Node> nodes;
 	public ObjectSet<Css> css;
 	public ObjectSet<Reference> refs;
+	public ObjectSet<Media> media;
 	
 	public BookDataContext(Context context, Book book)
 	{
@@ -25,6 +26,7 @@ public class BookDataContext extends ObjectContext
 			nodes = new ObjectSet<Node>(Node.class, this);
 			css = new ObjectSet<Css>(Css.class, this);
 			refs = new ObjectSet<Reference>(Reference.class, this);
+			media = new ObjectSet<Media>(Media.class, this);
 		}
 		catch (AdaFrameworkException e)
 		{
@@ -35,6 +37,33 @@ public class BookDataContext extends ObjectContext
 	public CharSequence getUri()
 	{
 		return mBook.gl_uri;
+	}
+	
+	public List<Media> getMediaByUrl(String uri)
+	{
+		try
+		{
+			while(uri.contains("."))
+				uri = uri.substring(0,uri.lastIndexOf("."));
+			List<Media> mediaFound = media.search(true, new String[]{"id","uri","name","type","link","language_id","inline_id","size","width","height"}, "uri=?", new String[]{uri}, "id", null, null, null, null);
+			if(mediaFound!=null&&mediaFound.size()>0)
+			{
+				return mediaFound;
+			}
+			else
+			{
+				if((mediaFound==null||mediaFound.isEmpty())&&!uri.isEmpty())
+				{
+					return getMediaByUrl( uri.substring(0,uri.lastIndexOf("/")));
+				}
+				return null;
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public List<Reference> getRefsByUrl(String uri)

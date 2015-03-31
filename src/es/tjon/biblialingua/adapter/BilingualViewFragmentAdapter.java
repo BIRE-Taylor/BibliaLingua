@@ -32,6 +32,8 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 	private String[] mSecondaryCSS;
 
 	private String[] mPrimaryCss;
+	
+	private List<Media> mCurrentMedia;
 
 	private FragmentManager mFragmentManager;
 
@@ -46,6 +48,13 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 		super(fragmentManager);
 		mFragmentManager = fragmentManager;
 		mActivity = bva;
+	}
+	
+	public List<Media> getCurrentMedia()
+	{
+		if(mCurrent==null||mCurrentMedia==null||mCurrent.getPrimaryNode()==null||mCurrentMedia.size()==0||!mCurrent.getPrimaryNode().uri.equals(mCurrentMedia.get(0).uri))
+			return null;
+		return mCurrentMedia;
 	}
 
 	public BilingualViewFragment getCurrent()
@@ -72,6 +81,44 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 	public void setPrimaryItem(ViewGroup container, int position, Object object)
 	{
 		mCurrent = (BilingualViewFragment)object;
+		mActivity.setBilingual(mCurrent!=null&&mCurrent.getSecondaryNode()!=null);
+		mActivity.setMedia(false,false);
+		if(mPrimaryBDC!=null&&mCurrent!=null&&mCurrent.getPrimaryNode()!=null)
+		{
+			AsyncTask.execute(new Runnable()
+				{
+
+					@Override
+					public void run()
+					{
+						mCurrentMedia = mPrimaryBDC.getMediaByUrl(mCurrent.getPrimaryNode().uri);
+						mActivity.runOnUiThread(new Runnable()
+							{
+								@Override
+								public void run()
+								{
+									boolean audio=false;
+									boolean video=false;
+									if(mCurrentMedia==null||mCurrentMedia.isEmpty())
+									{
+										mActivity.setMedia(false,false);
+										return;
+									}
+									for(Media media : mCurrentMedia)
+									{
+										if(media.type.equals(media.TYPE_AUDIO_MP3))
+											audio=true;
+										if(media.type.equals(media.TYPE_VIDEO_MP3U8)||media.type.equals(media.TYPE_VIDEO_MP4))
+											video=true;
+										if(audio&&video)
+											break;
+									}
+									mActivity.setMedia(audio,video);
+								}
+						});
+					}
+				});
+		}
 		super.setPrimaryItem(container, position, object);
 	}
 
@@ -279,5 +326,5 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 			return 0;
 		return mIndex.size();
 	}
-	
+
 }

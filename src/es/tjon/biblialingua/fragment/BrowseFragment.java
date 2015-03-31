@@ -70,7 +70,6 @@ public class BrowseFragment extends HeaderListFragment
 				((BrowseActivity)mActivity).getActionBar().setTitle(mActivity.mBookPrimary.name);
 				((BrowseActivity)mActivity).getActionBar().setSubtitle(null);
 				setListAdapter(new BookAdapter((BaseActivity)mActivity,BrowseFragment.this,bdc));
-				Log.i(TAG,"Parent "+mParent);
 				if(mParent!=0)
 				{
 					((BookAdapter)getListAdapter()).setParent(mParent);
@@ -191,7 +190,6 @@ public class BrowseFragment extends HeaderListFragment
 			}
 		}
 		outState.putLong(BUNDLE_PARENT,mParent);
-		Log.i(TAG,"SaveParent "+mParent);
 		super.onSaveInstanceState(outState);
 	}
 	

@@ -91,7 +91,6 @@ public class Book extends Entity implements CatalogItem
 
 	public void setup(ApplicationDataContext adc, Context context)
 	{
-		Log.i(TAG,"Setup "+full_name+" "+language);
 		File file = BookUtil.getFile(this,context);
 		if(file!=null&&file.exists())
 		{
@@ -118,7 +117,6 @@ public class Book extends Entity implements CatalogItem
 		media_available=book.media_available;
 		size_index=book.size_index;
 		cover_art=book.cover_art;
-		Log.i(TAG,"Update "+full_name+" "+language);
 		File file = BookUtil.getFile(this,context);
 		if(file!=null&&file.exists())
 		{

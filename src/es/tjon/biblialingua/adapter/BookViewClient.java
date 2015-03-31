@@ -47,7 +47,6 @@ public class BookViewClient extends WebViewClient
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url)
 	{
-		Log.d(TAG,"Clicked on "+url);
 		return mContext.openUrl(url);
 	}
 

@@ -434,7 +434,7 @@ public class BaseActivity extends FragmentActivity
 	@Override
 	public void onBackPressed()
 	{
-		if (mInitialized == false && (this instanceof SettingsActivity || this instanceof CatalogActivity || this instanceof BrowseActivity))
+		if (mInitialized == false && !isBaseActivity())
 		{
 			this.finish();
 		}

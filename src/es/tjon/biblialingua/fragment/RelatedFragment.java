@@ -74,7 +74,6 @@ public class RelatedFragment extends ListFragment
 	{
 		if(mActivity==null&&getParentFragment()!=null)
 			mActivity=(BaseActivity) getParentFragment().getActivity();
-		Log.i(TAG,"Load "+uri);
 		loadPending=false;
 		if(uri==null)
 			return;
@@ -87,7 +86,6 @@ public class RelatedFragment extends ListFragment
 				return;
 			}
 			Book book = mActivity.getAppDataContext().getBook(mActivity.getPrimaryLanguage(), uri);
-			Log.i(TAG,(book!=null)?"Book "+book.name:"Bppk null");
 			if(book==null)
 				return;
 			BookDataContext BDC = new BookDataContext(getActivity(), book);

@@ -30,11 +30,9 @@ public class BookUtil
 	{
 		if(folder==null)
 			return false;
-		Log.i(TAG,folder.name);
 		Book[] books=mContext.getAppDataContext().getBooks(folder);
 		for(Book book: books)
 		{
-			Log.i(TAG,book.name+doesExist(book,mContext));
 			if(doesExist(book,mContext))
 			{
 				return true;

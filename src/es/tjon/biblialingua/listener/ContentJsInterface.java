@@ -62,7 +62,6 @@ extends EnhancedJsInterface {
 	
 	@JavascriptInterface
     public void jsReportUriOffsets(String string) {
-		Log.i(TAG,"Report offsets");
         JSONArray jSONArray;
         NavigableMap<Float,String> sortedMap = new ConcurrentSkipListMap<Float,String>();
 		NavigableMap<String,Float> reverseMap = new ConcurrentSkipListMap<String,Float>();

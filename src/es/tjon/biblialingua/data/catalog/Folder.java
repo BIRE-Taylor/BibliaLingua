@@ -78,7 +78,6 @@ public class Folder extends Entity implements CatalogItem
 
 	public void saveAll(ApplicationDataContext adc)
 	{
-		Log.i(TAG,"Save all "+name+" "+language);
 		adc.folders.addAll(folders);
 		adc.books.addAll(books);
 		for(Folder folder:folders)
@@ -112,7 +111,6 @@ public class Folder extends Entity implements CatalogItem
 	public void setup(ApplicationDataContext adc,Context context)
 	{
 		int i = 0;
-		Log.i(TAG,"Setup "+name+" "+language);
 		for(Folder folder:folders)
 		{
 			folder.folder=this.id;
@@ -136,7 +134,6 @@ public class Folder extends Entity implements CatalogItem
 
 	public void update(Folder folder, ApplicationDataContext adc, Context context)
 	{
-		Log.i(TAG,"Update "+name+" "+language);
 		name = folder.name;
 		language = folder.language;
 		display_order = folder.display_order;

@@ -232,7 +232,6 @@ public class ApplicationDataContext extends ObjectContext
 	{
 		try
 		{
-			Log.d(TAG,language==null?"Language NULL":language.name);
 			catalog.fill("ID IN(SELECT Catalog_ID FROM LINK_Catalog_c_language_Language WHERE Language_ID=?)", new String[]{language.getID().toString()}, null);
 			if(catalog==null||catalog.size()==0)
 				return null;
@@ -372,7 +371,6 @@ public class ApplicationDataContext extends ObjectContext
 				{
 					if(BookUtil.doesExist(book,context))
 					{
-						Log.i("Update",book.name);
 						book.downloaded=true;
 						book.setStatus(Entity.STATUS_UPDATED);
 						booksup.add(book);
