@@ -16,9 +16,11 @@ import es.tjon.biblialingua.fragment.*;
 import es.tjon.biblialingua.listener.*;
 import es.tjon.biblialingua.utils.*;
 import java.util.*;
+import android.graphics.*;
+import android.content.pm.*;
 
 
-public class BookViewActivity extends BookInterface implements CustomLinkMovementMethod.LinkListener, View.OnSystemUiVisibilityChangeListener, MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener
+public class BookViewActivity extends BookInterface implements CustomLinkMovementMethod.LinkListener, View.OnSystemUiVisibilityChangeListener, MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener
 {
 
 	public static final String TAG = "es.tjon.biblialingua.BookViewActivity";
@@ -63,8 +65,12 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 
 	private VideoView mVideoView;
 
-	private boolean mVideoShowing=false;
-	
+	private boolean mWatching=false;
+
+	private boolean mListening=false;
+
+	private boolean mLockFullscreen=false;
+
 	public void showProgress(boolean visibility)
 	{
 		findViewById(R.id.pagerProgressBar).setVisibility(visibility ?View.VISIBLE: View.GONE);
@@ -260,7 +266,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		setupMenu();
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 
 
 	public void setBilingual(boolean secondary)
@@ -278,7 +284,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		if (mMediaMenuItem != null)
 			mMediaMenuItem.getItem().setEnabled(audio || video);
 	}
-	
+
 
 	private void setupMenu()
 	{
@@ -325,29 +331,89 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 
 	private void watch()
 	{
+		if (mListening || mWatching)
+			closeMedia();
 		List<Media> media = mAdapter.getCurrentMedia();
 		String data = null;
 		for (Media m : media)
 		{
-			if (m.type.equals(Media.TYPE_VIDEO_MP3U8) || m.type.equals(Media.TYPE_VIDEO_MP4))
+			if (m.type.equals(Media.TYPE_VIDEO_MP4))
 			{
 				data = m.link;
+				break;
 			}
 		}
-		mMedia = new MediaUtil(this);
-		mVideoShowing = true;
-		if (mVideoView != null)
-			mVideoView.setVisibility(View.VISIBLE);
-		mMedia.start(data, mVideoView, this, this);
+		playVideo(data);
+	}
+
+	@Override
+	public void playVideo(String string)
+	{
+		if (!Looper.getMainLooper().equals(Looper.myLooper()))
+		{
+			runOnUiThread(new Runnable()
+						  {
+
+							  private String mString;
+
+							  @Override
+							  public void run()
+							  {
+								  playVideo(mString);
+							  }
+							  
+							  public Runnable setup(String string)
+							  {
+								  mString = string;
+								  return this;
+							  }}.setup(string));
+			return;
+		}
+		mWatching = true;
+		mMediaController = new MediaController(this);
+		mMediaController.setMediaPlayer(mVideoView);
+		mMediaController.setAnchorView(mVideoView);
+		mVideoView.setMediaController(mMediaController);
+		mVideoView.setOnErrorListener(this);
+		mVideoView.setOnPreparedListener(this);
+		mVideoView.setOnCompletionListener(this);
+		mVideoView.setVideoPath(string);
+		prepVideo();
+		findViewById(R.id.pagerProgressBar).setVisibility(View.VISIBLE);
 //		Intent i = new Intent();
 //		i.setAction(Intent.ACTION_VIEW);
 //		i.setData(Uri.parse(data));
 //		System.out.println(data);
 //		startActivity(i);
 	}
+	
+	private void prepVideo()
+	{
+		mVideoView.setVisibility(View.VISIBLE);
+		findViewById(R.id.touchScreen).setBackgroundColor(Color.BLACK);
+	}
+
+	private void showVideo()
+	{
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+		setFullscreen(true);
+		setFullscreenLock(true);
+		setImmersive(true);
+	}
+
+	private void hideVideo()
+	{
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+		mVideoView.setVisibility(View.GONE);
+		findViewById(R.id.touchScreen).setBackgroundColor(Color.argb(0, 0, 0, 0));
+		setFullscreenLock(false);
+		setImmersive(false);
+	}
 
 	private void listen()
 	{
+		if (mListening || mWatching)
+			closeMedia();
 		List<Media> media = mAdapter.getCurrentMedia();
 		String data = null;
 		for (Media m : media)
@@ -358,8 +424,10 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 				break;
 			}
 		}
+		mListening = true;
+		findViewById(R.id.pagerProgressBar).setVisibility(View.VISIBLE);
 		mMedia = new MediaUtil(this);
-		mMedia.start(data, null, this, this);
+		mMedia.start(data, this, this, this);
 //		Intent i = new Intent();
 //		i.setAction(Intent.ACTION_VIEW);
 //		i.setDataAndType(Uri.parse(data),"audio/mpeg3");
@@ -370,36 +438,57 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 	@Override
 	public void onPrepared(MediaPlayer p1)
 	{
-		mMediaController = mMedia.getController();
-		mMediaController.setAnchorView(findViewById(R.id.pager));
-		if (mVideoShowing && mVideoView != null)
+		if (mListening)
 		{
-			mVideoView.setMediaController(mMediaController);
-			mMediaController.setMediaPlayer(mVideoView);
-			mMediaController.setAnchorView(mVideoView);
+			mMediaController = mMedia.getController();
+			mMediaController.setAnchorView(findViewById(R.id.pager));
+		}
+		if (mWatching)
+		{
+			showVideo();
+			mVideoView.requestFocus();
+			mVideoView.start();
 		}
 		mMediaController.show(0);
+		findViewById(R.id.pagerProgressBar).setVisibility(View.GONE);
+	}
+
+	@Override
+	public void onCompletion(MediaPlayer p1)
+	{
+		closeMedia();
 	}
 
 	@Override
 	public boolean onError(MediaPlayer p1, int p2, int p3)
 	{
 		Toast.makeText(this, "Media playback failed", Toast.LENGTH_SHORT).show();
+		findViewById(R.id.pagerProgressBar).setVisibility(View.GONE);
+		Log.v(TAG,"Playback failed");
 		closeMedia();
 		return true;
 	}
 
 	private void closeMedia()
 	{
-		if (mMedia != null)
-			mMedia.release();
-		if (mVideoView != null)
-			mVideoView.setVisibility(View.GONE);
-		mVideoShowing = false;
+		Log.v(TAG,"Playback closed");
+		if (mListening)
+		{
+			if (mMedia != null)
+				mMedia.release();
+			mMedia = null;
+		}
+		if (mWatching)
+		{
+			hideVideo();
+			mVideoView.stopPlayback();
+			mVideoView.suspend();
+			mWatching=false;
+		}
+		findViewById(R.id.pagerProgressBar).setVisibility(View.GONE);
 		if (mMediaController != null)
 			mMediaController.hide();
 		mMediaController = null;
-		mMedia = null;
 	}
 
 	@Override
@@ -459,7 +548,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 
 	private void setFullscreen(boolean fullscreen)
 	{
-		if (mFullscreen == fullscreen)
+		if (mFullscreen == fullscreen || mLockFullscreen)
 			return;
 		mFullscreen = fullscreen;
 		if (mMediaController != null)
@@ -515,6 +604,11 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		}
 	}
 
+	public void setFullscreenLock(boolean lock)
+	{
+		mLockFullscreen = lock;
+	}
+
 	@Override
 	public void onSystemUiVisibilityChange(int visibility)
 	{
@@ -531,7 +625,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 	@Override
 	public void onBackPressed()
 	{
-		if (mMedia != null)
+		if (mWatching||mListening)
 		{
 			closeMedia();
 			return;

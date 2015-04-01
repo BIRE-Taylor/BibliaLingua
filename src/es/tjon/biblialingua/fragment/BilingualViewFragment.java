@@ -93,8 +93,6 @@ public class BilingualViewFragment extends Fragment
 			if (mState == null)
 				mState = new State();
 		}
-		Log.i(TAG, "onCreate " + mState.mPrimaryNode.title);
-		Log.i(TAG,"State "+(mState!=null));
 		super.onCreate(savedInstanceState);
 	}
 
@@ -134,10 +132,9 @@ public class BilingualViewFragment extends Fragment
 	@Override
 	public void onResume()
 	{
-		Log.i(TAG,"Resuming state? "+(mState!=null));
 		if(mContentPrimary==null)
 		{
-			Log.i(TAG,"Refinding views");
+			Log.d(TAG,"Refinding views");
 			mContentPrimary = (BookViewer)getView().findViewById(R.id.content);
 			mContentRelated = (RelatedFragment)((RelatedAdapter)((ListView)mRelatedView.findViewById(android.R.id.list)).getAdapter()).getFragment();
 			mContentSecondary = (BookViewer)getView().findViewById(R.id.secondaryContent);
@@ -260,10 +257,9 @@ public class BilingualViewFragment extends Fragment
 	{
 		if(mStopped||getActivity()==null)
 		{
-			System.out.println("Not refreshing display mode "+getPrimaryNode().title);
+			Log.d(TAG,"Not refreshing display mode "+getPrimaryNode().title);
 			return;
 		}
-		System.out.println("Refresh display mode "+getPrimaryNode().title);
 		if(Looper.getMainLooper().equals(Looper.myLooper()))
 		{
 			AsyncTask.execute(new Runnable(){
@@ -289,13 +285,12 @@ public class BilingualViewFragment extends Fragment
 	{
 		if(mStopped||getActivity()==null)
 		{
-			Log.i(TAG,"Not Setting Display "+getPrimaryNode().title);
+			Log.d(TAG,"Not Setting Display "+getPrimaryNode().title);
 			return;
 		}
-		Log.i(TAG,"Setting Display "+getPrimaryNode().title);
 		if (getView() == null||mContentPrimary==null)
 		{
-			Log.i(TAG,"View is null");
+			Log.d(TAG,"View is null");
 			return;
 		}
 		boolean dispFirst = mActivity.isDisplayPrimary();
@@ -303,7 +298,7 @@ public class BilingualViewFragment extends Fragment
 		boolean dispRelated = mActivity.isDisplayRelated();
 		if (dispSecond && getSecondaryNode() == null)
 		{
-			System.out.println("Disp Second Failed "+getPrimaryNode().title);
+			Log.d(TAG,"Disp Second Failed "+getPrimaryNode().title);
 			dispSecond = false;
 		}
 		if (dispSecond)

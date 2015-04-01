@@ -24,6 +24,8 @@ import es.tjon.biblialingua.data.book.*;
 import java.util.concurrent.*;
 import java.util.*;
 import android.util.*;
+import com.google.gson.*;
+import es.tjon.biblialingua.data.*;
 
 public class ContentJsInterface
 extends EnhancedJsInterface {
@@ -36,6 +38,8 @@ extends EnhancedJsInterface {
     private BookViewer view;
 	
 	private static final String TAG = "es.tjon.biblialingua.listener.ContentJSInterface";
+
+	private long lastVideoTap = 0;
 
     public ContentJsInterface(BookViewer contentWebView) {
         super(contentWebView);
@@ -82,6 +86,51 @@ extends EnhancedJsInterface {
         }
         
     }
+	
+
+    @JavascriptInterface
+    public void jsReportInlineVideoInfo(String string) {
+       // if (this.view.listener != null) {
+       //     this.view.listener.inlineVideosInfo(this.view.bookNode, string);
+    }
+	
+    @JavascriptInterface
+    public void jsReportVideoTapped(String string) {
+        long l = System.currentTimeMillis();
+        if (l - this.lastVideoTap > 1000) {
+            this.lastVideoTap = l;
+//            if (this.view.listener != null) {
+//                this.view.listener.inlineVideoTapped(this.view.bookNode, string);
+//            }
+			try
+			{
+				Video vid = Video.fromJSON(string);
+				
+			view.inlineVideoTapped(vid);
+			}catch(Exception e){Log.e(TAG,"JSON ERROR",e);}
+            return;
+        }
+        Log.d(TAG, "Ignoring video tap");
+    }
+
+    @JavascriptInterface
+    @Override
+    public void jsFinishedRendering(String string) {
+        
+        if (!view.isLoaded()) {
+            Log.v(TAG,"Executing Post Load Actions: " + (Object)this.view);
+            this.view.runHtmlCustomizations();
+			super.jsFinishedRendering(string);
+			this.view.loaded();
+            this.view.requestOffsets();
+//            if (this.view.listener != null) {
+//                this.view.listener.webViewFinishedLoading((EnhancedWebView)this.view);
+//            }
+            return;
+        }
+//        this.view.restoreSavedScrollPosition();
+    }
+
 
 //    private String fixHeadUri(String string) {
 //        String string2 = Annotation.blockLevelIdentifierFromURI(string);
@@ -307,23 +356,6 @@ extends EnhancedJsInterface {
 //    }
 //
 //    @JavascriptInterface
-//    @Override
-//    public void jsFinishedRendering(String string) {
-//        boolean bl = this.view.isLoaded();
-//        super.jsFinishedRendering(string);
-//        if (!bl) {
-//            Log.d(TAG,"Executing Post Load Actions: " + (Object)this.view);
-//            this.view.runHtmlCustomizations();
-//            this.view.requestOffsets();
-//            if (this.view.listener != null) {
-//                this.view.listener.webViewFinishedLoading((EnhancedWebView)this.view);
-//            }
-//            return;
-//        }
-//        this.view.restoreSavedScrollPosition();
-//    }
-//
-//    @JavascriptInterface
 //    public void jsReportAnnotationPressed(String string) {
 //        Annotation annotation;
 //        Annotation annotation2 = this.view.getActiveAnnotation();
@@ -426,12 +458,6 @@ extends EnhancedJsInterface {
 //        GLLog.dev(TAG, "Ignoring image tap");
 //    }
 //
-//    @JavascriptInterface
-//    public void jsReportInlineVideoInfo(String string) {
-//        if (this.view.listener != null) {
-//            this.view.listener.inlineVideosInfo(this.view.bookNode, string);
-//        }
-//    }
 //
 //    @JavascriptInterface
 //    public void jsReportInvalidUri(String string) {
@@ -546,19 +572,6 @@ extends EnhancedJsInterface {
 //            sortedMap.put((Object)Float.valueOf((float)jSONObject.getInt("top")), (Object)jSONObject.getString("id"));
 //        }
 //        // MONITOREXIT : object2
-//    }
-//
-//    @JavascriptInterface
-//    public void jsReportVideoTapped(String string) {
-//        long l = System.currentTimeMillis();
-//        if (l - this.lastVideoTap > 1000) {
-//            this.lastVideoTap = l;
-//            if (this.view.listener != null) {
-//                this.view.listener.inlineVideoTapped(this.view.bookNode, string);
-//            }
-//            return;
-//        }
-//        GLLog.dev(TAG, "Ignoring video tap");
 //    }
 //
 //    /*

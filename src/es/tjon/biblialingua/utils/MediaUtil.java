@@ -6,7 +6,7 @@ import java.io.*;
 import android.widget.*;
 import android.media.MediaPlayer.*;
 
-public class MediaUtil implements MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnErrorListener ,MediaController.MediaPlayerControl, AudioManager.OnAudioFocusChangeListener
+public class MediaUtil implements MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnErrorListener ,MediaController.MediaPlayerControl, AudioManager.OnAudioFocusChangeListener, MediaPlayer.OnCompletionListener
 {
 	
 	private MediaPlayer mPlayer;
@@ -28,7 +28,7 @@ public class MediaUtil implements MediaPlayer.OnPreparedListener, MediaPlayer.On
 		mContext = context;
 	}
 	
-	public boolean start(String url,VideoView video , MediaPlayer.OnErrorListener listener, MediaPlayer.OnPreparedListener preparedListener)
+	public boolean start(String url,MediaPlayer.OnCompletionListener completionListener , MediaPlayer.OnErrorListener listener, MediaPlayer.OnPreparedListener preparedListener)
 	{
 		if(mPlayer!=null)
 			mPlayer.release();
@@ -46,8 +46,8 @@ public class MediaUtil implements MediaPlayer.OnPreparedListener, MediaPlayer.On
 			mPlayer.setOnBufferingUpdateListener(this);
 			mPlayer.setOnErrorListener(listener==null?this:listener);
 			mPlayer.setDataSource(url);
-			mPlayer.setOnPreparedListener(this);
-			mPlayer.setDisplay(video==null?null:video.getHolder());
+			mPlayer.setOnPreparedListener(preparedListener==null?this:preparedListener);
+			mPlayer.setOnCompletionListener(completionListener==null?this:completionListener);
 			mPlayer.prepareAsync();
 			mUri=url;
 		}
@@ -78,6 +78,13 @@ public class MediaUtil implements MediaPlayer.OnPreparedListener, MediaPlayer.On
 		player.start();
 		if(mPreparedListener!=null)
 			mPreparedListener.onPrepared(player);
+	}
+
+	@Override
+	public void onCompletion(MediaPlayer p1)
+	{
+		p1.release();
+		mPlayer=null;
 	}
 
 	@Override
@@ -137,7 +144,7 @@ public class MediaUtil implements MediaPlayer.OnPreparedListener, MediaPlayer.On
 	public int getDuration()
 	{
 		if(mPlayer!=null)
-			mPlayer.getDuration();
+			return mPlayer.getDuration();
 		return 0;
 	}
 

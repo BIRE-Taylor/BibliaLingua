@@ -1,18 +1,16 @@
 package es.tjon.biblialingua.adapter;
-import android.text.*;
-import android.webkit.*;
-import es.tjon.biblialingua.*;
-import es.tjon.biblialingua.fragment.*;
-import java.util.*;
-import android.view.*;
-import android.view.View.*;
-import es.tjon.biblialingua.listener.*;
 import android.app.*;
 import android.content.*;
-import android.util.*;
 import android.graphics.*;
-import android.widget.*;
 import android.os.*;
+import android.text.*;
+import android.util.*;
+import android.webkit.*;
+import es.tjon.biblialingua.*;
+import es.tjon.biblialingua.data.*;
+import es.tjon.biblialingua.fragment.*;
+import es.tjon.biblialingua.listener.*;
+import java.util.*;
 
 public class BookViewer extends WebView
 {
@@ -29,6 +27,8 @@ public class BookViewer extends WebView
 	public NavigableMap<String,Float> uriOffsetLookupMap;
 
 	private float mScale;
+	
+	private boolean mLoaded = false;
 	
 	public BookViewer(BaseActivity context)
 	{
@@ -52,14 +52,45 @@ public class BookViewer extends WebView
 		{
 			public boolean onConsoleMessage(ConsoleMessage message)
 			{
-				Log.d(TAG,message.message());
+				Log.v(TAG,message.message());
 				return true;
 			}
 		});
 		addJavascriptInterface(new ContentJsInterface(this),"mainInterface");
 	}
 
-	public void onFinishRender(String string)
+	public void inlineVideoTapped(Video string)
+	{
+		for(Source src : string.sources)
+		{
+			mActivity.playVideo(src.src);
+			return;
+		}
+	}
+
+	public boolean isLoaded()
+	{
+		return mLoaded;
+	}
+	
+	public void loaded()
+	{
+		mLoaded=true;
+	}
+
+	public void runHtmlCustomizations()
+	{
+		((Activity)getContext()).runOnUiThread(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					BookViewer.this.loadUrl("javascript:ldssa.main.htmlCustomizations();");
+				}
+			});
+	}
+
+	public void requestOffsets()
 	{
 		((Activity)getContext()).runOnUiThread(new Runnable()
 			{

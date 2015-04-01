@@ -9,19 +9,20 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
     </android.support.v4.view.ViewPager>
-	
-	<VideoView
-		android:id="@+id/pagerVideoView"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:visibility="gone"
-	/>
 
 	<View 
 		android:id="@+id/touchScreen"
 		android:background="#0fff"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"/>
+	
+	<VideoView
+		android:id="@+id/pagerVideoView"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_centerInParent="true"
+		android:visibility="gone"
+	/>
 	
 	<ProgressBar
 		android:id="@+id/pagerProgressBar"

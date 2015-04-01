@@ -15,12 +15,11 @@ public class EnhancedJsInterface {
 
     @JavascriptInterface
     public void jsConsoleLog(String string) {
-        Log.d(TAG,string);
+        Log.v(TAG,string);
     }
 
     @JavascriptInterface
     public void jsFinishedRendering(String string) {
-        this.view.onFinishRender(string);
     }
 
     @JavascriptInterface
