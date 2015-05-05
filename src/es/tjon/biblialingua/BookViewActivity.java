@@ -18,6 +18,7 @@ import es.tjon.biblialingua.utils.*;
 import java.util.*;
 import android.graphics.*;
 import android.content.pm.*;
+import org.jsoup.*;
 
 
 public class BookViewActivity extends BookInterface implements CustomLinkMovementMethod.LinkListener, View.OnSystemUiVisibilityChangeListener, MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener
@@ -43,6 +44,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 	private MenuItem mRelatedMenuItem;
 	private SubMenu mMediaMenuItem;
 	private MenuItem mListen;
+	private MenuItem mListenInstrumental;
 	private MenuItem mWatch;
 
 	boolean mFullscreen = true;
@@ -130,8 +132,16 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		mPager.setOnSystemUiVisibilityChangeListener(this);
 		start();
   	}
+	
+	public static String html2text(String html) {
+		return Jsoup.parse(html).text();
+	}
 
-
+	@Override
+	public void setTitle(CharSequence title)
+	{
+		super.setTitle(html2text(title.toString()));
+	}
 
 	public void start()
 	{
@@ -261,6 +271,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		mBilingualMenuItem.setVisible(mBilingual);
 		mMediaMenuItem = menu.addSubMenu("Media");
 		mListen = mMediaMenuItem.add("Listen");
+		mListenInstrumental = mMediaMenuItem.add("Instrumental");
 		mWatch = mMediaMenuItem.add("Watch");
 		mRelatedMenuItem = mDisplayMenuItem.add("Related");
 		setupMenu();
@@ -275,14 +286,16 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		setupMenu();
 	}
 
-	public void setMedia(boolean audio, boolean video)
+	public void setMedia(boolean audio, boolean instrumental, boolean video)
 	{
 		if (mListen != null)
 			mListen.setVisible(audio);
+		if (mListenInstrumental != null)
+			mListenInstrumental.setVisible(instrumental);
 		if (mWatch != null)
 			mWatch.setVisible(video);
 		if (mMediaMenuItem != null)
-			mMediaMenuItem.getItem().setEnabled(audio || video);
+			mMediaMenuItem.getItem().setEnabled(audio || video || instrumental);
 	}
 
 
@@ -304,6 +317,11 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		if (item.equals(mListen))
 		{
 			listen();
+			return true;
+		}
+		if (item.equals(mListenInstrumental))
+		{
+			listenInstrumental();
 			return true;
 		}
 		if (item.equals(mWatch))
@@ -378,6 +396,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		mVideoView.setOnPreparedListener(this);
 		mVideoView.setOnCompletionListener(this);
 		mVideoView.setVideoPath(string);
+		mVideoView.setKeepScreenOn(true);
 		prepVideo();
 		findViewById(R.id.pagerProgressBar).setVisibility(View.VISIBLE);
 //		Intent i = new Intent();
@@ -396,9 +415,15 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 	private void showVideo()
 	{
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-		setFullscreen(true);
 		setFullscreenLock(true);
-		setImmersive(true);
+		findViewById(android.R.id.content).setSystemUiVisibility(
+			View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+			| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+			| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+			| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+			| View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+			| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+			getActionBar().hide();
 	}
 
 	private void hideVideo()
@@ -408,6 +433,31 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 		findViewById(R.id.touchScreen).setBackgroundColor(Color.argb(0, 0, 0, 0));
 		setFullscreenLock(false);
 		setImmersive(false);
+	}
+	
+	private void listenInstrumental()
+	{
+		if (mListening || mWatching)
+			closeMedia();
+		List<Media> media = mAdapter.getCurrentMedia();
+		String data = null;
+		for (Media m : media)
+		{
+			if (m.type.equals(Media.TYPE_AUDIO_MP3)&&m.link.contains("instrumental-"))
+			{
+				data = m.link.replace("vocal-and-","");
+				break;
+			}
+		}
+		mListening = true;
+		findViewById(R.id.pagerProgressBar).setVisibility(View.VISIBLE);
+		mMedia = new MediaUtil(this);
+		mMedia.start(data, this, this, this);
+//		Intent i = new Intent();
+//		i.setAction(Intent.ACTION_VIEW);
+//		i.setDataAndType(Uri.parse(data),"audio/mpeg3");
+//		System.out.println(data);
+//		startActivity(i);
 	}
 
 	private void listen()
@@ -477,6 +527,7 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 			if (mMedia != null)
 				mMedia.release();
 			mMedia = null;
+			mListening=false;
 		}
 		if (mWatching)
 		{
@@ -612,6 +663,8 @@ public class BookViewActivity extends BookInterface implements CustomLinkMovemen
 	@Override
 	public void onSystemUiVisibilityChange(int visibility)
 	{
+		if(mLockFullscreen)
+			return;
 		if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == View.SYSTEM_UI_FLAG_FULLSCREEN)
 		{
 			getActionBar().hide();

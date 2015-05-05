@@ -176,7 +176,7 @@ public class Folder extends Entity implements CatalogItem
 			}
 			i++;
 		}
-		for(Folder extra : folders)
+		for(Folder extra : (ArrayList<Folder>)folders)
 		{
 			extra.display_order=i;
 			newFolders.add(extra);

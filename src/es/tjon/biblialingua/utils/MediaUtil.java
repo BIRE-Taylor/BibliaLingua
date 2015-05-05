@@ -5,6 +5,7 @@ import android.net.*;
 import java.io.*;
 import android.widget.*;
 import android.media.MediaPlayer.*;
+import android.os.*;
 
 public class MediaUtil implements MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnErrorListener ,MediaController.MediaPlayerControl, AudioManager.OnAudioFocusChangeListener, MediaPlayer.OnCompletionListener
 {
@@ -46,8 +47,9 @@ public class MediaUtil implements MediaPlayer.OnPreparedListener, MediaPlayer.On
 			mPlayer.setOnBufferingUpdateListener(this);
 			mPlayer.setOnErrorListener(listener==null?this:listener);
 			mPlayer.setDataSource(url);
-			mPlayer.setOnPreparedListener(preparedListener==null?this:preparedListener);
+			mPlayer.setOnPreparedListener(this);
 			mPlayer.setOnCompletionListener(completionListener==null?this:completionListener);
+			mPlayer.setWakeMode(mContext,PowerManager.PARTIAL_WAKE_LOCK);
 			mPlayer.prepareAsync();
 			mUri=url;
 		}

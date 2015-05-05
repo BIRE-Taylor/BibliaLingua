@@ -17,9 +17,9 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 {
 	private BookDataContext mPrimaryBDC;
 	private BookDataContext mSecondaryBDC;
-	
+
 	private static final String TAG = "es.tjon.biblialingua.BVFAdapter";
-	
+
 	private ArrayList<String> mIndex;
 	private SortedMap<String, Node> mPrimaryNodes;
 	private SortedMap<String, Node> mSecondaryNodes;
@@ -32,7 +32,7 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 	private String[] mSecondaryCSS;
 
 	private String[] mPrimaryCss;
-	
+
 	private List<Media> mCurrentMedia;
 
 	private FragmentManager mFragmentManager;
@@ -49,10 +49,10 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 		mFragmentManager = fragmentManager;
 		mActivity = bva;
 	}
-	
+
 	public List<Media> getCurrentMedia()
 	{
-		if(mCurrent==null||mCurrentMedia==null||mCurrent.getPrimaryNode()==null||mCurrentMedia.size()==0||!mCurrent.getPrimaryNode().uri.equals(mCurrentMedia.get(0).uri))
+		if (mCurrent == null || mCurrentMedia == null || mCurrent.getPrimaryNode() == null || mCurrentMedia.size() == 0 || !mCurrent.getPrimaryNode().uri.equals(mCurrentMedia.get(0).uri))
 			return null;
 		return mCurrentMedia;
 	}
@@ -64,7 +64,7 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 
 	public String getPageUri(int position)
 	{
-		if(mIndex==null)
+		if (mIndex == null)
 			return null;
 		return mIndex.get(position);
 	}
@@ -72,7 +72,7 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 	@Override
 	public CharSequence getPageTitle(int position)
 	{
-		if(mIndex==null||mPrimaryNodes==null)
+		if (mIndex == null || mPrimaryNodes == null)
 			return super.getPageTitle(position);
 		return mPrimaryNodes.get(mIndex.get(position)).title;
 	}
@@ -81,9 +81,9 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 	public void setPrimaryItem(ViewGroup container, int position, Object object)
 	{
 		mCurrent = (BilingualViewFragment)object;
-		mActivity.setBilingual(mCurrent!=null&&mCurrent.getSecondaryNode()!=null);
-		mActivity.setMedia(false,false);
-		if(mPrimaryBDC!=null&&mCurrent!=null&&mCurrent.getPrimaryNode()!=null)
+		mActivity.setBilingual(mCurrent != null && mCurrent.getSecondaryNode() != null);
+		mActivity.setMedia(false, false, false);
+		if (mPrimaryBDC != null && mCurrent != null && mCurrent.getPrimaryNode() != null)
 		{
 			AsyncTask.execute(new Runnable()
 				{
@@ -99,23 +99,38 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 								{
 									boolean audio=false;
 									boolean video=false;
-									if(mCurrentMedia==null||mCurrentMedia.isEmpty())
+									boolean instrumental=false;
+									if (mCurrentMedia == null || mCurrentMedia.isEmpty())
 									{
-										mActivity.setMedia(false,false);
+										mActivity.setMedia(false, false, false);
 										return;
 									}
-									for(Media media : mCurrentMedia)
+									for (Media media : mCurrentMedia)
 									{
-										if(media.type.equals(media.TYPE_AUDIO_MP3))
-											audio=true;
-										if(media.type.equals(media.TYPE_VIDEO_MP3U8)||media.type.equals(media.TYPE_VIDEO_MP4))
-											video=true;
-										if(audio&&video)
+										if (media.type.equals(media.TYPE_AUDIO_MP3))
+										{
+											if (media.link.contains("vocal-and-instrumental"))
+											{
+												instrumental = true;
+												audio = true;
+											}
+											else if (media.link.contains("instrumental"))
+											{
+												instrumental = true;
+											}
+											else
+											{
+												audio = true;
+											}
+										}
+										if (media.type.equals(media.TYPE_VIDEO_MP3U8) || media.type.equals(media.TYPE_VIDEO_MP4))
+											video = true;
+										if (audio && video && instrumental)
 											break;
 									}
-									mActivity.setMedia(audio,video);
+									mActivity.setMedia(audio, instrumental, video);
 								}
-						});
+							});
 					}
 				});
 		}
@@ -124,52 +139,52 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 
 	public void setUri(String currentUri, ViewPager pager)
 	{
-		if(currentUri==null)
+		if (currentUri == null)
 		{
-			mSetUri=false;
+			mSetUri = false;
 			return;
 		}
 		currentUri = currentUri.split("\\.")[0];
-		if(mIndex!=null&&mIndex.contains(currentUri))
+		if (mIndex != null && mIndex.contains(currentUri))
 		{
 			pager.setCurrentItem(mIndex.indexOf(currentUri));
-			mActivity.getActionBar().setTitle(mPrimaryNodes.get(currentUri).title);
-			mSetUri=false;
+			mActivity.setTitle(mPrimaryNodes.get(currentUri).title);
+			mSetUri = false;
 		}
 		else
 		{
-			mSetUri=true;
-			mPager=pager;
-			mCurrentUri=currentUri;
+			mSetUri = true;
+			mPager = pager;
+			mCurrentUri = currentUri;
 		}
 	}
-	
+
 	public void update(BookDataContext primaryBDC, BookDataContext secondaryBDC, String currentUri)
 	{
-		if(primaryBDC!=null)
-			mPrimaryBDC=primaryBDC;
-		if(secondaryBDC!=null)
-			mSecondaryBDC=secondaryBDC;
-		if(currentUri!=null)
-			mCurrentUri=currentUri;
-		if(mPrimaryBDC==null)
-			Log.e(TAG,"mPrimaryBDC NULL");
+		if (primaryBDC != null)
+			mPrimaryBDC = primaryBDC;
+		if (secondaryBDC != null)
+			mSecondaryBDC = secondaryBDC;
+		if (currentUri != null)
+			mCurrentUri = currentUri;
+		if (mPrimaryBDC == null)
+			Log.e(TAG, "mPrimaryBDC NULL");
 		update();
 	}
 
 	private ArrayList<String> update()
 	{
-		if(Looper.getMainLooper().equals(Looper.myLooper()))
+		if (Looper.getMainLooper().equals(Looper.myLooper()))
 		{
 			new AsyncTask<Object,Object,ArrayList<String>>()
 			{
-				
+
 				public void onPreExecute()
 				{
 					mActivity.showProgress(true);
-					mIndex=null;
+					mIndex = null;
 					notifyDataSetChanged();
-	
+
 				}
 
 				@Override
@@ -177,52 +192,52 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 				{
 					return update();
 				}
-				
+
 				public void onPostExecute(ArrayList<String> object)
 				{
-					if(object == null)
+					if (object == null)
 						return;
 					mIndex = object;
 					notifyDataSetChanged();
-					if(mSetUri)
-						setUri(mCurrentUri,mPager);
+					if (mSetUri)
+						setUri(mCurrentUri, mPager);
 					mActivity.showProgress(false);
 				}
-				
+
 			}.execute();
 			return null;
 		}
 		BookDataContext pbdc = mPrimaryBDC;
 		BookDataContext sbdc = mSecondaryBDC;
-		if(pbdc==null)
+		if (pbdc == null)
 			return null;
-		String uri = mCurrentUri.substring(0,mCurrentUri.lastIndexOf("/"));
+		String uri = mCurrentUri.substring(0, mCurrentUri.lastIndexOf("/"));
 		ArrayList<String> index = new ArrayList<String>();
 		mPrimaryNodes = new ConcurrentSkipListMap<String, Node>();
 		mSecondaryNodes = new ConcurrentSkipListMap<String, Node>();
 		mFragments.clear();
 		try
 		{
-			pbdc.nodes.fill("NOT(content IS NULL OR trim(content) = '') AND uri LIKE '"+uri+"%'",new String[]{},null, null);
+			pbdc.nodes.fill("NOT(content IS NULL OR trim(content) = '') AND uri LIKE '" + uri + "%'", new String[]{}, null, null);
 			List<Node> nodes = new ArrayList<Node>(mPrimaryBDC.nodes);
-			for(Node node : nodes)
+			for (Node node : nodes)
 			{
-				mPrimaryNodes.put(node.uri,node);
+				mPrimaryNodes.put(node.uri, node);
 				index.add(node.uri);
 			}
-			if(sbdc!=null)
+			if (sbdc != null)
 			{
 				try
 				{
-					sbdc.nodes.fill("NOT(content IS NULL OR trim(content) = '') AND uri LIKE '"+uri+"%'",new String[]{},null, null);
-				nodes.clear();
-				nodes.addAll(mSecondaryBDC.nodes);
-				for(Node node : nodes)
-				{
-					mSecondaryNodes.put(node.uri,node);
+					sbdc.nodes.fill("NOT(content IS NULL OR trim(content) = '') AND uri LIKE '" + uri + "%'", new String[]{}, null, null);
+					nodes.clear();
+					nodes.addAll(mSecondaryBDC.nodes);
+					for (Node node : nodes)
+					{
+						mSecondaryNodes.put(node.uri, node);
+					}
 				}
-				}
-				catch(PopulateObjectSetException e)
+				catch (PopulateObjectSetException e)
 				{}
 			}
 			return index;
@@ -231,27 +246,27 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 		{}
 		return null;
 	}
-	
+
 	@Override
 	public Fragment getItem(int position)
 	{
-		if(mFragments!=null&&mFragments.containsKey(mIndex.get(position)))
+		if (mFragments != null && mFragments.containsKey(mIndex.get(position)))
 		{
 			return mFragments.get(mIndex.get(position));
 		}
 		BilingualViewFragment fragment = new BilingualViewFragment();
 		BilingualViewFragment.State state = new BilingualViewFragment.State();
 		state.mPrimaryNode = mPrimaryNodes.get(mIndex.get(position));
-		if(mSecondaryNodes!=null)
-			state.mSecondaryNode=mSecondaryNodes.get(mIndex.get(position));
-		state.mPrimaryCSS=getPrimaryCss();
-		state.mSecondaryCSS=getSecondaryCss();
-		if(mCurrentUri.contains(state.mPrimaryNode.uri)&&mCurrentUri.contains("."))
-			state.mUri=mCurrentUri;
+		if (mSecondaryNodes != null)
+			state.mSecondaryNode = mSecondaryNodes.get(mIndex.get(position));
+		state.mPrimaryCSS = getPrimaryCss();
+		state.mSecondaryCSS = getSecondaryCss();
+		if (mCurrentUri.contains(state.mPrimaryNode.uri) && mCurrentUri.contains("."))
+			state.mUri = mCurrentUri;
 		Bundle args = new Bundle();
-		args.putParcelable(BilingualViewFragment.KEY_STATE,state);
+		args.putParcelable(BilingualViewFragment.KEY_STATE, state);
 		fragment.setArguments(args);
-		mFragments.put(mIndex.get(position),fragment);
+		mFragments.put(mIndex.get(position), fragment);
 		return fragment;
 	}
 
@@ -259,11 +274,11 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 	public Object instantiateItem(ViewGroup container, int position)
 	{
 		Fragment fragment = (Fragment) super.instantiateItem(container, position);
-		if(fragment instanceof BilingualViewFragment)
+		if (fragment instanceof BilingualViewFragment)
 		{
 			String uri = mIndex.get(position);
 			mFragments.remove(uri);
-			mFragments.put(uri,(BilingualViewFragment)fragment);
+			mFragments.put(uri, (BilingualViewFragment)fragment);
 		}
 		return fragment;
 	}
@@ -274,21 +289,21 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 		mFragments.remove(mIndex.get(position));
 		super.destroyItem(container, position, object);
 	}
-	
-	
+
+
 
 	@Override
 	public int getItemPosition(Object object)
 	{
-		if(mFragments.containsValue(object))
+		if (mFragments.containsValue(object))
 		{
-			if(mIndex==null)
+			if (mIndex == null)
 				return POSITION_NONE;
-			for(String key : mFragments.keySet())
+			for (String key : mFragments.keySet())
 			{
-				if(mFragments.get(key).equals(object))
+				if (mFragments.get(key).equals(object))
 				{
-					if(mIndex.contains(key))
+					if (mIndex.contains(key))
 						return mIndex.indexOf(key);
 					return POSITION_NONE;
 				}
@@ -299,30 +314,30 @@ public class BilingualViewFragmentAdapter extends FragmentStatePagerAdapter
 
 	private String[] getPrimaryCss()
 	{
-		if(mPrimaryCss!=null)
+		if (mPrimaryCss != null)
 			return mPrimaryCss;
-		if(mPrimaryBDC!=null)
-			mPrimaryCss=mPrimaryBDC.getCss();
-		if(mPrimaryCss==null)
-			mPrimaryCss=getSecondaryCss();
+		if (mPrimaryBDC != null)
+			mPrimaryCss = mPrimaryBDC.getCss();
+		if (mPrimaryCss == null)
+			mPrimaryCss = getSecondaryCss();
 		return mPrimaryCss;
 	}
 
 	private String[] getSecondaryCss()
 	{
-		if(mSecondaryCSS!=null)
+		if (mSecondaryCSS != null)
 			return mSecondaryCSS;
-		if(mSecondaryBDC!=null)
-			mSecondaryCSS=mSecondaryBDC.getCss();
-		if(mSecondaryCSS==null)
-			mSecondaryCSS=getPrimaryCss();
+		if (mSecondaryBDC != null)
+			mSecondaryCSS = mSecondaryBDC.getCss();
+		if (mSecondaryCSS == null)
+			mSecondaryCSS = getPrimaryCss();
 		return mSecondaryCSS;
 	}
 
 	@Override
 	public int getCount()
 	{
-		if(mIndex==null)
+		if (mIndex == null)
 			return 0;
 		return mIndex.size();
 	}
