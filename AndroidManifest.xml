@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="es.tjon.bl"
+    package="es.tjon.biblialingua"
     android:versionCode="2"
     android:versionName="1.1" >
 
@@ -10,13 +10,17 @@
 
 	<uses-permission android:name="android.permission.INTERNET" /> 
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
 		
     <application
         android:icon="@drawable/ic_launcher"
+		android:theme="@style/Dark"
         android:label="@string/app_name" >
         <activity
             android:label="@string/app_name"
-            android:name=".BaseActivity">
+            android:name=".BaseActivity"
+			android:theme="@android:style/Theme.Material.NoActionBar">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,6 +32,10 @@
             android:name=".CatalogActivity" >
         </activity>
 		<activity
+            android:label="Osis Reader"
+            android:name=".OsisActivity" >
+        </activity>
+		<activity
 			android:label="Browse Book"
 			android:name=".BrowseActivity">
 		</activity>
@@ -37,11 +45,12 @@
         </activity>
 		<activity
 			android:label="View Book"
-			android:name=".BookViewActivity">
+			android:name=".BookViewActivity"
+			android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
 		</activity>
 		<service
-			android:label="BookDownloadService"
-			android:name=".network.BookDownloadService"
+			android:label="DownloadService"
+			android:name=".network.DownloadService"
 			android:process=":download">
 		</service>
     </application>

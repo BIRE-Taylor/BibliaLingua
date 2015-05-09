@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="backgroundDark">#362a55</color>
+	<color name="pinned_header_background">#2A2049</color>
+    <color name="pinned_header_text">#d0d0d0d0</color>
+</resources>

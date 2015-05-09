@@ -12,8 +12,8 @@
 	<string name="selectPrimaryLanguage">Select primary language</string>
 	<string name="selectSecondaryLanguage">Select secondary language</string>
 	<string name="colorScheme">Color scheme</string>
-	<string name="portraitDisplay">Portrait display for secondary language</string>
-	<string name="belowPrimary">Display below primary language</string>
-	<string name="besidePrimary">Display beside primary language</string>
+	<string name="portraitDisplay">In portrait display secondary language</string>
+	<string name="belowPrimary">below primary language</string>
+	<string name="besidePrimary">beside primary language</string>
 
 </resources>
