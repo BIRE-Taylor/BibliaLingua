@@ -13,6 +13,8 @@ import org.json.*;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import javax.xml.transform.*;
+import com.android.volley.*;
+import org.xml.sax.helpers.*;
 
 public class RestClient<T1> implements Response.ErrorListener
 {
@@ -145,6 +147,7 @@ public class RestClient<T1> implements Response.ErrorListener
 	public void fetch( Context c, Class<T1> result, Response.Listener<T1> callback, Response.ErrorListener errorHandler, ParameterSet params )
 	{
 		GsonObjectRequest<T1> request = new GsonObjectRequest<T1>(GsonObjectRequest.Method.GET,BASEURL,params,callback,errorHandler,result);
+		request.setRetryPolicy(new DefaultRetryPolicy(10000,3,1));
 		VolleySingleton.getInstance(c).addToRequestQueue(request);
 	}
 
