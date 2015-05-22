@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="@android:style/Theme.Material.Light">
+	<style name="ActionBar" parent="@android:style/Widget.ActionBar">
+		<item name="android:background">#100140</item>
+	</style>
+    <style name="Dark" parent="@android:style/Theme.Material">
+		<item name="android:windowBackground">@color/backgroundDark</item>
+		<item name="android:actionBarStyle">@style/ActionBar</item>
+	</style>
+	<style name="Light" parent="@android:style/Theme.Material.Light.DarkActionBar">
+		<item name="android:actionBarStyle">@style/ActionBar</item>
+	</style>
+	<style name="Sepia" parent="@android:style/Theme.Material.Light.DarkActionBar">
+		<item name="android:actionBarStyle">@style/ActionBar</item>
 	</style>
 </resources>

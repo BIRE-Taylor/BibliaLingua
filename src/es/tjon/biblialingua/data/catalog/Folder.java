@@ -141,7 +141,7 @@ public class Folder extends Entity implements CatalogItem
 		daysexpire=folder.daysexpire;
 		if(folders==null||folders.size()==0)
 		{
-			folders = new ArrayList<Folder>(Arrays.asList( adc.getFolders(language,getID()) ));
+			folders = adc.getFolders(language,getID());
 		}
 		ArrayList<Folder> newFolders = new ArrayList<Folder>();
 		int i = 0;
@@ -176,7 +176,7 @@ public class Folder extends Entity implements CatalogItem
 			}
 			i++;
 		}
-		for(Folder extra : (ArrayList<Folder>)folders)
+		for(Folder extra : folders)
 		{
 			extra.display_order=i;
 			newFolders.add(extra);

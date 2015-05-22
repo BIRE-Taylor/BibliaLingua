@@ -23,6 +23,7 @@ import android.support.v4.hardware.display.*;
 import android.app.*;
 import android.graphics.*;
 import android.text.method.*;
+import com.instabug.library.*;
 
 public class BaseActivity extends FragmentActivity
 {
@@ -182,8 +183,8 @@ public class BaseActivity extends FragmentActivity
 			{
 				getWindow().setNavigationBarColor(Color.rgb(10,1,50));
 				getWindow().setStatusBarColor(Color.rgb(10,1,50));
+				getActionBar().setHomeButtonEnabled(true);
 			}
-			getActionBar().setHomeButtonEnabled(true);
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -262,6 +263,7 @@ public class BaseActivity extends FragmentActivity
 	{
 		if (mInitialized)
 			return;
+		
 		if(!mFileInitialized)
 		{
 			setLoadingMessage(R.string.loadingFiles);

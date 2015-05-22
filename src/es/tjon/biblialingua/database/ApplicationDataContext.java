@@ -317,7 +317,7 @@ public class ApplicationDataContext extends ObjectContext
 		return books.get(0);
 	}
 
-	public List<Folder> getFolders(Language language, long parentId, boolean hideNotDownloaded)
+	public ArrayList<Folder> getFolders(Language language, long parentId, boolean hideNotDownloaded)
 	{
 		if(language==null||parentId<0)
 			return null;
@@ -337,7 +337,7 @@ public class ApplicationDataContext extends ObjectContext
 		return new ArrayList<Folder>(folders);
 	}
 	
-	public List<Folder> getFolders(Language language, long parentId)
+	public ArrayList<Folder> getFolders(Language language, long parentId)
 	{
 		return getFolders(language, parentId, false);
 	}

@@ -23,7 +23,7 @@
 		android:title="@string/portraitDisplay"
 		android:entries="@array/portraitDisplay"
 		android:entryValues="@array/portraitDisplayValues"
-		android:defaultValue="horizontal"
+		android:defaultValue="vertical"
 		android:summary="@string/besidePrimary"/>
 	</PreferenceCategory>
 </PreferenceScreen>
